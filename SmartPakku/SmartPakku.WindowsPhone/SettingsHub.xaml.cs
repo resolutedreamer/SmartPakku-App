@@ -21,20 +21,20 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
-// The Universal Hub Application project template is documented at http://go.microsoft.com/fwlink/?LinkID=391955
+// The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
 namespace SmartPakku
 {
     /// <summary>
-    /// A page that displays a grouped collection of items.
+    /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class HubPage : Page
+    public sealed partial class SettingsHub : Page
     {
-        private readonly NavigationHelper navigationHelper;
-        private readonly ObservableDictionary defaultViewModel = new ObservableDictionary();
+        private NavigationHelper navigationHelper;
+        private ObservableDictionary defaultViewModel = new ObservableDictionary();
         private readonly ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView("Resources");
 
-        public HubPage()
+        public SettingsHub()
         {
             this.InitializeComponent();
 
@@ -73,14 +73,11 @@ namespace SmartPakku
         /// The source of the event; typically <see cref="NavigationHelper"/>
         /// </param>
         /// <param name="e">Event data that provides both the navigation parameter passed to
-        /// <see cref="Frame.Navigate(Type, object)"/> when this page was initially requested and
+        /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
         /// a dictionary of state preserved by this page during an earlier
         /// session.  The state will be null the first time a page is visited.</param>
-        private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            var sampleDataGroups = await SampleDataSource.GetGroupsAsync();
-            this.DefaultViewModel["Groups"] = sampleDataGroups;
         }
 
         /// <summary>
@@ -93,65 +90,6 @@ namespace SmartPakku
         /// serializable state.</param>
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
-            // TODO: Save the unique state of the page here.
-        }
-
-        /// <summary>
-        /// Shows the details of a clicked group in the <see cref="SectionPage"/>.
-        /// </summary>
-        /// <param name="sender">The source of the click event.</param>
-        /// <param name="e">Details about the click event.</param>
-        private void GroupSection_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            var groupId = ((SampleDataGroup)e.ClickedItem).UniqueId;
-            if (!Frame.Navigate(typeof(SectionPage), groupId))
-            {
-                throw new Exception(this.resourceLoader.GetString("NavigationFailedExceptionMessage"));
-            }
-        }
-
-        /// <summary>
-        /// Shows the details of an item clicked on in the <see cref="ItemPage"/>
-        /// </summary>
-        /// <param name="sender">The source of the click event.</param>
-        /// <param name="e">Defaults about the click event.</param>
-        private void ItemView_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
-            // BACKPACK TOOLS
-            if (itemId == "pack-assistant")
-            {
-                Frame.Navigate(typeof(Tools_PackAssistant), itemId);
-            }
-            else if (itemId == "locator")
-            {
-                Frame.Navigate(typeof(Tools_Locator), itemId);
-            }
-            else if (itemId == "battery-life")
-            {
-                Frame.Navigate(typeof(Tools_BatteryLife), itemId);
-            }
-            else if (itemId == "setup-wizard")
-            {
-                Frame.Navigate(typeof(Wizard1_PairDevice), itemId);
-            }
-            else if (itemId == "gps-settings")
-            {
-                Frame.Navigate(typeof(Options_GPS), itemId);
-            }
-            else if (itemId == "personal-info")
-            {
-                Frame.Navigate(typeof(Options_PersonalInfo), itemId);
-            }
-            else if (itemId == "calibration-options")
-            {
-                Frame.Navigate(typeof(Options_Calibration), itemId);
-            }
-            // SHOULD NEVER GO HERE
-            else if (!Frame.Navigate(typeof(ItemPage), itemId))
-            {
-                throw new Exception(this.resourceLoader.GetString("NavigationFailedExceptionMessage"));
-            }
         }
 
         #region NavigationHelper registration
@@ -160,23 +98,19 @@ namespace SmartPakku
         /// The methods provided in this section are simply used to allow
         /// NavigationHelper to respond to the page's navigation methods.
         /// <para>
-        /// Page specific logic should be placed in event handlers for the
+        /// Page specific logic should be placed in event handlers for the  
         /// <see cref="NavigationHelper.LoadState"/>
         /// and <see cref="NavigationHelper.SaveState"/>.
-        /// The navigation parameter is available in the LoadState method
+        /// The navigation parameter is available in the LoadState method 
         /// in addition to page state preserved during an earlier session.
         /// </para>
         /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.</param>
+        /// <param name="e">Provides data for navigation methods and event
+        /// handlers that cannot cancel the navigation request.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
-            if (e.Parameter.ToString()  == "CLEARBACKSTACK")
-            {
-                Frame.BackStack.Clear();
-            }
         }
-
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
@@ -184,17 +118,5 @@ namespace SmartPakku
         }
 
         #endregion
-
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Frame.Navigate(typeof(SettingsHub), "CLEARBACKSTACK");
-            }
-            catch
-            {
-
-            }
-        }
     }
 }

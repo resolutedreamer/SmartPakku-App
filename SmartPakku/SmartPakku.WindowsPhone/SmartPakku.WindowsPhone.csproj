@@ -103,14 +103,17 @@
     <Compile Include="ItemPage.xaml.cs">
       <DependentUpon>ItemPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SettingsHub.xaml.cs">
+      <DependentUpon>SettingsHub.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tools_BatteryLife.xaml.cs">
       <DependentUpon>Tools_BatteryLife.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools_Locator.xaml.cs">
       <DependentUpon>Tools_Locator.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools_WearAssistant.xaml.cs">
-      <DependentUpon>Tools_WearAssistant.xaml</DependentUpon>
+    <Compile Include="Tools_PackAssistant.xaml.cs">
+      <DependentUpon>Tools_PackAssistant.xaml</DependentUpon>
     </Compile>
     <Compile Include="Wizard1_PairDevice.xaml.cs">
       <DependentUpon>Wizard1_PairDevice.xaml</DependentUpon>
@@ -204,6 +207,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="SettingsHub.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Tools_BatteryLife.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -212,7 +219,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tools_WearAssistant.xaml">
+    <Page Include="Tools_PackAssistant.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

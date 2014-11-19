@@ -23,12 +23,12 @@ namespace SmartPakku
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Wizard3_GPSDevice : Page
+    public sealed partial class Tools_PackAssistant : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        public Wizard3_GPSDevice()
+        public Tools_PackAssistant()
         {
             this.InitializeComponent();
 
@@ -107,36 +107,5 @@ namespace SmartPakku
         }
 
         #endregion
-
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO Check the Data store to see if GPS Enabled or Disabled was set yet or not
-            // if it was not set yet, set it to disabled here and continue
-
-            try
-            {
-                Frame.Navigate(typeof(Wizard4_PersonalInfo));
-            }
-            catch
-            {
-
-            }
-        }
-
-        // TODO Store DATA
-
-
-
-        private void DisableGPS_Click(object sender, RoutedEventArgs e)
-        {
-            Choice.Text = "GPS Disabled";
-
-        }
-
-        private void EnableGPS_Click(object sender, RoutedEventArgs e)
-        {
-            Choice.Text = "GPS Enabled";
-
-        }
     }
 }

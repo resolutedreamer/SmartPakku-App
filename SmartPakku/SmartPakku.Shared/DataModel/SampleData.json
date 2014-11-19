@@ -1,30 +1,30 @@
 {"Groups":[
   {
-    "UniqueId": "smartpack-tools",
+    "UniqueId": "tools",
         "Title": "smartpack tools",
         "Subtitle": "manage your smartpack",
         "ImagePath": "Assets/DarkGray.png",
         "Description": "This is the collection of tools we provide that allows you to manage your smartpack",
         "Items": [
             {
-                "UniqueId": "smartpack-wear-assistant",
-                "Title": "Smartpack Wear Assistant",
-                "Subtitle": "keep your back well",
+                "UniqueId": "pack-assistant",
+                "Title": "Pack Assistant",
+                "Subtitle": "keep well",
                 "ImagePath": "Assets/LightGray.png",
                 "Description": "This tool allows you to check if you are wearing your smartpack properly. Get notified when problems arise!",
                 "Content": "QQ Position"
             },
             {
-                "UniqueId": "smartpack-locator",
-                "Title": "Smartpack Locator",
+                "UniqueId": "locator",
+                "Title": "Locator",
                 "Subtitle": "never lose your smartpack again",
                 "ImagePath": "Assets/DarkGray.png",
                 "Description": "This tool allows you to check on the last known location of your smartpack. It updates whenever your smartpack has been set down or disconnects.",
                 "Content": "QQ Search"
             },
             {
-                "UniqueId": "smartpack-battery-life",
-                "Title": "Smartpack Battery Life",
+                "UniqueId": "battery-life",
+                "Title": "Battery Life",
                 "Subtitle": "stay connected",
                 "ImagePath": "Assets/MediumGray.png",
                 "Description": "This tool allows you to check on the remaining battery life of your smartpack. Make sure your smartpack doesn't die on you!",

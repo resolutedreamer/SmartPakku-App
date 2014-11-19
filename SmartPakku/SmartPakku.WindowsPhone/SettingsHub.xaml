@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="SmartPakku.HubPage"
+    x:Class="SmartPakku.SettingsHub"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SmartPakku"
@@ -8,8 +8,11 @@
     DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
     d:DataContext="{Binding Source={d:DesignData Source=../SmartPakku.Shared/DataModel/SampleData.json, Type=data:SampleDataSource}}"
     xmlns:data="using:SmartPakku.Data"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    
+    
     <Page.Resources>
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
@@ -69,54 +72,27 @@
             </DataTemplate>
         </ResourceDictionary>
     </Page.Resources>
-    <Page.BottomAppBar>
-        <CommandBar>
-            <CommandBar.SecondaryCommands>
-                <AppBarButton Label="settings" Click="AppBarButton_Click" />
-            </CommandBar.SecondaryCommands>
-        </CommandBar>
-    </Page.BottomAppBar>
-
+    
+    
     <Grid x:Name="LayoutRoot">
         <Hub x:Name="Hub" x:Uid="Hub" Header="SmartPakku" Background="{ThemeResource HubBackgroundImageBrush}">
-            <HubSection x:Uid="HubSection2" Header="BACKPACK TOOLS" Width="Auto"
-                         DataContext="{Binding Groups[0]}" HeaderTemplate="{ThemeResource HubSectionHeaderTemplate}">
-                <DataTemplate>
-                    <GridView x:Name="MainFeatures"
-                        Margin="0,9.5,0,0"
-                        ItemsSource="{Binding Items}"
-                        AutomationProperties.AutomationId="ItemGridView"
-                        AutomationProperties.Name="Items In Group"
-                        ItemTemplate="{StaticResource Standard200x180TileItemTemplate}"
-                        SelectionMode="None"
-                        IsItemClickEnabled="True"
-                        ItemClick="ItemView_ItemClick"
-                        >
-                        <GridView.ItemsPanel>
-                            <ItemsPanelTemplate >
-                                <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="2"/>
-                            </ItemsPanelTemplate>
-                        </GridView.ItemsPanel>
-                    </GridView>
-                </DataTemplate>
+            <HubSection x:Uid="HubSection1" Header="my profile" Width="Auto"
+                         HeaderTemplate="{ThemeResource HubSectionHeaderTemplate}">
             </HubSection>
 
-            <HubSection x:Uid="HubSection3" Header="OPTIONS"
-                        DataContext="{Binding Groups[1]}" HeaderTemplate="{ThemeResource HubSectionHeaderTemplate}">
-                <DataTemplate>
-                    <ListView 
-                        AutomationProperties.AutomationId="ItemListViewSection3"
-                        AutomationProperties.Name="Items In Group"
-                        SelectionMode="None"
-                        IsItemClickEnabled="True"
-                        ItemsSource="{Binding Items}"
-                        ItemTemplate="{StaticResource StandardTripleLineItemTemplate}"
-                        ItemClick="ItemView_ItemClick"
-                        ContinuumNavigationTransitionInfo.ExitElementContainer="True">
-                    </ListView>
-                </DataTemplate>
+            <HubSection x:Uid="HubSection2" Header="permissions"
+                        HeaderTemplate="{ThemeResource HubSectionHeaderTemplate}">
+            
+            </HubSection>
+
+            <HubSection x:Uid="HubSection3" Header="setup wizard"
+                        HeaderTemplate="{ThemeResource HubSectionHeaderTemplate}">
             </HubSection>
           
-        </Hub>
+            <HubSection x:Uid="HubSection4" Header="calibration"
+                        HeaderTemplate="{ThemeResource HubSectionHeaderTemplate}">
+            </HubSection>
+          
+        </Hub>        
     </Grid>
 </Page>

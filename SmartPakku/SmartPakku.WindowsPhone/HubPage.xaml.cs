@@ -121,15 +121,15 @@ namespace SmartPakku
             // BACKPACK TOOLS
             if (itemId == "smartpack-wear-assistant")
             {
-                Frame.Navigate(typeof(WearAssistant), itemId);
+                Frame.Navigate(typeof(Tools_WearAssistant), itemId);
             }
             else if (itemId == "smartpack-locator")
             {
-                Frame.Navigate(typeof(Locator), itemId);
+                Frame.Navigate(typeof(Tools_Locator), itemId);
             }
             else if (itemId == "smartpack-battery-life")
             {
-                Frame.Navigate(typeof(BatteryLife), itemId);
+                Frame.Navigate(typeof(Tools_BatteryLife), itemId);
             }
             else if (itemId == "setup-wizard")
             {
@@ -137,13 +137,16 @@ namespace SmartPakku
             }
             else if (itemId == "gps-settings")
             {
-                Frame.Navigate(typeof(Wizard1_PairDevice), itemId);
+                Frame.Navigate(typeof(Options_GPS), itemId);
             }
             else if (itemId == "personal-info")
             {
-                Frame.Navigate(typeof(Wizard1_PairDevice), itemId);
+                Frame.Navigate(typeof(Options_PersonalInfo), itemId);
             }
-
+            else if (itemId == "calibration-options")
+            {
+                Frame.Navigate(typeof(Options_Calibration), itemId);
+            }
             // SHOULD NEVER GO HERE
             else if (!Frame.Navigate(typeof(ItemPage), itemId))
             {

@@ -23,12 +23,12 @@ namespace SmartPakku
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WearAssistant : Page
+    public sealed partial class Options_GPS : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        public WearAssistant()
+        public Options_GPS()
         {
             this.InitializeComponent();
 

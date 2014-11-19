@@ -65,8 +65,8 @@
         "Content" : "QQ Info"
       },
       {
-        "UniqueId": "calibration-wizard",
-        "Title": "Calibration Wizard",
+        "UniqueId": "calibration-options",
+        "Title": "Calibration Options",
         "Subtitle": "",
         "ImagePath": "Assets/MediumGray.png",
         "Description" : "Recalibrate Idle Backpack",

@@ -23,12 +23,12 @@ namespace SmartPakku
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Locator : Page
+    public sealed partial class Options_PersonalInfo : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        public Locator()
+        public Options_PersonalInfo()
         {
             this.InitializeComponent();
 

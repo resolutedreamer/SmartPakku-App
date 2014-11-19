@@ -84,14 +84,17 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BatteryLife.xaml.cs">
-      <DependentUpon>BatteryLife.xaml</DependentUpon>
-    </Compile>
     <Compile Include="HubPage.xaml.cs">
       <DependentUpon>HubPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Locator.xaml.cs">
-      <DependentUpon>Locator.xaml</DependentUpon>
+    <Compile Include="Options_Calibration.xaml.cs">
+      <DependentUpon>Options_Calibration.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options_GPS.xaml.cs">
+      <DependentUpon>Options_GPS.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options_PersonalInfo.xaml.cs">
+      <DependentUpon>Options_PersonalInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SectionPage.xaml.cs">
@@ -100,8 +103,14 @@
     <Compile Include="ItemPage.xaml.cs">
       <DependentUpon>ItemPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WearAssistant.xaml.cs">
-      <DependentUpon>WearAssistant.xaml</DependentUpon>
+    <Compile Include="Tools_BatteryLife.xaml.cs">
+      <DependentUpon>Tools_BatteryLife.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tools_Locator.xaml.cs">
+      <DependentUpon>Tools_Locator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tools_WearAssistant.xaml.cs">
+      <DependentUpon>Tools_WearAssistant.xaml</DependentUpon>
     </Compile>
     <Compile Include="Wizard1_PairDevice.xaml.cs">
       <DependentUpon>Wizard1_PairDevice.xaml</DependentUpon>
@@ -171,15 +180,19 @@
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="BatteryLife.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="HubPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Locator.xaml">
+    <Page Include="Options_Calibration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Options_GPS.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Options_PersonalInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -191,7 +204,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WearAssistant.xaml">
+    <Page Include="Tools_BatteryLife.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools_Locator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tools_WearAssistant.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

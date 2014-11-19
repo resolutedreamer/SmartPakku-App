@@ -110,6 +110,9 @@ namespace SmartPakku
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
+            // TODO Check the Data store to see if GPS Enabled or Disabled was set yet or not
+            // if it was not set yet, set it to disabled here and continue
+
             try
             {
                 Frame.Navigate(typeof(HubPage), "CLEARBACKSTACK");
@@ -118,6 +121,22 @@ namespace SmartPakku
             {
 
             }
+        }
+
+        // TODO Store DATA
+
+
+
+        private void DisableGPS_Click(object sender, RoutedEventArgs e)
+        {
+            Choice.Text = "GPS Disabled";
+
+        }
+
+        private void EnableGPS_Click(object sender, RoutedEventArgs e)
+        {
+            Choice.Text = "GPS Enabled";
+
         }
     }
 }

@@ -17,7 +17,12 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="SmartPakku.WindowsPhone.App">
       <m3:VisualElements DisplayName="SmartPakku" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="SmartPakku.WindowsPhone" ForegroundText="light" BackgroundColor="transparent">
+        <m3:LockScreen Notification="badgeAndTileText" BadgeLogo="Assets\PhoneStore\BadgeLogo.png" />
         <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png">
+          <m3:ShowNameOnTiles>
+            <m3:ShowOn Tile="square150x150Logo" />
+            <m3:ShowOn Tile="wide310x150Logo" />
+          </m3:ShowNameOnTiles>
         </m3:DefaultTile>
         <m3:SplashScreen Image="Assets\SplashScreen.png" />
       </m3:VisualElements>
@@ -28,7 +33,7 @@
     <DeviceCapability Name="location" />
     <m2:DeviceCapability Name="bluetooth.genericAttributeProfile">
       <m2:Device Id="any">
-        <m2:Function Type="serviceId:6E400001-B5A3-F393-E0A9-E50E24DCCA9E"/>
+        <m2:Function Type="serviceId:6E400001-B5A3-F393-E0A9-E50E24DCCA9E" />
       </m2:Device>
     </m2:DeviceCapability>
   </Capabilities>

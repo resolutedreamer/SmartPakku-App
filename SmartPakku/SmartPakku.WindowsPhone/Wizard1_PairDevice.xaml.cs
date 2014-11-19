@@ -119,5 +119,10 @@ namespace SmartPakku
 
             }
         }
+
+        private void RunButton_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO Open Bluetooth Settings Page
+        }
     }
 }

@@ -49,17 +49,9 @@
         "Content" : "QQ Setup"
       },
       {
-        "UniqueId": "calibration-wizard",
-        "Title": "Calibration Wizard",
-        "Subtitle": "",
-        "ImagePath": "Assets/MediumGray.png",
-        "Description" : "Recalibrate Idle Backpack",
-        "Content" : "QQ Calibration"
-      },
-      {
         "UniqueId": "gps-settings",
         "Title": "GPS Settings",
-        "Subtitle": "Item Subtitle: 3",
+        "Subtitle": "",
         "ImagePath": "Assets/LightGray.png",
         "Description" : "Enable or Disable GPS",
         "Content" : "QQ GPS"
@@ -67,10 +59,18 @@
       {
         "UniqueId": "personal-info",
         "Title": "Personal Information",
-        "Subtitle": "Item Subtitle: 3",
+        "Subtitle": "",
         "ImagePath": "Assets/LightGray.png",
         "Description" : "Edit Personal Information",
         "Content" : "QQ Info"
+      },
+      {
+        "UniqueId": "calibration-wizard",
+        "Title": "Calibration Wizard",
+        "Subtitle": "",
+        "ImagePath": "Assets/MediumGray.png",
+        "Description" : "Recalibrate Idle Backpack",
+        "Content" : "QQ Calibration"
       }
     ]
   },

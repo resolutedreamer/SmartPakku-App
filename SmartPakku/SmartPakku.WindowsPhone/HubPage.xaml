@@ -29,7 +29,7 @@
             <DataTemplate x:Key="Standard200x180TileItemTemplate">
                 <Grid Margin="0,0,9.5,9.5" Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
                     <Image Source="{Binding ImagePath}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Height="138.5" Width="138.5"/>
-                    <TextBlock Text="{Binding Title}" VerticalAlignment="Bottom" Margin="9.5,0,0,6.5" Style="{ThemeResource BaseTextBlockStyle}"/>
+                    <TextBlock TextWrapping="Wrap" Text="{Binding Title}" VerticalAlignment="Bottom" Margin="9.5,0,0,6.5" Style="{ThemeResource BaseTextBlockStyle}"/>
                 </Grid>
             </DataTemplate>
 
@@ -72,7 +72,7 @@
 
     <Grid x:Name="LayoutRoot">
         <Hub x:Name="Hub" x:Uid="Hub" Header="SmartPakku" Background="{ThemeResource HubBackgroundImageBrush}">
-            <HubSection x:Uid="HubSection2" Header="Backpack Tools" Width="Auto"
+            <HubSection x:Uid="HubSection2" Header="BACKPACK TOOLS" Width="Auto"
                          DataContext="{Binding Groups[0]}" HeaderTemplate="{ThemeResource HubSectionHeaderTemplate}">
                 <DataTemplate>
                     <GridView x:Name="MainFeatures"
@@ -95,7 +95,7 @@
                 </DataTemplate>
             </HubSection>
 
-            <HubSection x:Uid="HubSection3" Header="SECTION 3"
+            <HubSection x:Uid="HubSection3" Header="OPTIONS"
                         DataContext="{Binding Groups[1]}" HeaderTemplate="{ThemeResource HubSectionHeaderTemplate}">
                 <DataTemplate>
                     <ListView 

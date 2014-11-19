@@ -102,6 +102,15 @@
     <Compile Include="WearAssistant.xaml.cs">
       <DependentUpon>WearAssistant.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Wizard1_PairDevice.xaml.cs">
+      <DependentUpon>Wizard1_PairDevice.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Wizard2_SelectDevice.xaml.cs">
+      <DependentUpon>Wizard2_SelectDevice.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Wizard3_GPSDevice.xaml.cs">
+      <DependentUpon>Wizard3_GPSDevice.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -141,6 +150,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WearAssistant.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Wizard1_PairDevice.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Wizard2_SelectDevice.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Wizard3_GPSDevice.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

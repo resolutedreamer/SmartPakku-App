@@ -83,9 +83,7 @@
                         ItemTemplate="{StaticResource Standard200x180TileItemTemplate}"
                         SelectionMode="None"
                         IsItemClickEnabled="True"
-                        ItemClick="ItemView_ItemClick"
-                        
-                        ContinuumNavigationTransitionInfo.ExitElementContainer="True" ReorderMode="Enabled">
+                        ItemClick="ItemView_ItemClick">
                         <GridView.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <ItemsWrapGrid />

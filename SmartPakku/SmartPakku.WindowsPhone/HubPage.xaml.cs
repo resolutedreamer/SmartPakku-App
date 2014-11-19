@@ -135,6 +135,15 @@ namespace SmartPakku
             {
                 Frame.Navigate(typeof(Wizard1_PairDevice), itemId);
             }
+            else if (itemId == "gps-settings")
+            {
+                Frame.Navigate(typeof(Wizard1_PairDevice), itemId);
+            }
+            else if (itemId == "personal-info")
+            {
+                Frame.Navigate(typeof(Wizard1_PairDevice), itemId);
+            }
+
             // SHOULD NEVER GO HERE
             else if (!Frame.Navigate(typeof(ItemPage), itemId))
             {
@@ -159,7 +168,12 @@ namespace SmartPakku
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
+            if (e.Parameter.ToString()  == "CLEARBACKSTACK")
+            {
+                Frame.BackStack.Clear();
+            }
         }
+
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {

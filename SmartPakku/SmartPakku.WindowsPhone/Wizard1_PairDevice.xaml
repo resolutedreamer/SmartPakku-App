@@ -7,6 +7,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Icon="Forward" Label="Continue" Click="AppBarButton_Click"/>
+        </CommandBar>
+    </Page.BottomAppBar>
 
     <Grid x:Name="LayoutRoot">
 
@@ -36,8 +41,8 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <StackPanel Margin="0,0,0,10">
-                    <TextBlock Text="Step 1:" Style="{StaticResource SampleHeaderTextStyle}"/>
-                    <TextBlock Style="{StaticResource ScenarioDescriptionTextStyle}" TextWrapping="Wrap">
+                    <TextBlock Text="Step 1:"/>
+                    <TextBlock TextWrapping="Wrap">
                         Pair your Bluetooth Gatt Heart Rate device. This button will bring you to the settings
                         Windows Phone Bluetooth Settings page where you can find and pair your device to your phone.
                     </TextBlock>

@@ -138,5 +138,17 @@ namespace SmartPakku
             
             //RunButton.IsEnabled = true;
         }
+
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Frame.Navigate(typeof(Wizard3_GPSDevice));
+            }
+            catch
+            {
+
+            }
+        }
     }
 }

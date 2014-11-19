@@ -112,13 +112,13 @@ namespace SmartPakku
 
         private async void RunButton_Click(object sender, RoutedEventArgs e)
         {
-            RunButton.IsEnabled = false;
+            //RunButton.IsEnabled = false;
 
             var devices = await DeviceInformation.FindAllAsync(
                 GattDeviceService.GetDeviceSelectorFromUuid(GattServiceUuids.HeartRate),
                 new string[] { "System.Devices.ContainerId" });
 
-            DevicesListBox.Items.Clear();
+            /*DevicesListBox.Items.Clear();
 
             if (devices.Count > 0)
             {
@@ -130,11 +130,13 @@ namespace SmartPakku
             }
             else
             {
+                /*
                 rootPage.NotifyUser("Could not find any Heart Rate devices. Please make sure your device is paired " +
                     "and powered on!",
-                    NotifyType.StatusMessage);
-            }
-            RunButton.IsEnabled = true;
+                    NotifyType.StatusMessage);*/
+            //}
+            
+            //RunButton.IsEnabled = true;
         }
     }
 }

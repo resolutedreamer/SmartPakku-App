@@ -85,7 +85,7 @@
                         IsItemClickEnabled="True"
                         ItemClick="ItemView_ItemClick"
                         
-                        ContinuumNavigationTransitionInfo.ExitElementContainer="True" CanReorderItems="True">
+                        ContinuumNavigationTransitionInfo.ExitElementContainer="True" ReorderMode="Enabled">
                         <GridView.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <ItemsWrapGrid />

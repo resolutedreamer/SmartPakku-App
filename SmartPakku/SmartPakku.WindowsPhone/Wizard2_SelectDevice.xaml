@@ -41,9 +41,10 @@
                         Now that your device has been paired, useuse the Run button to populate the list of
                         devices, find your smartpakku, and then select it from the list of devices.
                     </TextBlock>
-                    <Button x:Name="RunButton" Grid.Row="1" Content="Run" Margin="0,0,10,0" Click="RunButton_Click"/>
+                    <!--<Button x:Name="RunButton" Grid.Row="1" Content="Run" Margin="0,0,10,0" Click="RunButton_Click"/> -->
                 </StackPanel>
 
+                <!--
                 <ScrollViewer Grid.Row="1" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
                         <TextBlock Name="statusTextBlock" Style="{StaticResource BasicTextStyle}" TextWrapping="Wrap"/>
@@ -56,7 +57,8 @@
                         </ListBox>
                     </StackPanel>
                 </ScrollViewer>
-
+                -->
+                
                 <!-- Status Block for providing messages to the user.  Use the
                  NotifyUser() method to populate the message -->
                 <Border x:Name="ErrorBorder" Background="Red" Grid.Row="2"/>

@@ -131,7 +131,10 @@ namespace SmartPakku
             {
                 Frame.Navigate(typeof(BatteryLife), itemId);
             }
-
+            else if (itemId == "setup-wizard")
+            {
+                Frame.Navigate(typeof(Wizard1_PairDevice), itemId);
+            }
             // SHOULD NEVER GO HERE
             else if (!Frame.Navigate(typeof(ItemPage), itemId))
             {

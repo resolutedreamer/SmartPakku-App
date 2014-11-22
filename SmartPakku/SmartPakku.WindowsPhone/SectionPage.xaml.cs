@@ -96,7 +96,21 @@ namespace SmartPakku
         private void ItemView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
-            if (!Frame.Navigate(typeof(ItemPage), itemId))
+            // BACKPACK TOOLS
+            if (itemId == "pack-assistant")
+            {
+                Frame.Navigate(typeof(Tools_PackAssistant), itemId);
+            }
+            else if (itemId == "locator")
+            {
+                Frame.Navigate(typeof(Tools_Locator), itemId);
+            }
+            else if (itemId == "battery-life")
+            {
+                Frame.Navigate(typeof(Tools_BatteryLife), itemId);
+            }
+
+            else
             {
                 var resourceLoader = ResourceLoader.GetForCurrentView("Resources");
                 throw new Exception(resourceLoader.GetString("NavigationFailedExceptionMessage"));

@@ -16,6 +16,15 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using SmartPakku.Common;
+using SmartPakku.Data;
+
+
+using Windows.ApplicationModel.Resources;
+using Windows.Graphics.Display;
+
+
+
+
 
 // The Universal Hub Application project template is documented at http://go.microsoft.com/fwlink/?LinkID=391955
 
@@ -105,6 +114,15 @@ namespace SmartPakku
                 rootFrame.Navigated += this.RootFrame_FirstNavigated;
 #endif
 
+
+#if WINDOWS_PHONE_APP
+                if (!rootFrame.Navigate(typeof(SectionPage), "tools"))
+                {
+                    throw new Exception("Failed to create initial page");
+                }
+#endif
+
+#if WINDOWS_APP
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
@@ -112,6 +130,9 @@ namespace SmartPakku
                 {
                     throw new Exception("Failed to create initial page");
                 }
+#endif
+
+
             }
 
             // Ensure the current window is active

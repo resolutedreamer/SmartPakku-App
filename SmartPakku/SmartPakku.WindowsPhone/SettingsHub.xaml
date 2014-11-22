@@ -78,11 +78,34 @@
         <Hub x:Name="Hub" x:Uid="Hub" Header="SmartPakku" Background="{ThemeResource HubBackgroundImageBrush}">
             <HubSection x:Uid="HubSection1" Header="my profile" Width="Auto"
                          HeaderTemplate="{ThemeResource HubSectionHeaderTemplate}">
+                <DataTemplate>
+                    <StackPanel Grid.Row="1">
+                        <TextBlock Text="Gender"/>
+                        <ComboBox>
+                            <ComboBoxItem Content="Male"/>
+                            <ComboBoxItem Content="Female"/>
+                        </ComboBox>
+                        <TextBlock Text="Date of Birth"/>
+                        <ComboBox>
+                        
+                        </ComboBox>
+                        <TextBlock Text="Height"/>
+                        <ComboBox>
+                        
+                        </ComboBox>
+                        <TextBlock Text="Weight"/>
+                        <ComboBox></ComboBox>
+                    </StackPanel>
+                </DataTemplate>
             </HubSection>
 
             <HubSection x:Uid="HubSection2" Header="permissions"
                         HeaderTemplate="{ThemeResource HubSectionHeaderTemplate}">
-            
+                <DataTemplate>
+                    <StackPanel>
+                        
+                    </StackPanel>
+                </DataTemplate>
             </HubSection>
 
             <HubSection x:Uid="HubSection3" Header="setup wizard"
@@ -92,7 +115,16 @@
             <HubSection x:Uid="HubSection4" Header="calibration"
                         HeaderTemplate="{ThemeResource HubSectionHeaderTemplate}">
             </HubSection>
-          
+
+            
+            <HubSection x:Uid="HubSection4" Header="about"
+                        HeaderTemplate="{ThemeResource HubSectionHeaderTemplate}">
+            </HubSection>
+
+            <HubSection x:Uid="HubSection4" Header="credits"
+                        HeaderTemplate="{ThemeResource HubSectionHeaderTemplate}">
+            </HubSection>
+
         </Hub>        
     </Grid>
 </Page>

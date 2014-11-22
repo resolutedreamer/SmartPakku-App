@@ -10,7 +10,7 @@
                 "UniqueId": "pack-assistant",
                 "Title": "Pack Assistant",
                 "Subtitle": "keep well",
-                "ImagePath": "Assets/LightGray.png",
+                "ImagePath": "Assets/backpack.png",
                 "Description": "This tool allows you to check if you are wearing your smartpack properly. Get notified when problems arise!",
                 "Content": "QQ Position"
             },
@@ -18,7 +18,7 @@
                 "UniqueId": "locator",
                 "Title": "Locator",
                 "Subtitle": "never lose your smartpack again",
-                "ImagePath": "Assets/DarkGray.png",
+                "ImagePath": "Assets/locator.png",
                 "Description": "This tool allows you to check on the last known location of your smartpack. It updates whenever your smartpack has been set down or disconnects.",
                 "Content": "QQ Search"
             },
@@ -26,7 +26,7 @@
                 "UniqueId": "battery-life",
                 "Title": "Battery Life",
                 "Subtitle": "stay connected",
-                "ImagePath": "Assets/MediumGray.png",
+                "ImagePath": "Assets/battery-life.png",
                 "Description": "This tool allows you to check on the remaining battery life of your smartpack. Make sure your smartpack doesn't die on you!",
                 "Content": "QQ Words"
             }

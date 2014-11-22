@@ -135,20 +135,9 @@ namespace SmartPakku
             {
                 Frame.Navigate(typeof(Wizard1_PairDevice), itemId);
             }
-            else if (itemId == "gps-settings")
-            {
-                Frame.Navigate(typeof(Options_GPS), itemId);
-            }
-            else if (itemId == "personal-info")
-            {
-                Frame.Navigate(typeof(Options_PersonalInfo), itemId);
-            }
-            else if (itemId == "calibration-options")
-            {
-                Frame.Navigate(typeof(Options_Calibration), itemId);
-            }
+
             // SHOULD NEVER GO HERE
-            else if (!Frame.Navigate(typeof(ItemPage), itemId))
+            else
             {
                 throw new Exception(this.resourceLoader.GetString("NavigationFailedExceptionMessage"));
             }
@@ -193,7 +182,7 @@ namespace SmartPakku
             }
             catch
             {
-
+                throw new Exception();
             }
         }
     }

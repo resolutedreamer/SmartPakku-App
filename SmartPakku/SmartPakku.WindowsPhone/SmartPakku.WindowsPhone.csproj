@@ -84,6 +84,18 @@
     <Compile Include="Calibration1.xaml.cs">
       <DependentUpon>Calibration1.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Calibration2.xaml.cs">
+      <DependentUpon>Calibration2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Calibration3.xaml.cs">
+      <DependentUpon>Calibration3.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Calibration4.xaml.cs">
+      <DependentUpon>Calibration4.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Calibration5.xaml.cs">
+      <DependentUpon>Calibration5.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DevicePage.xaml.cs">
       <DependentUpon>DevicePage.xaml</DependentUpon>
     </Compile>
@@ -176,6 +188,22 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Calibration1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Calibration2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Calibration3.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Calibration4.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Calibration5.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

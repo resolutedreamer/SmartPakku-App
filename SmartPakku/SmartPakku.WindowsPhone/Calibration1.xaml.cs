@@ -107,5 +107,17 @@ namespace SmartPakku
         }
 
         #endregion
+
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Frame.Navigate(typeof(Calibration2));
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
     }
 }

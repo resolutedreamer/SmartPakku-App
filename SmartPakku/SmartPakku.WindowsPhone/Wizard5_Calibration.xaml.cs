@@ -116,7 +116,19 @@ namespace SmartPakku
             }
             catch
             {
+                throw new Exception();
+            }
+        }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Frame.Navigate(typeof(Calibration1));
+            }
+            catch
+            {
+                throw new Exception();
             }
         }
     }

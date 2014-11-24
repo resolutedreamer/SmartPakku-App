@@ -48,21 +48,26 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="1">
-                    <TextBlock Text="Gender"/>
-                    <ComboBox>
-                        <ComboBoxItem Content="Male"/>
-                        <ComboBoxItem Content="Female"/>
+                    
+                    <!--Gender-->
+                    <ComboBox x:Name="GenderDropDown" Header="Gender" SelectionChanged="GenderDropDown_SelectionChanged">
+                        <x:String>Male</x:String>
+                        <x:String>Female</x:String>
                     </ComboBox>
-                    <TextBlock Text="Date of Birth"/>
-                    <ComboBox>
+                    
+                    <!--Date Of Birth-->
+                    <DatePicker x:Name="DOBPicker" Header="Date of Birth"/>
+                    
+                    <!--Height-->
+                    <ComboBox x:Name="HeightDropDown" Header="Height">
                         
                     </ComboBox>
-                    <TextBlock Text="Height"/>
-                    <ComboBox>
+                    
+                    <!--Weight-->
+                    <ComboBox x:Name="WeightDropDown" Header="Weight">
                         
                     </ComboBox>
-                    <TextBlock Text="Weight"/>
-                    <ComboBox></ComboBox>
+                    
                 </StackPanel>
             </Grid>
         </Grid>

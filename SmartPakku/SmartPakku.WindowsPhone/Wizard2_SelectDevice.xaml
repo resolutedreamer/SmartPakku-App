@@ -15,18 +15,36 @@
     </Page.BottomAppBar>
 
     <Grid Margin="10,0,10,0">
+                <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Panel -->
+        <StackPanel Grid.Row="0" Margin="19,0,0,0">
+            <TextBlock Text="smartpakku" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock Text="setup wizard" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+        </StackPanel>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="keep the keys" FontSize="40"/>
         <TextBlock Grid.Row="1" Text="Tap a device below to configure:"
                    FontSize="20" Margin="0,10,0,0"/>
         <ListBox Grid.Row="2" x:Name="deviceListBox" FontSize="30"
                  ItemsSource="{Binding Devices, ElementName=page}"
-                 SelectionChanged="deviceListBox_SelectionChanged"/>
+                 SelectionChanged="deviceListBox_SelectionChanged"/>    
+        </Grid>
+        
     </Grid>
     
 </Page>

@@ -59,28 +59,9 @@
                                 Content="Disable GPS" Name="DisableGPS" Click="DisableGPS_Click" />
                     </Grid>
                     <TextBlock Name="Choice" Text="Please make your selection, GPS is disabled by default"/>
-                    <!--<Button x:Name="RunButton" Grid.Row="1" Content="Run" Margin="0,0,10,0" Click="RunButton_Click"/> -->
                 </StackPanel>
-                
-                <!--
-                <ScrollViewer Grid.Row="1" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
-                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-                        <TextBlock Name="statusTextBlock" Style="{StaticResource BasicTextStyle}" TextWrapping="Wrap"/>
-                        <ListBox x:Name="DevicesListBox" Visibility="Collapsed" SelectionChanged="DevicesListBox_SelectionChanged">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Name}"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </StackPanel>
-                </ScrollViewer>
-                -->
 
-                <!-- Status Block for providing messages to the user.  Use the
-                 NotifyUser() method to populate the message -->
-                <Border x:Name="ErrorBorder" Background="Red" Grid.Row="2"/>
-                <TextBlock x:Name="StatusBlock" Grid.Row="2" Margin="12, 10, 12, 10" Visibility="Collapsed"/>
+               
             </Grid>
         </Grid>
     </Grid>

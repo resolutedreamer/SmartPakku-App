@@ -120,9 +120,9 @@ namespace SmartPakku
             }
         }
 
-        private void RunButton_Click(object sender, RoutedEventArgs e)
+        private async void RunButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO Open Bluetooth Settings Page
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-bluetooth:"));
         }
     }
 }

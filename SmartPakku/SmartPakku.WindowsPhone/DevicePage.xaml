@@ -16,31 +16,50 @@
 
 
     <Grid Margin="10,0,10,0">
+               <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="keep the keys" FontSize="40"/>
-        <TextBlock Grid.Row="1" Text="{Binding Name, Mode=OneTime}" FontSize="50"/>
-        <CheckBox Grid.Row="2" x:Name="alertOnPhoneCheckBox" Content="Create phone notification on link loss" FontSize="20"
-			IsChecked="{Binding AlertOnPhone, Mode=TwoWay}"/>
-        <CheckBox Grid.Row="3" x:Name="alertOnDeviceCheckBox" Content="Set device alert level on link loss" FontSize="20"
-			IsEnabled="{Binding HasLinkLossService, Mode=OneTime}"
-			IsChecked="{Binding AlertOnDevice, Mode=TwoWay}"/>
-        <StackPanel Grid.Row="4" Orientation="Vertical" Margin="40,0,0,0">
-            <RadioButton Content="No alert"
-                         IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
-                         />
-            <RadioButton Content="Mild alert"
-                         IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
-                         />
-            <RadioButton Content="High alert"
-                         IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
-                         />
+        <!-- Title Panel -->
+        <StackPanel Grid.Row="0" Margin="19,0,0,0">
+            <TextBlock Text="smartpakku" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock Text="setup wizard" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
+        
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Grid.Row="1" Text="{Binding Name, Mode=OneTime}" FontSize="50"/>
+            <CheckBox Grid.Row="2" x:Name="alertOnPhoneCheckBox" Content="Create phone notification on link loss" FontSize="20"
+			    IsChecked="{Binding AlertOnPhone, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="3" x:Name="alertOnDeviceCheckBox" Content="Set device alert level on link loss" FontSize="20"
+			    IsEnabled="{Binding HasLinkLossService, Mode=OneTime}"
+			    IsChecked="{Binding AlertOnDevice, Mode=TwoWay}"/>
+            <StackPanel Grid.Row="4" Orientation="Vertical" Margin="40,0,0,0">
+                <RadioButton Content="No alert"
+                             IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
+                             />
+                <RadioButton Content="Mild alert"
+                             IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
+                             />
+                <RadioButton Content="High alert"
+                             IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
+                             />
+            </StackPanel>
+        </Grid>
+        
     </Grid>
 </Page>

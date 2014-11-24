@@ -112,7 +112,7 @@ namespace SmartPakku
         {
             try
             {
-                Frame.Navigate(typeof(SectionPage), "CLEARBACKSTACK");
+                Frame.Navigate(typeof(SectionPage), "tools");
             }
             catch
             {

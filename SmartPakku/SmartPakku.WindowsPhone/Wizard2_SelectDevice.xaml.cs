@@ -106,65 +106,15 @@ namespace SmartPakku
 
         private async void RunButton_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            RunButton.IsEnabled = false;
-            DevicesListBox.Visibility = Visibility.Visible;
-            */
             // Get the list of paired Bluetooth LE devicdes, and add them to our 'devices' list. Associate each device with
             // its pre-existing registration if any, and remove that registration from our dictionary.
-
-
             Devices.Clear();
-
             foreach (DeviceInformation di in await DeviceInformation.FindAllAsync(BluetoothLEDevice.GetDeviceSelector()))
             {
                 BluetoothLEDevice bleDevice = await BluetoothLEDevice.FromIdAsync(di.Id);
                 SmartPack device = new SmartPack(bleDevice);
                 Devices.Add(device);
             }
-
-
-            /*
-            var devices = await DeviceInformation.FindAllAsync(
-                GattDeviceService.GetDeviceSelectorFromUuid(GattServiceUuids.HeartRate),
-                new string[] { "System.Devices.ContainerId" });
-
-            DevicesListBox.Items.Clear();
-
-            if (devices.Count > 0)
-            {
-                foreach (var device in devices)
-                {
-                    DevicesListBox.Items.Add(device);
-                }
-            }
-            else
-            {
-
-            }
-            */
-
-
-            //RunButton.IsEnabled = true;
-            
-
-        }
-
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Frame.Navigate(typeof(Wizard3_GPSDevice));
-            }
-            catch
-            {
-                throw new Exception();
-            }
-        }
-
-        private void DevicesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
         }
 
         private void deviceListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

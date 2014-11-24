@@ -1,16 +1,12 @@
 ﻿using SmartPakku.Common;
-using SmartPakku.Data;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
-using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -18,8 +14,10 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+
+
+using Windows.Storage;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -28,20 +26,14 @@ namespace SmartPakku
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SettingsHub : Page
+    public sealed partial class Settings : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-        private readonly ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView("Resources");
 
-        public SettingsHub()
+        public Settings()
         {
             this.InitializeComponent();
-
-            // Hub is only supported in Portrait orientation
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
-
-            this.NavigationCacheMode = NavigationCacheMode.Required;
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
@@ -118,5 +110,42 @@ namespace SmartPakku
         }
 
         #endregion
+
+        private void SetupWizardButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Frame.Navigate(typeof(Wizard1_PairDevice));
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
+
+        private void CalibrationWizardButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Frame.Navigate(typeof(Calibration1));
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
+                
+
+        private void GenderDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplicationDataContainer myProfile = ApplicationData.Current.LocalSettings;
+            string temp = GenderDropDown.SelectedItem.ToString();
+            myProfile.Values["gender"] = temp;
+        }
+
+        private void LocationSericesDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

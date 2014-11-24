@@ -18,20 +18,43 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
+
+
+
+// I Added This Section
+
+using System.Collections.ObjectModel;
+using SmartPakkuCommon;
+
+//  Make it obvious which namespace provided each referenced type:
+using BackgroundAccessStatus = Windows.ApplicationModel.Background.BackgroundAccessStatus;
+using BackgroundExecutiondManager = Windows.ApplicationModel.Background.BackgroundExecutionManager;
+using BackgroundTaskRegistration = Windows.ApplicationModel.Background.BackgroundTaskRegistration;
+using DeviceInformation = Windows.Devices.Enumeration.DeviceInformation;
+using BluetoothLEDevice = Windows.Devices.Bluetooth.BluetoothLEDevice;
+
+// End Section
+
 
 namespace SmartPakku
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class Wizard2_SelectDevice : Page
     {
+
+        
+
+        public ObservableCollection<SmartPack> Devices { get; private set; }
+
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
+
         public Wizard2_SelectDevice()
         {
+
+            Devices = new ObservableCollection<SmartPack>();
+
+
             this.InitializeComponent();
 
             this.navigationHelper = new NavigationHelper(this);
@@ -39,81 +62,69 @@ namespace SmartPakku
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
         }
 
-        /// <summary>
-        /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
-        /// </summary>
+
         public NavigationHelper NavigationHelper
         {
             get { return this.navigationHelper; }
         }
 
-        /// <summary>
-        /// Gets the view model for this <see cref="Page"/>.
-        /// This can be changed to a strongly typed view model.
-        /// </summary>
+
         public ObservableDictionary DefaultViewModel
         {
             get { return this.defaultViewModel; }
         }
-
-        /// <summary>
-        /// Populates the page with content passed during navigation.  Any saved state is also
-        /// provided when recreating a page from a prior session.
-        /// </summary>
-        /// <param name="sender">
-        /// The source of the event; typically <see cref="NavigationHelper"/>
-        /// </param>
-        /// <param name="e">Event data that provides both the navigation parameter passed to
-        /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
-        /// a dictionary of state preserved by this page during an earlier
-        /// session.  The state will be null the first time a page is visited.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
         }
-
-        /// <summary>
-        /// Preserves state associated with this page in case the application is suspended or the
-        /// page is discarded from the navigation cache.  Values must conform to the serialization
-        /// requirements of <see cref="SuspensionManager.SessionState"/>.
-        /// </summary>
-        /// <param name="sender">The source of the event; typically <see cref="NavigationHelper"/></param>
-        /// <param name="e">Event data that provides an empty dictionary to be populated with
-        /// serializable state.</param>
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
         }
-
         #region NavigationHelper registration
 
-        /// <summary>
-        /// The methods provided in this section are simply used to allow
-        /// NavigationHelper to respond to the page's navigation methods.
-        /// <para>
-        /// Page specific logic should be placed in event handlers for the  
-        /// <see cref="NavigationHelper.LoadState"/>
-        /// and <see cref="NavigationHelper.SaveState"/>.
-        /// The navigation parameter is available in the LoadState method 
-        /// in addition to page state preserved during an earlier session.
-        /// </para>
-        /// </summary>
-        /// <param name="e">Provides data for navigation methods and event
-        /// handlers that cannot cancel the navigation request.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            this.navigationHelper.OnNavigatedTo(e);
+            // Get the list of paired Bluetooth LE devicdes, and add them to our 'devices' list. Associate each device with
+            // its pre-existing registration if any, and remove that registration from our dictionary.
+            Devices.Clear();
+            foreach (DeviceInformation di in await DeviceInformation.FindAllAsync(BluetoothLEDevice.GetDeviceSelector()))
+            {
+                BluetoothLEDevice bleDevice = await BluetoothLEDevice.FromIdAsync(di.Id);
+                SmartPack device = new SmartPack(bleDevice);
+
+                Devices.Add(device);
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            this.navigationHelper.OnNavigatedFrom(e);
+            //this.navigationHelper.OnNavigatedFrom(e);
         }
 
         #endregion
 
+
+
         private async void RunButton_Click(object sender, RoutedEventArgs e)
         {
+            /*
             RunButton.IsEnabled = false;
+            DevicesListBox.Visibility = Visibility.Visible;
+            */
+            // Get the list of paired Bluetooth LE devicdes, and add them to our 'devices' list. Associate each device with
+            // its pre-existing registration if any, and remove that registration from our dictionary.
 
+
+            Devices.Clear();
+
+            foreach (DeviceInformation di in await DeviceInformation.FindAllAsync(BluetoothLEDevice.GetDeviceSelector()))
+            {
+                BluetoothLEDevice bleDevice = await BluetoothLEDevice.FromIdAsync(di.Id);
+                SmartPack device = new SmartPack(bleDevice);
+                Devices.Add(device);
+            }
+
+
+            /*
             var devices = await DeviceInformation.FindAllAsync(
                 GattDeviceService.GetDeviceSelectorFromUuid(GattServiceUuids.HeartRate),
                 new string[] { "System.Devices.ContainerId" });
@@ -126,14 +137,17 @@ namespace SmartPakku
                 {
                     DevicesListBox.Items.Add(device);
                 }
-                DevicesListBox.Visibility = Visibility.Visible;
             }
             else
             {
 
             }
+            */
+
+
+            //RunButton.IsEnabled = true;
             
-            RunButton.IsEnabled = true;
+
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
@@ -144,13 +158,21 @@ namespace SmartPakku
             }
             catch
             {
-
+                throw new Exception();
             }
         }
 
         private void DevicesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+
+        private void deviceListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (deviceListBox.SelectedItem != null)
+            {
+                Frame.Navigate(typeof(DevicePage), deviceListBox.SelectedItem);
+            }
         }
     }
 }

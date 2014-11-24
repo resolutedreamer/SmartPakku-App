@@ -49,6 +49,8 @@
 			    IsEnabled="{Binding HasLinkLossService, Mode=OneTime}"
 			    IsChecked="{Binding AlertOnDevice, Mode=TwoWay}"/>
             <StackPanel Grid.Row="4" Orientation="Vertical" Margin="40,0,0,0">
+                
+                <!--Remember, I removed the setting of the event handlesrs for these buttons-->
                 <RadioButton Content="No alert"
                              IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
                              />

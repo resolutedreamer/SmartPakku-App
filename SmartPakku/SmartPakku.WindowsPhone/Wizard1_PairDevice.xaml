@@ -41,7 +41,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <StackPanel Margin="0,0,0,10">
-                    <TextBlock Text="Step 1: Pair Device"/>
+                    <TextBlock Text="Step 1: Pair Device" Margin="0,0,0,10"/>
                     <TextBlock TextWrapping="Wrap">
                         Pair your smartpack. This button will bring you to the Windows Phone Bluetooth
                         Settings page where you can find and pair your device to your phone.

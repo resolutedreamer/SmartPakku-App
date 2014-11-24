@@ -28,9 +28,13 @@ namespace SmartPakku
     /// </summary>
     public sealed partial class Settings : Page
     {
+
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
+
+
+        #region THEIRCODE
         public Settings()
         {
             this.InitializeComponent();
@@ -39,6 +43,8 @@ namespace SmartPakku
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
         }
+
+        
 
         /// <summary>
         /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
@@ -102,6 +108,26 @@ namespace SmartPakku
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
+
+            ApplicationDataContainer myProfile = ApplicationData.Current.LocalSettings;
+
+
+
+            if (myProfile.Values.ContainsKey("gender"))
+            {
+                GenderDropDown.SelectedItem = myProfile.Values["gender"].ToString();
+            }
+
+            if (myProfile.Values.ContainsKey("dateofbirth"))
+            {
+                DOBPicker.Date = (Date)myProfile.Values["dateofbirth"];
+            }
+            
+
+
+
+
+
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -110,6 +136,12 @@ namespace SmartPakku
         }
 
         #endregion
+
+
+        #endregion
+
+
+        #region MYCODE
 
         private void SetupWizardButton_Click(object sender, RoutedEventArgs e)
         {
@@ -134,7 +166,7 @@ namespace SmartPakku
                 throw new Exception();
             }
         }
-                
+        
 
         private void GenderDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -144,6 +176,18 @@ namespace SmartPakku
         }
 
         private void LocationSericesDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void GPSSwitch_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+
+        }
+
+        #endregion
+
+        private void DOBPicker_DateChanged(object sender, DatePickerValueChangedEventArgs e)
         {
 
         }

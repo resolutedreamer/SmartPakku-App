@@ -27,7 +27,7 @@
                     </ComboBox>
                     
                     <!--Date Of Birth-->
-                    <DatePicker x:Name="DOBPicker" Header="Date of Birth"/>
+                    <DatePicker x:Name="DOBPicker" Header="Date of Birth" DateChanged="DOBPicker_DateChanged" />
                     
                     <!--Height-->
                     <ComboBox x:Name="HeightDropDown" Header="Height">
@@ -52,19 +52,12 @@
                     <TextBlock x:Name="ServicesText" Text="Services" FontSize="32" Margin="0,0,0,15"/>
                     
                     <!--Location Services-->
-                    <TextBlock x:Name="LocationServicesText" Text="Location Services" FontSize="16" Margin="0,3,0,3"/>
-                    <ComboBox x:Name="LocationSericesDropDown" SelectionChanged="LocationSericesDropDown_SelectionChanged" Margin="0,3,0,3">
-                        <x:String>On</x:String>
-                        <x:String>Off</x:String>
-                    </ComboBox>
-                    
+                    <ToggleSwitch x:Name="GPSSwitch" Grid.Row="1" Header="Location Services" VerticalAlignment="Stretch" Tapped="GPSSwitch_Tapped"  />
+
                     <!--Live Tiles-->
-                    <TextBlock x:Name="LiveTilesText" Text="Live Tiles" FontSize="16" Margin="0,3,0,3"/>
-                    <ComboBox x:Name="LiveTilesDropDown" Margin="0,3,0,3">
-                        <x:String>On</x:String>
-                        <x:String>Off</x:String>
-                    </ComboBox>
-                    
+                    <ToggleSwitch x:Name="LiveTilesSwitch" Grid.Row="1" Header="Live Tiles" VerticalAlignment="Stretch"/>
+               
+     
                 </StackPanel>
             </PivotItem>
             

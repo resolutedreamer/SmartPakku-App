@@ -38,29 +38,22 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <StackPanel Margin="0,0,0,10">
-                    <TextBlock Text="Step 3: GPS Settings" />
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="Step 3: GPS Settings" Margin="0,0,0,10"/>
                     <TextBlock TextWrapping="Wrap">
                         You can chose whether you want to enable or disable GPS capability for this app. Enabling the GPS will
                         allow you to use the backpack locator function that saves the location of the backpack whenever
-                        the backpack is put down. <LineBreak/> <LineBreak/>Pressing continue will continue with GPS disabled.
-                        You can also change this option from the main menu later on as well.<LineBreak/>
+                        the backpack is put down. <LineBreak/> <LineBreak/>You can also change this option from the main menu
+                        later on as well.<LineBreak/>
                     </TextBlock>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Button HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0"
-                                Content="Enable GPS" Name="EnableGPS" Click="EnableGPS_Click"/>
-                        <Button HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1"
-                                Content="Disable GPS" Name="DisableGPS" Click="DisableGPS_Click" />
-                    </Grid>
-                    <TextBlock Name="Choice" Text="Please make your selection, GPS is disabled by default"/>
                 </StackPanel>
-
+                <ToggleSwitch x:Name="GPSSwitch"
+                              Grid.Row="1"
+                              Header="GPS Setting"
+                              VerticalAlignment="Stretch"
+                              Toggled="GPSSwitch_Toggled"
+                              />
                
             </Grid>
         </Grid>

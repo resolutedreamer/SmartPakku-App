@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.Storage;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -119,24 +120,17 @@ namespace SmartPakku
             }
             catch
             {
-
+                throw new Exception();
             }
         }
 
         // TODO Store DATA
 
-
-
-        private void DisableGPS_Click(object sender, RoutedEventArgs e)
+        private void GPSSwitch_Toggled(object sender, RoutedEventArgs e)
         {
-            Choice.Text = "GPS Disabled";
-
-        }
-
-        private void EnableGPS_Click(object sender, RoutedEventArgs e)
-        {
-            Choice.Text = "GPS Enabled";
-
+            ApplicationDataContainer permissions = ApplicationData.Current.LocalSettings;
+            var ToggleSwitchValue = GPSSwitch.IsOn;
+            permissions.Values["location"] = ToggleSwitchValue;
         }
     }
 }

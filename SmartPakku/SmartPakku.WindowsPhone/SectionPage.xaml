@@ -21,7 +21,7 @@
     </Page.Transitions>
 
     <Page.BottomAppBar>
-        <CommandBar>
+        <CommandBar ClosedDisplayMode="Minimal">
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="settings" Click="AppBarButton_Click" />
             </CommandBar.SecondaryCommands>

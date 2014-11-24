@@ -178,7 +178,7 @@ namespace SmartPakku
         {
             try
             {
-                Frame.Navigate(typeof(SettingsHub), "CLEARBACKSTACK");
+                Frame.Navigate(typeof(Settings), "CLEARBACKSTACK");
             }
             catch
             {

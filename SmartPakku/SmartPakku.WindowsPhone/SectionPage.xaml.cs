@@ -134,6 +134,10 @@ namespace SmartPakku
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
+            if (e.Parameter.ToString() == "CLEARBACKSTACK")
+            {
+                Frame.BackStack.Clear();
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

@@ -54,7 +54,6 @@
                               VerticalAlignment="Stretch"
                               Toggled="GPSSwitch_Toggled"
                               />
-               
             </Grid>
         </Grid>
     </Grid>

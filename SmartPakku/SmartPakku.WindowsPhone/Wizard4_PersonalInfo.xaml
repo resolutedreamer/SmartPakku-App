@@ -34,11 +34,39 @@
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
+            <StackPanel Grid.Row="1"> 
+                <!--Gender-->
+                <ComboBox x:Name="GenderDropDown" Header="Gender" SelectionChanged="GenderDropDown_SelectionChanged">
+                    <x:String>Male</x:String>
+                    <x:String>Female</x:String>
+                </ComboBox>
+                    
+                <!--Date Of Birth-->
+                <DatePicker x:Name="DOBPicker" Header="Date of Birth" DateChanged="DOBPicker_DateChanged"/>
+                     
+                <!--Units-->
+                <ComboBox x:Name="Units" Grid.Column="1" Header="Units" SelectionChanged="Units_SelectionChanged">
+                    <x:String>imperial</x:String>
+                    <x:String>metric</x:String>
+                </ComboBox>
+                    
+                <!--Height-->
+                <TextBox x:Name="HeightInput" Grid.Column="0" Header="Height" InputScope="Number" TextChanged="HeightInput_TextChanged"/>
+
+                <!--Weight-->
+                <TextBox x:Name="WeightInput" Grid.Column="0" Header="Weight" InputScope="Number" TextChanged="WeightInput_TextChanged"/>
+        
+            </StackPanel>
+            
+            
+            
+            <!--
             <Grid x:Name="RootGrid" Margin="12,20,12,12">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
+                
                 <StackPanel Margin="0,0,0,10">
                     <TextBlock Text="Step 4: Personal Information" />
                     <TextBlock TextWrapping="Wrap">
@@ -46,30 +74,9 @@
                         This information is used to calculate tolerances for your usage of the smartpack.
                     </TextBlock>
                 </StackPanel>
-
-                <StackPanel Grid.Row="1">
-                    
-                    <!--Gender-->
-                    <ComboBox x:Name="GenderDropDown" Header="Gender" SelectionChanged="GenderDropDown_SelectionChanged">
-                        <x:String>Male</x:String>
-                        <x:String>Female</x:String>
-                    </ComboBox>
-                    
-                    <!--Date Of Birth-->
-                    <DatePicker x:Name="DOBPicker" Header="Date of Birth"/>
-                    
-                    <!--Height-->
-                    <ComboBox x:Name="HeightDropDown" Header="Height">
-                        
-                    </ComboBox>
-                    
-                    <!--Weight-->
-                    <ComboBox x:Name="WeightDropDown" Header="Weight">
-                        
-                    </ComboBox>
-                    
-                </StackPanel>
+    
             </Grid>
+            -->
         </Grid>
     </Grid>
 </Page>

@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.Storage;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -16,9 +17,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-
-using Windows.Storage;
-
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
 namespace SmartPakku
@@ -26,9 +24,8 @@ namespace SmartPakku
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Settings : Page
+    public sealed partial class Wizard4_PersonalInfo : Page
     {
-
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
@@ -36,8 +33,8 @@ namespace SmartPakku
         ApplicationDataContainer permissions = ApplicationData.Current.LocalSettings;
 
 
-        #region THEIRCODE
-        public Settings()
+
+        public Wizard4_PersonalInfo()
         {
             this.InitializeComponent();
 
@@ -45,8 +42,6 @@ namespace SmartPakku
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
         }
-
-        
 
         /// <summary>
         /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
@@ -110,71 +105,6 @@ namespace SmartPakku
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
-
-
-
-            // MY PROFILE
-            if (myProfile.Values.ContainsKey("gender"))
-            {
-                string test = myProfile.Values["gender"].ToString();
-                GenderDropDown.SelectedItem = test;
-            }
-
-            if (myProfile.Values.ContainsKey("dob_day"))
-            {
-                string day = myProfile.Values["dob_day"].ToString();
-                string month = myProfile.Values["dob_month"].ToString();
-                string year = myProfile.Values["dob_year"].ToString();
-
-                int year_num = Convert.ToInt32(year);
-                int month_num = Convert.ToInt32(month);
-                int day_num = Convert.ToInt32(day);
-
-                DateTime TheDate = new DateTime(year_num, month_num,day_num);
-                DateTimeOffset saveTheDate = new DateTimeOffset(TheDate);
-                DOBPicker.Date = saveTheDate;
-            }
-
-            if (myProfile.Values.ContainsKey("units"))
-            {
-                int selection_index = (int)myProfile.Values["units"];
-                Units.SelectedIndex = selection_index;
-                if (selection_index == 0)
-                {
-                    HeightInput.Header = "Height (ft)";
-                    WeightInput.Header = "Weight (lbs)";
-                }
-                else if (selection_index == 1)
-                {
-                    HeightInput.Header = "Height (cm)";
-                    WeightInput.Header = "Weight (kgs)";
-                }
-            }
-
-            if (myProfile.Values.ContainsKey("weight"))
-            {
-                WeightInput.Text = myProfile.Values["weight"].ToString();
-            }
-
-            if (myProfile.Values.ContainsKey("height"))
-            {
-                string test = myProfile.Values["height"].ToString();
-                HeightInput.Text = myProfile.Values["height"].ToString();
-            }
-
-
-
-            // PERMISSIONS
-            if (permissions.Values.ContainsKey("location"))
-            {
-                GPSSwitch.IsOn = (bool)permissions.Values["location"];
-            }
-
-            if (permissions.Values.ContainsKey("live-tiles"))
-            {
-                LiveTilesSwitch.IsOn = (bool)permissions.Values["live-tiles"];
-            }
-
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -183,12 +113,6 @@ namespace SmartPakku
         }
 
         #endregion
-
-
-        #endregion
-
-
-        #region MYCODE
 
         // MY PROFILE
 
@@ -303,52 +227,17 @@ namespace SmartPakku
         }
 
 
-        // PERMISSIONS
-
-        private void GPSSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            var ToggleSwitchValue = GPSSwitch.IsOn;
-            permissions.Values["location"] = ToggleSwitchValue;
-        }
-
-        private void LiveTilesSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            var ToggleSwitchValue = LiveTilesSwitch.IsOn;
-            permissions.Values["live-tiles"] = ToggleSwitchValue;
-        }
-
-        // WIZARD ACCESS
-        private void SetupWizardButton_Click(object sender, RoutedEventArgs e)
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Frame.Navigate(typeof(Wizard1_PairDevice));
+                Frame.Navigate(typeof(Wizard5_Calibration), "CLEARBACKSTACK");
             }
             catch
             {
                 throw new Exception();
             }
         }
-
-        private void CalibrationWizardButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Frame.Navigate(typeof(Calibration1));
-            }
-            catch
-            {
-                throw new Exception();
-            }
-        }
-
-
-        // ABOUT
-
-        // CREDITS
-
-
-        #endregion
 
         
     }

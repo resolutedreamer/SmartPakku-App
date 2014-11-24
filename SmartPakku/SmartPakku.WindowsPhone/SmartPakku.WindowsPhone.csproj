@@ -116,8 +116,8 @@
     <Compile Include="Wizard3_GPSDevice.xaml.cs">
       <DependentUpon>Wizard3_GPSDevice.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Wizard4_PersonalInfo..xaml.cs">
-      <DependentUpon>Wizard4_PersonalInfo..xaml</DependentUpon>
+    <Compile Include="Wizard4_PersonalInfo.xaml.cs">
+      <DependentUpon>Wizard4_PersonalInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Wizard5_Calibration.xaml.cs">
       <DependentUpon>Wizard5_Calibration.xaml</DependentUpon>
@@ -219,7 +219,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Wizard4_PersonalInfo..xaml">
+    <Page Include="Wizard4_PersonalInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

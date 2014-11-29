@@ -29,7 +29,12 @@
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-
+            <StackPanel>
+                <TextBlock Text="Remining Battery:" FontSize="36" Margin="0,15,0,15"/>
+                <TextBlock Text="100%" FontSize="100" Margin="0,15,0,15"/>
+                <TextBlock Text="Recommendation: Charge now!" FontSize="18" Margin="0,15,0,15"/>
+            </StackPanel>
+            
         </Grid>
     </Grid>
 </Page>

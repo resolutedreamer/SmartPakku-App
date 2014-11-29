@@ -21,11 +21,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
-
-
-
-
-
 namespace SmartPakku
 {
     public sealed partial class DevicePage : Page

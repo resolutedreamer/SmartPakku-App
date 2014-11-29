@@ -29,7 +29,26 @@
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-
+            <StackPanel>
+                <TextBlock Text="Backpack Status:" FontSize="36" Margin="0,15,0,15"/>
+                
+                <Grid x:Name="TestingPanel">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"
+                            Content="Being Worn" Click="Button_Click"/>
+                    <Button Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                            Content="Resting" Click="Button_Click_1"/>
+                </Grid>
+                
+                <TextBlock x:Name="Status" Text="" FontSize="48" Margin="0,15,0,15"/>
+                <Image x:Name="StatusImage" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Source=""/>
+                <TextBlock x:Name="Location" Text="" FontSize="36" Margin="0,15,0,15"/>
+                <TextBlock x:Name="Recommendation" Text="" FontSize="18" Margin="0,15,0,15"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>

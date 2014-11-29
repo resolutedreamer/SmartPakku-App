@@ -107,5 +107,17 @@ namespace SmartPakku
         }
 
         #endregion
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Status.Text = "Being Worn!";
+            Location.Text = "Dynamically Updating!";
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            Status.Text = "At Rest!";
+            Location.Text = "Saved!";
+        }
     }
 }

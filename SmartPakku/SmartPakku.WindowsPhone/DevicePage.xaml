@@ -4,7 +4,7 @@
     xmlns:local="using:SmartPakku"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Class="SmartPakku.DevicePage"
+    x:Class="SmartPakku.DevicePage" x:Name="page"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     >
@@ -14,7 +14,10 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-
+    <Page.Resources>
+        <local:AlertLevelRadioButtonValueConverter x:Key="AlertLevelRadioButtonValueConverter"/>
+    </Page.Resources>
+    
     <Grid Margin="10,0,10,0">
                <Grid.ChildrenTransitions>
             <TransitionCollection>
@@ -53,12 +56,15 @@
                 <!--Remember, I removed the setting of the event handlesrs for these buttons-->
                 <RadioButton Content="No alert"
                              IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
+                             IsChecked="{Binding AlertLevel, ConverterParameter=None, Converter={StaticResource AlertLevelRadioButtonValueConverter}, Mode=TwoWay}"
                              />
                 <RadioButton Content="Mild alert"
                              IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
+                             IsChecked="{Binding AlertLevel, ConverterParameter=Mild, Converter={StaticResource AlertLevelRadioButtonValueConverter}, Mode=TwoWay}"
                              />
                 <RadioButton Content="High alert"
                              IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
+                             IsChecked="{Binding AlertLevel, ConverterParameter=High, Converter={StaticResource AlertLevelRadioButtonValueConverter}, Mode=TwoWay}"
                              />
             </StackPanel>
         </Grid>

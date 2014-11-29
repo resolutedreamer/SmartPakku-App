@@ -1,4 +1,9 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+using Windows.Devices.Bluetooth;
+
 using System.Runtime.InteropServices.WindowsRuntime; // extension method byte[].AsBuffer()
 
 //  Make it obvious which namespace provided each referenced type:
@@ -16,9 +21,11 @@ using GattServiceUuids = Windows.Devices.Bluetooth.GenericAttributeProfile.GattS
 using GattWriteOption = Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteOption;
 using Task = System.Threading.Tasks.Task;
 
-namespace KeepTheKeysCommon
+
+
+namespace SmartPakkuCommon
 {
-    public class KeyFob
+    public sealed class SmartPack
     {
         // static data
         private static ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
@@ -30,6 +37,12 @@ namespace KeepTheKeysCommon
         private bool alertOnPhone;                  // true iff we want a popup when this device disconnects
         private bool alertOnDevice;                 // true iff we want device to alert upon disconnection
         private AlertLevel alertLevel;              // alert level that device will set upon disconnection
+
+
+
+
+
+
 
         // trivial properties
         public BackgroundTaskRegistration TaskRegistration { get; set; }
@@ -72,8 +85,7 @@ namespace KeepTheKeysCommon
             }
         }
 
-        // Constructor
-        public KeyFob(BluetoothLEDevice device)
+        public SmartPack(BluetoothLEDevice device)
         {
             this.device = device;
             addressString = device.BluetoothAddress.ToString("x012");
@@ -101,6 +113,8 @@ namespace KeepTheKeysCommon
         //    Save new values to local settings
         //    Set link-loss alert level on the device if appropriate
         //    Register or unregister background task if necessary
+        
+
         private async void SaveSettings()
         {
             // Save this device's settings into nonvolatile storage
@@ -119,7 +133,7 @@ namespace KeepTheKeysCommon
                 trigger.MaintainConnection = true;
                 BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
                 builder.Name = TaskName;
-                builder.TaskEntryPoint = "KeepTheKeysBackground.KeyFobTask";
+                builder.TaskEntryPoint = "SmartPakkuBackground.ConnectivityTask";
                 builder.SetTrigger(trigger);
                 TaskRegistration = builder.Register();
             }
@@ -130,11 +144,17 @@ namespace KeepTheKeysCommon
                 TaskRegistration.Unregister(false);
                 TaskRegistration = null;
             }
+            
         }
+
+
+        
 
         // Set the alert-level characteristic on the remote device
         public async Task SetAlertLevelCharacteristic()
         {
+
+            
             // try-catch block protects us from the race where the device disconnects
             // just after we've determined that it is connected.
             try
@@ -151,12 +171,15 @@ namespace KeepTheKeysCommon
             {
                 // ignore exception
             }
+
+            
         }
+        
 
         // Provide a human-readable name for this object.
         public override string ToString()
         {
             return device.Name;
-        }
+        }        
     }
 }

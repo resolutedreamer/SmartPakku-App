@@ -21,6 +21,7 @@ using XmlDocument = Windows.Data.Xml.Dom.XmlDocument;
 ///////////////////////////////////////////////////////////using KeyFob = KeepTheKeysCommon.KeyFob;
 
 
+
 namespace SmartPakkuBackground
 {
     public sealed class BatteryTask

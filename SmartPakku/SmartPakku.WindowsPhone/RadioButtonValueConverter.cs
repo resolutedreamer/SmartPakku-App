@@ -1,9 +1,9 @@
 using System;
 
-using AlertLevel = KeepTheKeysCommon.AlertLevel;
+using AlertLevel = SmartPakkuCommon.AlertLevel;
 using DependencyProperty = Windows.UI.Xaml.DependencyProperty;
 
-namespace KeepTheKeys
+namespace SmartPakku
 {
     // This class converts between a value of an enumerated type and a boolean suitable for a binding
     // from the IsChecked property of a RadioButton to an enum-typed property of an object.

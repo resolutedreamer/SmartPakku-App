@@ -81,9 +81,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Calibration1.xaml.cs">
-      <DependentUpon>Calibration1.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DevicePage.xaml.cs">
       <DependentUpon>DevicePage.xaml</DependentUpon>
     </Compile>
@@ -175,10 +172,6 @@
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Calibration1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="DevicePage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -41,16 +41,39 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <StackPanel Margin="0,0,0,10">
-                    <TextBlock Text="Step 5: Calibration" Margin="0,0,0,10" />
+                    <TextBlock Text="Step 5: Calibration" />
                     <TextBlock TextWrapping="Wrap">
-                        The Primary Setup Wizard is now complete. You can either choose
-                        to calibrate the SmartPack now or press the finish button to start.
-                        using the other functions of your smartpack. You can always access
-                        the setup wizard and calibration wizards from the settings panel.
+                        On this page, you will calibrate the backpack's resting state. Set the backpack down in
+                        a standard upright position, and press the first run button. Then repeat for the laying
+                        back, sideways left, sideways right, and upside-down positions.
                     </TextBlock>
-                    <Button Content="Begin Calibration" Click="Button_Click"/>
+                    <Button Content="Upright"/>
+                    <Button Content="Laying Back"/>
+                    <Button Content="Sideways, Left"/>
+                    <Button Content="Sideways, Right"/>
+                    <Button Content="Upside-Down"/>
+                    <!--<Button x:Name="RunButton" Grid.Row="1" Content="Run" Margin="0,0,10,0" Click="RunButton_Click"/> -->
                 </StackPanel>
 
+                <!--
+                <ScrollViewer Grid.Row="1" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
+                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <TextBlock Name="statusTextBlock" Style="{StaticResource BasicTextStyle}" TextWrapping="Wrap"/>
+                        <ListBox x:Name="DevicesListBox" Visibility="Collapsed" SelectionChanged="DevicesListBox_SelectionChanged">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </ScrollViewer>
+                -->
+
+                <!-- Status Block for providing messages to the user.  Use the
+                 NotifyUser() method to populate the message -->
+                <Border x:Name="ErrorBorder" Background="Red" Grid.Row="2"/>
+                <TextBlock x:Name="StatusBlock" Grid.Row="2" Margin="12, 10, 12, 10" Visibility="Collapsed"/>
             </Grid>
         </Grid>
     </Grid>

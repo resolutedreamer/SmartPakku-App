@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
@@ -97,21 +96,9 @@ namespace SmartPakku
         /// </summary>
         /// <param name="e">Provides data for navigation methods and event
         /// handlers that cannot cancel the navigation request.</param>
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            //this.navigationHelper.OnNavigatedTo(e);
-
-            // Get this from the Dev Center before distributing
-            // your app.
-            locatorMap.MapServiceToken = "4jnXlYu5f1DDcJY40vb-1g";
-
-            var locator = new Geolocator();
-            locator.DesiredAccuracyInMeters = 50;
-
-            // MUST ENABLE THE LOCATION CAPABILITY
-            var position = await locator.GetGeopositionAsync();
-
-            await locatorMap.TrySetViewAsync(position.Coordinate.Point, 18D);
+            this.navigationHelper.OnNavigatedTo(e);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -120,31 +107,5 @@ namespace SmartPakku
         }
 
         #endregion
-        private void getPositionButton_Click(object sender, RoutedEventArgs e)
-        {
-            positionTextBlock.Text = String.Format("{0}, {1}",
-                locatorMap.Center.Position.Latitude,
-                locatorMap.Center.Position.Longitude);
-        }
-
-        private async void setPositionButton_Click(object sender, RoutedEventArgs e)
-        {
-            var myPosition = new Windows.Devices.Geolocation.BasicGeoposition();
-            myPosition.Latitude = 41.7446;
-            myPosition.Longitude = -087.7915;
-
-            var myPoint = new Windows.Devices.Geolocation.Geopoint(myPosition);
-            if (await locatorMap.TrySetViewAsync(myPoint, 10D))
-            {
-                // Haven't really thought that through!
-            }
-
-        }
-
-        private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
-        {
-            if (locatorMap != null)
-                locatorMap.ZoomLevel = e.NewValue;
-        }
     }
 }

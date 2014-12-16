@@ -116,7 +116,7 @@ namespace SmartPakku
 
 
 #if WINDOWS_PHONE_APP
-                if (!rootFrame.Navigate(typeof(SectionPage), "tools"))
+                if (!rootFrame.Navigate(typeof(MainPage)))
                 {
                     throw new Exception("Failed to create initial page");
                 }

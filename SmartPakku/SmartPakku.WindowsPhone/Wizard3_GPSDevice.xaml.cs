@@ -115,7 +115,7 @@ namespace SmartPakku
             // if it was not set yet, set it to disabled here and continue774
             try
             {
-                Frame.Navigate(typeof(SectionPage), "tools");
+                Frame.Navigate(typeof(MainPage));
             }
             catch
             {

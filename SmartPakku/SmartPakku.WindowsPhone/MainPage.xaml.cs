@@ -1,14 +1,14 @@
 ﻿using SmartPakku.Common;
-using SmartPakku.Data;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.Storage;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
 namespace SmartPakku
 {
@@ -27,118 +27,229 @@ namespace SmartPakku
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private NavigationHelper navigationHelper;
-        private ObservableDictionary defaultViewModel = new ObservableDictionary();
-
         public MainPage()
         {
             this.InitializeComponent();
-
-            this.navigationHelper = new NavigationHelper(this);
-            this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
-            this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
         }
 
         /// <summary>
-        /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
+        /// Invoked when this page is about to be displayed in a Frame.
         /// </summary>
-        public NavigationHelper NavigationHelper
+        /// <param name="e">Event data that describes how this page was reached.
+        /// This parameter is typically used to configure the page.</param>
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            get { return this.navigationHelper; }
+            //this.navigationHelper.OnNavigatedTo(e);
+
+            // Get this from the Dev Center before distributing
+            // your app.
+            locatorMap.MapServiceToken = "4jnXlYu5f1DDcJY40vb-1g";
+
+            var locator = new Geolocator();
+            locator.DesiredAccuracyInMeters = 50;
+
+            // MUST ENABLE THE LOCATION CAPABILITY
+            var position = await locator.GetGeopositionAsync();
+
+            await locatorMap.TrySetViewAsync(position.Coordinate.Point, 18D);
         }
 
-        /// <summary>
-        /// Gets the view model for this <see cref="Page"/>.
-        /// This can be changed to a strongly typed view model.
-        /// </summary>
-        public ObservableDictionary DefaultViewModel
+
+
+
+        // pack assistant
+
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            get { return this.defaultViewModel; }
+            Status.Text = "Being Worn!";
+            Location.Text = "Dynamically Updating!";
+            Recommendation.Text = "Do Nothing!";
         }
 
-        /// <summary>
-        /// Populates the page with content passed during navigation.  Any saved state is also
-        /// provided when recreating a page from a prior session.
-        /// </summary>
-        /// <param name="sender">
-        /// The source of the event; typically <see cref="NavigationHelper"/>
-        /// </param>
-        /// <param name="e">Event data that provides both the navigation parameter passed to
-        /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
-        /// a dictionary of state preserved by this page during an earlier
-        /// session.  The state will be null the first time a page is visited.</param>
-        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        // for now we use a button to get the informatiom from the arduino via bluetooth le
+        // not entirely sure how to send the data yet. may send the data over UART
+        // not sure how to define the data yet. if all processing is done on the arudino
+        // then we just send the states back here.
+
+
+        // example: custom bluetooth LE characteristics
+        // 4 bytes
+
+        // first byte: not sure actually
+        // bit 0: connected [1] or not [0]
+        // bit 1: backpack is worn [1] or stationary [0]
+        // bit 2:
+        // bit 3: 
+        // bit 4:
+        // bit 5:
+        // bit 6:
+        // bit 7:
+
+
+        // second byte: battery level
+        // bit 0: need to charge [1] or not [0]
+        // bit 1: 
+        // bit 2: 1-7 will be the digits for the charge percentage
+        // bit 3: 2^7 = 128, maximum charge percentage is 100%
+        // bit 4:
+        // bit 5:
+        // bit 6:
+        // bit 7:
+
+
+        // third byte: worn backpack
+        // bit 0: left shoulder - worn[1] or not [0]
+        // bit 1: right shoulder - worn[1] or not [0]
+        // bit 2: left shoulder - worn[1] or not [0]
+        // bit 3: right shoulder - worn[1] or not [0]
+        // bit 4: left back - worn[1] or not [0]
+        // bit 5: right back - worn[1] or not [0]
+        // bit 6:
+        // bit 7:
+
+
+        // fourth byte: stationary backpack
+        // bit 0: normal
+        // bit 1: face down
+        // bit 2: back down
+        // bit 3: left side
+        // bit 4: right side
+        // bit 5:
+        // bit 6:
+        // bit 7:
+
+
+        // fifth byte:
+        // bit 0: connected [1] or not [0]
+        // bit 1: backpack is worn [1] or stationary [0]
+        // bit 2:
+        // bit 3: 
+        // bit 4:
+        // bit 5:
+        // bit 6:
+        // bit 7:
+
+
+        // sixth byte:
+        // bit 0: connected [1] or not [0]
+        // bit 1: backpack is worn [1] or stationary [0]
+        // bit 2:
+        // bit 3: 
+        // bit 4:
+        // bit 5:
+        // bit 6:
+        // bit 7:
+
+
+        // seventh byte:
+        // bit 0: 
+        // bit 1: 
+        // bit 2:
+        // bit 3: 
+        // bit 4:
+        // bit 5:
+        // bit 6:
+        // bit 7:
+
+
+        // eighth byte:
+        // bit 0: 
+        // bit 1: 
+        // bit 2:
+        // bit 3: 
+        // bit 4:
+        // bit 5:
+        // bit 6:
+        // bit 7:
+
+
+        private void getPackStatus_Click(object sender, RoutedEventArgs e)
         {
+
         }
 
-        /// <summary>
-        /// Preserves state associated with this page in case the application is suspended or the
-        /// page is discarded from the navigation cache.  Values must conform to the serialization
-        /// requirements of <see cref="SuspensionManager.SessionState"/>.
-        /// </summary>
-        /// <param name="sender">The source of the event; typically <see cref="NavigationHelper"/></param>
-        /// <param name="e">Event data that provides an empty dictionary to be populated with
-        /// serializable state.</param>
-        private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
+
+
+        // location
+
+        ApplicationDataContainer saved_locations = ApplicationData.Current.LocalSettings;
+
+
+        // This function will store the position at the center of the map
+        // This function can be used for saving the location of the backpack
+        // when called if the map happens to be open. What i actualy want to do
+        // is get the real current position and save that!
+        private void store_current_location(object sender, RoutedEventArgs e)
         {
+            //ApplicationDataContainer locations = ApplicationData.Current.LocalSettings;
+
+            var lat = locatorMap.Center.Position.Latitude;
+            var lon = locatorMap.Center.Position.Longitude;
+
+            saved_locations.Values["backpack-location-latitude"] = lat.ToString();
+            saved_locations.Values["backpack-location-longitude"] = lon.ToString();
         }
 
-        #region NavigationHelper registration
 
-        /// <summary>
-        /// The methods provided in this section are simply used to allow
-        /// NavigationHelper to respond to the page's navigation methods.
-        /// <para>
-        /// Page specific logic should be placed in event handlers for the  
-        /// <see cref="NavigationHelper.LoadState"/>
-        /// and <see cref="NavigationHelper.SaveState"/>.
-        /// The navigation parameter is available in the LoadState method 
-        /// in addition to page state preserved during an earlier session.
-        /// </para>
-        /// </summary>
-        /// <param name="e">Provides data for navigation methods and event
-        /// handlers that cannot cancel the navigation request.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        private async void phoneButton_Click(object sender, RoutedEventArgs e)
         {
-            this.navigationHelper.OnNavigatedTo(e);
-        }
+            var myPosition = new Windows.Devices.Geolocation.BasicGeoposition();
+            myPosition.Latitude = 33.845;
+            myPosition.Longitude = -118.38;
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            this.navigationHelper.OnNavigatedFrom(e);
-        }
-
-        #endregion
-
-        private void ItemView_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
-            // BACKPACK TOOLS
-            if (itemId == "pack-assistant")
+            var myPoint = new Windows.Devices.Geolocation.Geopoint(myPosition);
+            if (await locatorMap.TrySetViewAsync(myPoint, 10D))
             {
-                Frame.Navigate(typeof(Tools_PackAssistant), itemId);
+                // Haven't really thought that through!
             }
-            else if (itemId == "locator")
+        }
+        private void saveButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            var lat = locatorMap.Center.Position.Latitude;
+            var lon = locatorMap.Center.Position.Longitude;
+            positionTextBlock.Text = String.Format("{0}, {1}",
+                locatorMap.Center.Position.Latitude,
+                locatorMap.Center.Position.Longitude);
+
+            // Let's additionally store the location from this button as wel
+            store_current_location(sender, e);
+        }
+
+        private async void backpackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (saved_locations.Values.ContainsKey("backpack-location-latitude") && saved_locations.Values.ContainsKey("backpack-location-longitude"))
             {
-                Frame.Navigate(typeof(Tools_Locator), itemId);
+                double lat = Convert.ToDouble(saved_locations.Values["backpack-location-latitude"].ToString());
+                double lon = Convert.ToDouble(saved_locations.Values["backpack-location-longitude"].ToString());
+
+                BasicGeoposition myPosition = new Windows.Devices.Geolocation.BasicGeoposition();
+                myPosition.Latitude = lat;
+                myPosition.Longitude = lon;
+
+                Geopoint myPoint = new Windows.Devices.Geolocation.Geopoint(myPosition);
+                await locatorMap.TrySetViewAsync(myPoint, 10D);
             }
-            else if (itemId == "battery-life")
-            {
-                Frame.Navigate(typeof(Tools_BatteryLife), itemId);
-            }
-            
-            // SHOULD NEVER GO HERE
             else
             {
-                throw new Exception();
+                positionTextBlock.Text = "No Location Saved!";
             }
+
         }
+
+        // battery life
+
+        // TODO Print the number given from the LiPo Fuel Gauge to the Arduino to Bluetooth LE
+
+        // DO NOT MAKE IT ASYNC YET
+        // FIRST MAKE A BUTTON TO HANDLE THE REQUEST AND DISPALY RESULT IN A TEXT BOX
+
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Frame.Navigate(typeof(SettingsHub), "CLEARBACKSTACK");
+                Frame.Navigate(typeof(Settings));
             }
             catch
             {
@@ -146,9 +257,6 @@ namespace SmartPakku
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(SectionPage), e);
-        }
+
     }
 }

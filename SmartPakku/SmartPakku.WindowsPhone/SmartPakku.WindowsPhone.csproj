@@ -116,9 +116,6 @@
     <Compile Include="Wizard4_PersonalInfo.xaml.cs">
       <DependentUpon>Wizard4_PersonalInfo.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Wizard5_Calibration.xaml.cs">
-      <DependentUpon>Wizard5_Calibration.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -213,10 +210,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Wizard4_PersonalInfo.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Wizard5_Calibration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

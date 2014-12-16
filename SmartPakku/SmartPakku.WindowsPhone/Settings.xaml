@@ -78,14 +78,8 @@
                 Header="wizards"
                 >
                 <StackPanel Grid.Row="1">
-                    
-                    <!--Location Services-->
                     <TextBlock x:Name="SetupWizardText" Text="Setup Wizard" FontSize="16" Margin="0,3,0,3"/>
                     <Button x:Name="SetupWizardButton" Content="Start" Click="SetupWizardButton_Click"/>
-                    
-                    <!--Live Tiles-->
-                    <TextBlock x:Name="CalibrationWizardText" Text="Calibration Wizard" FontSize="16" Margin="0,3,0,3"/>
-                    <Button x:Name="CalibrationWizardButton" Content="Start" Click="CalibrationWizardButton_Click"/>                    
                 </StackPanel>
             </PivotItem>
             

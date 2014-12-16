@@ -231,7 +231,7 @@ namespace SmartPakku
         {
             try
             {
-                Frame.Navigate(typeof(Wizard5_Calibration), "CLEARBACKSTACK");
+                Frame.Navigate(typeof(DevicePage), "CLEARBACKSTACK");
             }
             catch
             {

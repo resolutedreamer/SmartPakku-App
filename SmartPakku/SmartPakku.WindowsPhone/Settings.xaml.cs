@@ -330,18 +330,6 @@ namespace SmartPakku
             }
         }
 
-        private void CalibrationWizardButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Frame.Navigate(typeof(Calibration1));
-            }
-            catch
-            {
-                throw new Exception();
-            }
-        }
-
 
         // ABOUT
 

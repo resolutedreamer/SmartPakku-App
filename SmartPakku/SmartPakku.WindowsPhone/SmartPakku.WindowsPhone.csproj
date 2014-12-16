@@ -88,22 +88,10 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SectionPage.xaml.cs">
-      <DependentUpon>SectionPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
     <Compile Include="SmartPack.cs" />
-    <Compile Include="Tools_BatteryLife.xaml.cs">
-      <DependentUpon>Tools_BatteryLife.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Tools_Locator.xaml.cs">
-      <DependentUpon>Tools_Locator.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Tools_PackAssistant.xaml.cs">
-      <DependentUpon>Tools_PackAssistant.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Wizard1_PairDevice.xaml.cs">
       <DependentUpon>Wizard1_PairDevice.xaml</DependentUpon>
     </Compile>
@@ -174,23 +162,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SectionPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Settings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Tools_BatteryLife.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Tools_Locator.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Tools_PackAssistant.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

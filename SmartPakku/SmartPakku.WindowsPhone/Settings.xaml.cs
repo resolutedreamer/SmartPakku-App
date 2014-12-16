@@ -32,7 +32,6 @@ namespace SmartPakku
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        ApplicationDataContainer myProfile = ApplicationData.Current.LocalSettings;
         ApplicationDataContainer permissions = ApplicationData.Current.LocalSettings;
 
 
@@ -111,59 +110,6 @@ namespace SmartPakku
         {
             this.navigationHelper.OnNavigatedTo(e);
 
-
-
-            // MY PROFILE
-            if (myProfile.Values.ContainsKey("gender"))
-            {
-                string test = myProfile.Values["gender"].ToString();
-                GenderDropDown.SelectedItem = test;
-            }
-
-            if (myProfile.Values.ContainsKey("dob_day"))
-            {
-                string day = myProfile.Values["dob_day"].ToString();
-                string month = myProfile.Values["dob_month"].ToString();
-                string year = myProfile.Values["dob_year"].ToString();
-
-                int year_num = Convert.ToInt32(year);
-                int month_num = Convert.ToInt32(month);
-                int day_num = Convert.ToInt32(day);
-
-                DateTime TheDate = new DateTime(year_num, month_num,day_num);
-                DateTimeOffset saveTheDate = new DateTimeOffset(TheDate);
-                DOBPicker.Date = saveTheDate;
-            }
-
-            if (myProfile.Values.ContainsKey("units"))
-            {
-                int selection_index = (int)myProfile.Values["units"];
-                Units.SelectedIndex = selection_index;
-                if (selection_index == 0)
-                {
-                    HeightInput.Header = "Height (ft)";
-                    WeightInput.Header = "Weight (lbs)";
-                }
-                else if (selection_index == 1)
-                {
-                    HeightInput.Header = "Height (cm)";
-                    WeightInput.Header = "Weight (kgs)";
-                }
-            }
-
-            if (myProfile.Values.ContainsKey("weight"))
-            {
-                WeightInput.Text = myProfile.Values["weight"].ToString();
-            }
-
-            if (myProfile.Values.ContainsKey("height"))
-            {
-                string test = myProfile.Values["height"].ToString();
-                HeightInput.Text = myProfile.Values["height"].ToString();
-            }
-
-
-
             // PERMISSIONS
             if (permissions.Values.ContainsKey("location"))
             {
@@ -190,118 +136,7 @@ namespace SmartPakku
 
         #region MYCODE
 
-        // MY PROFILE
-
-        private void GenderDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string selection = GenderDropDown.SelectedItem.ToString();
-            myProfile.Values["gender"] = selection;
-        }
-
-        private void DOBPicker_DateChanged(object sender, DatePickerValueChangedEventArgs e)
-        {
-            string day = DOBPicker.Date.Day.ToString();
-            string month = DOBPicker.Date.Month.ToString();
-            string year = DOBPicker.Date.Year.ToString();
-            myProfile.Values["dob_day"] = day;
-            myProfile.Values["dob_month"] = month;
-            myProfile.Values["dob_year"] = year;
-        }
-
-        private void Units_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            int previous_units = -1;
-            int current_units = Units.SelectedIndex;
-
-
-            // If the user has picked units before, we want to know this
-            if (myProfile.Values.ContainsKey("units"))
-            {
-                previous_units = (int)myProfile.Values["units"];
-            }
-            // The user has picked units for the first time, save units
-            // and allow user to input. No conversion necessary.
-            else
-            {
-                myProfile.Values["units"] = current_units;
-
-                if (current_units == 0)
-                {
-                    HeightInput.Header = "Height (ft)";
-                    WeightInput.Header = "Weight (lbs)";
-                }
-                else if (current_units == 1)
-                {
-                    HeightInput.Header = "Height (cm)";
-                    WeightInput.Header = "Weight (kgs)";
-                }
-            }
-
-            // If the new selection is the same as the old selection, end
-            if (current_units == previous_units)
-            {
-                return;
-            }
-
-            // User is switching from metric to imperial, convert values accordingly
-            else if (current_units == 0 && previous_units == 1)
-            {
-                myProfile.Values["units"] = 0;
-                HeightInput.Header = "Height (ft)";
-                WeightInput.Header = "Weight (lbs)";
-
-                double weight_in_metric = Convert.ToDouble(WeightInput.Text);
-                double height_in_metric = Convert.ToDouble(HeightInput.Text);
-
-                double weight_in_imperial = weight_in_metric * 2.205;
-                double height_in_imperial = height_in_metric * 0.03281;
-
-                double display_this_weight = Math.Round(weight_in_imperial, MidpointRounding.AwayFromZero);
-                double display_this_height = Math.Round(height_in_imperial, 2, MidpointRounding.AwayFromZero);
-
-                WeightInput.Text = display_this_weight.ToString();
-                HeightInput.Text = display_this_height.ToString();
-
-                myProfile.Values["weight"] = WeightInput.Text;
-                myProfile.Values["height"] = HeightInput.Text;
-            }
-
-            // User is switching from imperial to metric, convert values accordingly.
-            else if (current_units == 1 && previous_units == 0)
-            {
-                myProfile.Values["units"] = 1;
-                HeightInput.Header = "Height (cm)";
-                WeightInput.Header = "Weight (kgs)";
-
-                double weight_in_imperial = Convert.ToDouble(WeightInput.Text);
-                double height_in_imperial = Convert.ToDouble(HeightInput.Text);
-
-                double weight_in_metric = (int)(weight_in_imperial * 0.4536);
-                double height_in_metric = height_in_imperial * 30.48;
-
-                double display_this_weight = Math.Round(weight_in_metric, MidpointRounding.AwayFromZero);
-                double display_this_height = Math.Round(height_in_metric, 2, MidpointRounding.AwayFromZero);
-
-                WeightInput.Text = display_this_weight.ToString();
-                HeightInput.Text = display_this_height.ToString();
-
-                myProfile.Values["weight"] = WeightInput.Text;
-                myProfile.Values["height"] = HeightInput.Text;
-            }
-
-
-        }
-
-        private void WeightInput_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            myProfile.Values["weight"] = WeightInput.Text;
-        }
-
-        private void HeightInput_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            myProfile.Values["height"] = HeightInput.Text;
-        }
-
+        
 
         // PERMISSIONS
 

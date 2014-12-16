@@ -113,9 +113,6 @@
     <Compile Include="Wizard3_GPSDevice.xaml.cs">
       <DependentUpon>Wizard3_GPSDevice.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Wizard4_PersonalInfo.xaml.cs">
-      <DependentUpon>Wizard4_PersonalInfo.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -206,10 +203,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Wizard3_GPSDevice.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Wizard4_PersonalInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

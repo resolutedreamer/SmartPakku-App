@@ -10,38 +10,6 @@
 
     <Grid x:Name="LayoutRoot">
         <Pivot x:Uid="Pivot" Title="smartpakku" x:Name="pivot" CommonNavigationTransitionInfo.IsStaggerElement="True">
-            <!--Profile-->
-            <PivotItem
-                x:Uid="Profile"
-                Margin="19,14.5,0,0"
-                Header="profile"
-                CommonNavigationTransitionInfo.IsStaggerElement="True">
-                
-                <StackPanel Grid.Row="1"> 
-                <!--Gender-->
-                <ComboBox x:Name="GenderDropDown" Header="Gender" SelectionChanged="GenderDropDown_SelectionChanged">
-                    <x:String>Male</x:String>
-                    <x:String>Female</x:String>
-                </ComboBox>
-                    
-                <!--Date Of Birth-->
-                <DatePicker x:Name="DOBPicker" Header="Date of Birth" DateChanged="DOBPicker_DateChanged"/>
-                     
-                <!--Units-->
-                <ComboBox x:Name="Units" Grid.Column="1" Header="Units" SelectionChanged="Units_SelectionChanged">
-                    <x:String>imperial</x:String>
-                    <x:String>metric</x:String>
-                </ComboBox>
-                    
-                <!--Height-->
-                <TextBox x:Name="HeightInput" Grid.Column="0" Header="Height" InputScope="Number" TextChanged="HeightInput_TextChanged"/>
-
-                <!--Weight-->
-                <TextBox x:Name="WeightInput" Grid.Column="0" Header="Weight" InputScope="Number" TextChanged="WeightInput_TextChanged"/>
-        
-            </StackPanel>
-            </PivotItem>
-
             <!--Permissions-->
             <PivotItem
                 x:Uid="Permissions"

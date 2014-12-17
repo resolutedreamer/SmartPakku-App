@@ -5,9 +5,11 @@
     xmlns:local="using:SmartPakku"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    
+    xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
+    >
 
     
     <Page.BottomAppBar>
@@ -62,8 +64,7 @@
                         <RowDefinition Height="50"/>
                     </Grid.RowDefinitions>
 
-                    <Maps:MapControl x:Name="locatorMap"/>
-
+                    <Maps:MapControl x:Name="locatorMap" MapServiceToken="4jnXlYu5f1DDcJY40vb-1g" />
 
                     <StackPanel Orientation="Horizontal" Grid.Row="1">
                         
@@ -98,6 +99,7 @@
                 Header="battery life"
                 >
                 <StackPanel Grid.Row="1">
+                    <Button Content="Get Battery Level" Click="Button_Click_1" />
                     <TextBlock Text="Remining Battery:" FontSize="36" Margin="0,15,0,15"/>
                     <TextBlock Text="100%" FontSize="100" Margin="0,15,0,15"/>
                     <TextBlock Text="Recommendation: Charge now!" FontSize="18" Margin="0,15,0,15"/>

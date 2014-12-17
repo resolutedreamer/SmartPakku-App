@@ -12,6 +12,7 @@ using Windows.Storage;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
@@ -41,17 +42,26 @@ namespace SmartPakku
         {
             //this.navigationHelper.OnNavigatedTo(e);
 
-            // Get this from the Dev Center before distributing
-            // your app.
-            locatorMap.MapServiceToken = "4jnXlYu5f1DDcJY40vb-1g";
+            // MUST ENABLE THE LOCATION CAPABILITY
+            // First, find the current location
 
             var locator = new Geolocator();
             locator.DesiredAccuracyInMeters = 50;
 
-            // MUST ENABLE THE LOCATION CAPABILITY
-            var position = await locator.GetGeopositionAsync();
+            Geoposition my_position = await locator.GetGeopositionAsync();
+            Geopoint my_point = my_position.Coordinate.Point;
+            await locatorMap.TrySetViewAsync(my_point, 18D);
 
-            await locatorMap.TrySetViewAsync(position.Coordinate.Point, 18D);
+            // Second, place an icon at the current location
+
+            MapIcon IamHere = new MapIcon();
+            IamHere.Location = my_point;
+            IamHere.NormalizedAnchorPoint = new Point(0.5, 1.0);
+            IamHere.Title = "Current Location";
+            locatorMap.MapElements.Add(IamHere);
+
+            
+
         }
 
 
@@ -241,6 +251,12 @@ namespace SmartPakku
 
         // TODO Print the number given from the LiPo Fuel Gauge to the Arduino to Bluetooth LE
 
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
         // DO NOT MAKE IT ASYNC YET
         // FIRST MAKE A BUTTON TO HANDLE THE REQUEST AND DISPALY RESULT IN A TEXT BOX
 
@@ -256,7 +272,6 @@ namespace SmartPakku
                 throw new Exception();
             }
         }
-
 
     }
 }

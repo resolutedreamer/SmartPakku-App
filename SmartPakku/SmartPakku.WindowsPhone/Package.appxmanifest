@@ -27,7 +27,7 @@
         <m3:SplashScreen Image="Assets\SplashScreen.png" />
       </m3:VisualElements>
       <Extensions>
-        <Extension Category="windows.backgroundTasks" EntryPoint="SmartPakkuBackground.ConectivityTask">
+        <Extension Category="windows.backgroundTasks" EntryPoint="SmartPakkuBackground.ConnectivityTask">
           <BackgroundTasks>
             <m2:Task Type="deviceUse" />
             <m3:Task Type="deviceConnectionChange" />

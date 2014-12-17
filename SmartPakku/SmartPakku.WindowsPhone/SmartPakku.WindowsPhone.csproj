@@ -88,10 +88,10 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RadioButtonValueConverter.cs" />
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SmartPack.cs" />
     <Compile Include="Wizard1_PairDevice.xaml.cs">
       <DependentUpon>Wizard1_PairDevice.xaml</DependentUpon>
     </Compile>
@@ -183,6 +183,10 @@
     <ProjectReference Include="..\..\SmartPakkuBackground\SmartPakkuBackground.csproj">
       <Project>{eff1fe45-8cff-464d-b1fe-a4e71ec29944}</Project>
       <Name>SmartPakkuBackground</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SmartPakkuCommon\SmartPakkuCommon.csproj">
+      <Project>{56a3e32f-079d-4c0e-8145-b80cc5df40c0}</Project>
+      <Name>SmartPakkuCommon</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">

@@ -66,22 +66,25 @@
                         <RowDefinition Height="50"/>
                     </Grid.RowDefinitions>
 
-                    <Maps:MapControl x:Name="locatorMap" MapServiceToken="4jnXlYu5f1DDcJY40vb-1g" />
+                    <Maps:MapControl Grid.Row="0" x:Name="locatorMap" MapServiceToken="4jnXlYu5f1DDcJY40vb-1g" />
 
                     <StackPanel Orientation="Horizontal" Grid.Row="1">
                         
                         <Button Name="phoneButton" 
-                        Content="Phone" 
+                        Content="Update My Location"
+                        FontSize="10"
                         Click="phoneButton_Click" 
                         Margin="0,0,5,0" />
                         
                         <Button Name="saveButton" 
-                        Content="Save" 
+                        Content="Saved BPLocation"
+                        FontSize="10"
                         Click="saveButton_Click" 
                         Margin="0,0,5,0" />
                         
                         <Button Name="backpackButton" 
-                        Content="Backpack" 
+                        Content="Get Saved BPLocation"
+                        FontSize="10"
                         Click="backpackButton_Click" 
                         Margin="0,0,20,0" />
                         

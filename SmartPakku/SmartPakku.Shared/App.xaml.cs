@@ -21,6 +21,7 @@ using SmartPakku.Data;
 
 using Windows.ApplicationModel.Resources;
 using Windows.Graphics.Display;
+using Windows.Storage;
 
 
 
@@ -116,10 +117,34 @@ namespace SmartPakku
 
 
 #if WINDOWS_PHONE_APP
-                if (!rootFrame.Navigate(typeof(MainPage)))
+
+                ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
+                var x = my_settings.Values.ContainsKey("setup-wizard-complete");
+
+                if (x == false || (bool)my_settings.Values["setup-wizard-complete"] == false)
                 {
-                    throw new Exception("Failed to create initial page");
+                    // User has not completed the setup wizard
+                    // therefore, go open the setup wizard instead of the app main page
+                    if (!rootFrame.Navigate(typeof(Wizard1_PairDevice)))
+                    {
+                        throw new Exception("Failed to create initial page");
+                    }
                 }
+                else
+                {
+                    // User has completed the setup wizard
+                    // go to MainPage
+                    if (!rootFrame.Navigate(typeof(MainPage)))
+                    {
+                        throw new Exception("Failed to create initial page");
+                    }
+                }
+
+
+
+
+
+
 #endif
 
 #if WINDOWS_APP

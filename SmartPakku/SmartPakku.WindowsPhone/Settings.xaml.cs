@@ -153,26 +153,6 @@ namespace SmartPakku
         }
 
         // WIZARD ACCESS
-        private void SetupWizardButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Frame.Navigate(typeof(Wizard1_PairDevice));
-            }
-            catch
-            {
-                throw new Exception();
-            }
-        }
-
-
-
-        // ABOUT
-
-        // CREDITS
-
-
-        #endregion
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
@@ -199,12 +179,22 @@ namespace SmartPakku
 
             try
             {
-                Frame.Navigate(typeof(MainPage));
+                Frame.Navigate(typeof(Wizard1_PairDevice));
             }
             catch
             {
                 throw new Exception();
             }
         }
+
+
+        // ABOUT
+
+        // CREDITS
+
+
+        #endregion
+
+
     }
 }

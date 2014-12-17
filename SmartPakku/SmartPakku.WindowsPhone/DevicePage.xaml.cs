@@ -20,11 +20,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-
-
-
-
-
+using Windows.Storage;
 
 namespace SmartPakku
 {
@@ -42,14 +38,9 @@ namespace SmartPakku
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Frame.Navigate(typeof(Wizard3_GPSDevice));
-            }
-            catch
-            {
-                throw new Exception();
-            }
+            ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
+            my_settings.Values["setup-wizard-complete"] = true;
+            Frame.Navigate(typeof(MainPage), "no-refunds");
         }
     }
 }

@@ -123,7 +123,7 @@ namespace SmartPakku
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO Check the Data store to see if GPS Enabled or Disabled was set yet or not
-            // if it was not set yet, set it to disabled here and continue774
+            // if it was not set yet, set it to disabled here and continue
             try
             {
                 my_settings.Values["setup-wizard-complete"] = true;

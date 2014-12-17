@@ -10,14 +10,14 @@
 
     <Grid x:Name="LayoutRoot">
         <Pivot x:Uid="Pivot" Title="smartpakku" x:Name="pivot" CommonNavigationTransitionInfo.IsStaggerElement="True">
-            <!--Permissions-->
+            <!--Settings-->
             <PivotItem
-                x:Uid="Permissions"
+                x:Uid="Settings"
                 Margin="19,14.5,0,0"
-                Header="permissions">
+                Header="settings">
                 <StackPanel Grid.Row="1">
                     
-                    <TextBlock x:Name="ServicesText" Text="Services" FontSize="32" Margin="0,0,0,15"/>
+                    <TextBlock x:Name="ServicesText" Text="Services" FontSize="36" Margin="0,0,0,15"/>
                     
                     <!--Location Services-->
                     <ToggleSwitch x:Name="GPSSwitch"
@@ -35,21 +35,13 @@
                                   Toggled="LiveTilesSwitch_Toggled"
                                   />
                
-     
-                </StackPanel>
-            </PivotItem>
-            
-            <!--Wizards-->
-            <PivotItem
-                x:Uid="Wizards"
-                Margin="19,14.5,0,0"
-                Header="wizards"
-                >
-                <StackPanel Grid.Row="1">
-                    <TextBlock x:Name="SetupWizardText" Text="Setup Wizard" FontSize="16" Margin="0,3,0,3"/>
-                    <Button x:Name="SetupWizardButton" Content="Start" Click="SetupWizardButton_Click"/>
-                    <TextBlock x:Name="ResetText" Text="Reset The App" FontSize="16" Margin="0,3,0,3"/>
-                    <Button x:Name="ResetButton" Content="Reset Now" Click="ResetButton_Click"/>
+                   <StackPanel Grid.Row="1" Margin="0,14.5,0,0">
+                        <TextBlock x:Name="ResetTitle" Text="Reset" FontSize="36" Margin="0,0,0,15"/>
+                        <TextBlock x:Name="ResetText" Text="Reset all settings and go through the initial setup wizard!"
+                                   FontSize="18" Margin="0,3,0,3" TextWrapping="Wrap"/>
+                        <Button x:Name="ResetButton" Content="Reset Now" Click="ResetButton_Click"/>
+                    </StackPanel>
+  
                 </StackPanel>
             </PivotItem>
             

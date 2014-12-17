@@ -34,25 +34,14 @@
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            <Grid x:Name="RootGrid" Margin="12,20,12,12">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <StackPanel Margin="0,0,0,10">
-                    <TextBlock Text="Step 1: Pair Device" Margin="0,0,0,10"/>
-                    <TextBlock TextWrapping="Wrap">
+            <StackPanel Margin="0,0,0,10">
+                    <TextBlock Text="Step 1: Pair Device" FontSize="36" Margin="0,0,0,10"/>
+                    <TextBlock TextWrapping="Wrap" FontSize="18" >
                         Pair your smartpack. This button will bring you to the Windows Phone Bluetooth
                         Settings page where you can find and pair your device to your phone.
                     </TextBlock>
                     <Button x:Name="RunButton" Grid.Row="1" Content="Run" Margin="0,0,10,0" Click="RunButton_Click"/>
-                </StackPanel>
-                <!-- Status Block for providing messages to the user.  Use the
-                 NotifyUser() method to populate the message -->
-                <Border x:Name="ErrorBorder" Background="Red" Grid.Row="2"/>
-                <TextBlock x:Name="StatusBlock" Grid.Row="2" Margin="12, 10, 12, 10" Visibility="Collapsed"/>
-            </Grid>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>

@@ -30,7 +30,6 @@ namespace SmartPakku
     /// </summary>
     public sealed partial class MainPage : Page
     {
-
         ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
 
         private Geolocator locator = null;
@@ -52,25 +51,11 @@ namespace SmartPakku
         /// This parameter is typically used to configure the page.</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            /*
-            if ((bool)my_settings.Values["setup-wizard-complete"] == false)
+            if (e.ToString() == "no-refunds")
             {
-                // User has not completed the setup wizard
-                // therefore, go open the setup wizard
-
-                // Uncomment this out to implement the startup wizard
-                try
-                {
-                    Frame.Navigate(typeof(Wizard1_PairDevice));
-                }
-                catch
-                {
-                    throw new Exception();
-                }
+                Frame.BackStack.Clear();
             }
-            */
 
-            //this.navigationHelper.OnNavigatedTo(e);
             Geoposition my_position;
             Geopoint my_point;
             MapIcon IamHere;
@@ -78,6 +63,11 @@ namespace SmartPakku
             BasicGeoposition backpack_position;
             Geopoint backpack_point;
             MapIcon BackpackHere;
+
+            // Assuming the user has gone through the setup wizard, the following
+            // code should never appear
+            // jk this replaces wizard 3
+
 
             if ( ! my_settings.Values.ContainsKey("location-consent") )
             {
@@ -158,8 +148,8 @@ namespace SmartPakku
                     || !my_settings.Values.ContainsKey("backpack-location-longitude"))
                 // if latitude was not saved or longitude was not saved, save both now, very slightly off the current position.
                 {
-                    my_settings.Values["backpack-location-latitude"] = my_position.Coordinate.Point.Position.Latitude + .01;
-                    my_settings.Values["backpack-location-longitude"] = my_position.Coordinate.Point.Position.Longitude + .01;
+                    my_settings.Values["backpack-location-latitude"] = my_position.Coordinate.Point.Position.Latitude + .00001;
+                    my_settings.Values["backpack-location-longitude"] = my_position.Coordinate.Point.Position.Longitude + .00001;
                 }
 
                 backpack_position.Latitude = (double)my_settings.Values["backpack-location-latitude"];
@@ -337,9 +327,9 @@ namespace SmartPakku
         // This function can be used for saving the location of the backpack
         // when called if the map happens to be open. What i actualy want to do
         // is get the real current position and save that!
-        private void store_current_location(object sender, RoutedEventArgs e)
+        private async void store_current_location(object sender, RoutedEventArgs e)
         {
-            //ApplicationDataContainer locations = ApplicationData.Current.LocalSettings;
+            Geoposition my_position = await locator.GetGeopositionAsync();
 
             var lat = locatorMap.Center.Position.Latitude;
             var lon = locatorMap.Center.Position.Longitude;
@@ -370,7 +360,7 @@ namespace SmartPakku
                 locatorMap.Center.Position.Latitude,
                 locatorMap.Center.Position.Longitude);
 
-            // Let's additionally store the location from this button as wel
+            // Let's additionally store the location from this button as well
             store_current_location(sender, e);
         }
 

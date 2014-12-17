@@ -15,7 +15,7 @@
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Minimal">
             <CommandBar.SecondaryCommands>
-                <AppBarButton Label="settings" Click="AppBarButton_Click" />
+                <AppBarButton Name="SettingsButton" Label="settings" Click="AppBarButton_Click" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
@@ -27,11 +27,11 @@
             <PivotItem
                 x:Uid="PackAssistant"
                 Margin="19,14.5,0,0"
-                Header="pack assistant"
+                Header="adjustments"
                 CommonNavigationTransitionInfo.IsStaggerElement="True">
                 <StackPanel Grid.Row="1">
                     <TextBlock Text="Backpack Status:" FontSize="36" Margin="0,15,0,15"/>
-                
+                    <TextBlock Text="Connected!" FontSize="24" />
                     <Grid x:Name="TestingPanel">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -41,7 +41,7 @@
                                 Content="Being Worn" Click="Button_Click"/>
                         <Button x:Name="getPackStatus"
                                 Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
-                                Content="getPackStatus" Click="getPackStatus_Click"/>
+                                Content="Get Suggestion" Click="getPackStatus_Click"/>
                     </Grid>
                 
                     <TextBlock x:Name="Status" Text="1" FontSize="48" Margin="0,15,0,15"/>
@@ -57,43 +57,55 @@
                 x:Name="locator_pivot"
                 x:Uid="Locator"
                 Margin="19,14.5,0,0"
-                Header="locator"
+                Header="locator"                
                 >
                 <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="50"/>
-                        <RowDefinition Height="50"/>
                     </Grid.RowDefinitions>
-
-                    <Maps:MapControl Grid.Row="0" x:Name="locatorMap" MapServiceToken="4jnXlYu5f1DDcJY40vb-1g" />
-
-                    <StackPanel Orientation="Horizontal" Grid.Row="1">
-                        
-                        <Button Name="phoneButton" 
-                        Content="Update My Location"
-                        FontSize="10"
-                        Click="phoneButton_Click" 
-                        Margin="0,0,5,0" />
-                        
-                        <Button Name="saveButton" 
-                        Content="Saved BPLocation"
-                        FontSize="10"
-                        Click="saveButton_Click" 
-                        Margin="0,0,5,0" />
-                        
-                        <Button Name="backpackButton" 
-                        Content="Get Saved BPLocation"
-                        FontSize="10"
-                        Click="backpackButton_Click" 
-                        Margin="0,0,20,0" />
-                        
+                    
+                    <StackPanel Grid.Row="0" Name="LocatorOff" Visibility="Collapsed">
+                        <TextBlock Text="The Locator has been disabled!"
+                                    FontSize="24"/>
+                        <TextBlock Text="You can re-enable this feature in settings!"/>
                     </StackPanel>
+                    
+                    <Grid Grid.Row="1" Name="LocatorContent" Visibility="Visible" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="50"/>
+                        </Grid.RowDefinitions>
+                        <Maps:MapControl Grid.Row="0" x:Name="locatorMap" MapServiceToken="4jnXlYu5f1DDcJY40vb-1g" />
 
-                    <TextBlock Name="positionTextBlock" 
-                       Grid.Row="2"
-                       FontSize="22" />
+                        <StackPanel Orientation="Horizontal" Grid.Row="1">
+                        
+                            <Button Name="phoneButton" 
+                            Content="Update My Location"
+                            FontSize="10"
+                            Click="phoneButton_Click" 
+                            Margin="0,0,5,0" />
+                        
+                            <Button Name="saveButton" 
+                            Content="Save a BPLocation"
+                            FontSize="10"
+                            Click="saveButton_Click" 
+                            Margin="0,0,5,0" />
+                        
+                            <Button Name="backpackButton" 
+                            Content="Get Saved BPLocation"
+                            FontSize="10"
+                            Click="backpackButton_Click" 
+                            Margin="0,0,20,0" />
+                        
+                        </StackPanel>
 
+                        <TextBlock Name="positionTextBlock" 
+                            Grid.Row="2"
+                            FontSize="22" />
+                    </Grid >
+                    
                 </Grid>
             </PivotItem>
             

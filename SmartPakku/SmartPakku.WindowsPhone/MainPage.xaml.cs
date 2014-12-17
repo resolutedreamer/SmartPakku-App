@@ -20,6 +20,9 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using SmartPakkuBackground;
+using Windows.Devices.Bluetooth;
+using Windows.Devices.Background;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -35,13 +38,14 @@ namespace SmartPakku
         private Geolocator locator = null;
         private CoreDispatcher _cd;
 
-        
+        MapperFunctions lets_map = new MapperFunctions();
 
 
         public MainPage()
         {
             this.InitializeComponent();
             _cd = Window.Current.CoreWindow.Dispatcher;
+            lets_map.update_current_location();
         }
 
         /// <summary>
@@ -56,65 +60,38 @@ namespace SmartPakku
                 Frame.BackStack.Clear();
             }
 
+
+            if (!my_settings.Values.ContainsKey("location-consent"))
+            {
+                // User not yet has opted in or out of Location
+                // so you should ask if they want to use it or not
+                location_permission_prompt();
+            }
+
+            // they've gone through the setup wizard, and they have the
+            // location capability to be either on or off
+            // now check if they've allowed location or not
+            bool location_allowed = (bool)my_settings.Values["location-consent"];
+
+            if (location_allowed == false)
+            {
+                // disable the locator and skip over
+                // loading up the mapping service.
+                LocatorContent.Visibility = Visibility.Collapsed;
+                LocatorOff.Visibility = Visibility.Visible;
+                return;
+            }
+
             Geoposition my_position;
             Geopoint my_point;
-            MapIcon IamHere;
+            MapIcon my_icon;
 
             BasicGeoposition backpack_position;
             Geopoint backpack_point;
             MapIcon BackpackHere;
 
-            // Assuming the user has gone through the setup wizard, the following
-            // code should never appear
-            // jk this replaces wizard 3
-
-
-            if ( ! my_settings.Values.ContainsKey("location-consent") )
-            {
-                // User not yet has opted in or out of Location
-                // get ready to show the prompt
-
-                //Creating instance for the MessageDialog Class  
-                //and passing the message in it's Constructor               
-                MessageDialog msgbox = new MessageDialog("This app accesses your phone's location. Is that ok?", "Location");
-
-                // Add commands and set their callbacks; both buttons use the same callback function instead of inline event handlers
-                msgbox.Commands.Add( new UICommand("Yes",
-                    new UICommandInvokedHandler(this.CommandInvokedHandler)));
-                msgbox.Commands.Add( new UICommand("No",
-                    new UICommandInvokedHandler(this.CommandInvokedHandler)) );
-
-                // Set the command that will be invoked by default
-                msgbox.DefaultCommandIndex = 0;
-
-                // Set the command to be invoked when escape is pressed
-                msgbox.CancelCommandIndex = 1;
-
-                // Show the message dialog
-                await msgbox.ShowAsync();
-            }
-
-
-            // they've gone through the setup wizard, and they have the
-            // location capability to be either on or off
-
-            // now check if they've allowed location or not
-            bool location_allowed = (bool)my_settings.Values["location-consent"];
-            
-            if (!location_allowed)
-            {
-                // location is not allowed
-                // disable the locator and return immediately
-                // thereby skipping over all of the code involving
-                // loading up the mapping service.
-                locator_pivot.Visibility = Visibility.Collapsed;
-                return;
-            }
-            // otherwise continue
 
             // Set up the locator
-            // MUST ENABLE THE LOCATION CAPABILITY
-
             if (locator == null)
             {
                 locator = new Geolocator();
@@ -135,16 +112,16 @@ namespace SmartPakku
 
                 // Second, place an icon at the current location
 
-                IamHere = new MapIcon();
-                IamHere.Location = my_point;
-                IamHere.NormalizedAnchorPoint = new Point(0.5, 1.0);
-                IamHere.Title = "Current Location";
-                locatorMap.MapElements.Add(IamHere);
+                my_icon = new MapIcon();
+                my_icon.Location = my_point;
+                my_icon.NormalizedAnchorPoint = new Point(0.5, 1.0);
+                my_icon.Title = "Current Location";
+                locatorMap.MapElements.Add(my_icon);
 
                 // Third, get the backpack position
 
                 backpack_position = new Windows.Devices.Geolocation.BasicGeoposition();
-                if (!my_settings.Values.ContainsKey("backpack-location-latitude") 
+                if (!my_settings.Values.ContainsKey("backpack-location-latitude")
                     || !my_settings.Values.ContainsKey("backpack-location-longitude"))
                 // if latitude was not saved or longitude was not saved, save both now, very slightly off the current position.
                 {
@@ -154,7 +131,7 @@ namespace SmartPakku
 
                 backpack_position.Latitude = (double)my_settings.Values["backpack-location-latitude"];
                 backpack_position.Longitude = (double)my_settings.Values["backpack-location-longitude"];
-                
+
 
 
                 // Third part 2, turn the position into a geopoint
@@ -178,28 +155,8 @@ namespace SmartPakku
             {
                 Geoposition pos = e.Position;
             }
-            
+
             );
-        }
-
-        private void CommandInvokedHandler(IUICommand command)
-        {
-            // Display message showing the label of the command that was invoked
-            //rootPage.NotifyUser("The '" + command.Label + "' command has been selected.",
-            //    NotifyType.StatusMessage);
-
-
-            var which_command = command.Label.ToString();
-            if (which_command == "Yes")
-            {
-                my_settings.Values["location-consent"] = true;
-            }
-            else if (which_command == "No")
-            {
-                my_settings.Values["location-consent"] = false;
-            }
-
-
         }
 
         // pack assistant
@@ -211,102 +168,6 @@ namespace SmartPakku
             Recommendation.Text = "Do Nothing!";
         }
 
-        // for now we use a button to get the informatiom from the arduino via bluetooth le
-        // not entirely sure how to send the data yet. may send the data over UART
-        // not sure how to define the data yet. if all processing is done on the arudino
-        // then we just send the states back here.
-
-
-        // example: custom bluetooth LE characteristics
-        // 4 bytes
-
-        // first byte: not sure actually
-        // bit 0: connected [1] or not [0]
-        // bit 1: backpack is worn [1] or stationary [0]
-        // bit 2:
-        // bit 3: 
-        // bit 4:
-        // bit 5:
-        // bit 6:
-        // bit 7:
-
-
-        // second byte: battery level
-        // bit 0: need to charge [1] or not [0]
-        // bit 1: 
-        // bit 2: 1-7 will be the digits for the charge percentage
-        // bit 3: 2^7 = 128, maximum charge percentage is 100%
-        // bit 4:
-        // bit 5:
-        // bit 6:
-        // bit 7:
-
-
-        // third byte: worn backpack
-        // bit 0: left shoulder - worn[1] or not [0]
-        // bit 1: right shoulder - worn[1] or not [0]
-        // bit 2: left shoulder - worn[1] or not [0]
-        // bit 3: right shoulder - worn[1] or not [0]
-        // bit 4: left back - worn[1] or not [0]
-        // bit 5: right back - worn[1] or not [0]
-        // bit 6:
-        // bit 7:
-
-
-        // fourth byte: stationary backpack
-        // bit 0: normal
-        // bit 1: face down
-        // bit 2: back down
-        // bit 3: left side
-        // bit 4: right side
-        // bit 5:
-        // bit 6:
-        // bit 7:
-
-
-        // fifth byte:
-        // bit 0: connected [1] or not [0]
-        // bit 1: backpack is worn [1] or stationary [0]
-        // bit 2:
-        // bit 3: 
-        // bit 4:
-        // bit 5:
-        // bit 6:
-        // bit 7:
-
-
-        // sixth byte:
-        // bit 0: connected [1] or not [0]
-        // bit 1: backpack is worn [1] or stationary [0]
-        // bit 2:
-        // bit 3: 
-        // bit 4:
-        // bit 5:
-        // bit 6:
-        // bit 7:
-
-
-        // seventh byte:
-        // bit 0: 
-        // bit 1: 
-        // bit 2:
-        // bit 3: 
-        // bit 4:
-        // bit 5:
-        // bit 6:
-        // bit 7:
-
-
-        // eighth byte:
-        // bit 0: 
-        // bit 1: 
-        // bit 2:
-        // bit 3: 
-        // bit 4:
-        // bit 5:
-        // bit 6:
-        // bit 7:
-
 
         private void getPackStatus_Click(object sender, RoutedEventArgs e)
         {
@@ -317,86 +178,69 @@ namespace SmartPakku
 
         // location
 
-
-
-
-
-
-
-        // This function will store the position at the center of the map
-        // This function can be used for saving the location of the backpack
-        // when called if the map happens to be open. What i actualy want to do
-        // is get the real current position and save that!
-        private async void store_current_location(object sender, RoutedEventArgs e)
-        {
-            Geoposition my_position = await locator.GetGeopositionAsync();
-
-            var lat = locatorMap.Center.Position.Latitude;
-            var lon = locatorMap.Center.Position.Longitude;
-
-            my_settings.Values["backpack-location-latitude"] = lat.ToString();
-            my_settings.Values["backpack-location-longitude"] = lon.ToString();
-        }
-
-
         private async void phoneButton_Click(object sender, RoutedEventArgs e)
         {
-            var myPosition = new Windows.Devices.Geolocation.BasicGeoposition();
-            myPosition.Latitude = 33.845;
-            myPosition.Longitude = -118.38;
-
-            var myPoint = new Windows.Devices.Geolocation.Geopoint(myPosition);
-            if (await locatorMap.TrySetViewAsync(myPoint, 10D))
+            // update the current point
+            lets_map.update_current_location();
+            // get the current point
+            Geopoint myPoint = lets_map.get_current_point();
+            if (myPoint == null)
             {
-                // Haven't really thought that through!
-            }
-        }
-        private void saveButton_Click(object sender, RoutedEventArgs e)
-        {
-
-            var lat = locatorMap.Center.Position.Latitude;
-            var lon = locatorMap.Center.Position.Longitude;
-            positionTextBlock.Text = String.Format("{0}, {1}",
-                locatorMap.Center.Position.Latitude,
-                locatorMap.Center.Position.Longitude);
-
-            // Let's additionally store the location from this button as well
-            store_current_location(sender, e);
-        }
-
-        private async void backpackButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (my_settings.Values.ContainsKey("backpack-location-latitude") && my_settings.Values.ContainsKey("backpack-location-longitude"))
-            {
-                double lat = Convert.ToDouble(my_settings.Values["backpack-location-latitude"].ToString());
-                double lon = Convert.ToDouble(my_settings.Values["backpack-location-longitude"].ToString());
-
-                BasicGeoposition myPosition = new Windows.Devices.Geolocation.BasicGeoposition();
-                myPosition.Latitude = lat;
-                myPosition.Longitude = lon;
-
-                Geopoint myPoint = new Windows.Devices.Geolocation.Geopoint(myPosition);
-                await locatorMap.TrySetViewAsync(myPoint, 10D);
+                positionTextBlock.Text = "myPoint is null!";
             }
             else
             {
-                positionTextBlock.Text = "No Location Saved!";
+                await locatorMap.TrySetViewAsync(myPoint, 10D);
+                positionTextBlock.Text = String.Format("{0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
             }
 
         }
+        private void saveButton_Click(object sender, RoutedEventArgs e)
+        {
+            // update the current location
+            lets_map.update_current_location();
+            //store the current location
+            lets_map.store_current_location();
+
+            //then print result to screen
+            Geopoint myPoint = lets_map.get_saved_backpack_location();
+            if (myPoint == null)
+            {
+                positionTextBlock.Text = "The point we have saved is null!";
+            }
+            else
+            {
+                positionTextBlock.Text = String.Format("The Point we have saved is {0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
+            }
+        }
+
+        private void backpackButton_Click(object sender, RoutedEventArgs e)
+        {
+            Geopoint myPoint = lets_map.get_saved_backpack_location();
+            if (myPoint == null)
+            {
+                positionTextBlock.Text = "The point we have saved is null!";
+            }
+            else
+            {
+                MapIcon BackpackHere = lets_map.get_backpack_icon();
+                locatorMap.MapElements.Add(BackpackHere);
+                positionTextBlock.Text = String.Format("The point we have saved is {0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
+            }
+            
+        }
+
 
         // battery life
 
         // TODO Print the number given from the LiPo Fuel Gauge to the Arduino to Bluetooth LE
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-
         // DO NOT MAKE IT ASYNC YET
         // FIRST MAKE A BUTTON TO HANDLE THE REQUEST AND DISPALY RESULT IN A TEXT BOX
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            
+        }
 
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
@@ -411,5 +255,139 @@ namespace SmartPakku
             }
         }
 
+
+
+        private async void location_permission_prompt()
+        {
+            //Creating instance for the MessageDialog Class  
+            //and passing the message in it's Constructor               
+            MessageDialog msgbox = new MessageDialog("This app accesses your phone's location. Is that ok?", "Location");
+
+            // Add commands and set their callbacks; both buttons use the same callback function instead of inline event handlers
+            msgbox.Commands.Add(new UICommand("Yes",
+                new UICommandInvokedHandler(this.CommandInvokedHandler)));
+            msgbox.Commands.Add(new UICommand("No",
+                new UICommandInvokedHandler(this.CommandInvokedHandler)));
+
+            // Set the command that will be invoked by default
+            msgbox.DefaultCommandIndex = 0;
+
+            // Set the command to be invoked when escape is pressed
+            msgbox.CancelCommandIndex = 1;
+
+            // Show the message dialog
+            await msgbox.ShowAsync();
+        }
+        private void CommandInvokedHandler(IUICommand command)
+        {
+            // Display message showing the label of the command that was invoked
+            //rootPage.NotifyUser("The '" + command.Label + "' command has been selected.",
+            //    NotifyType.StatusMessage);
+            var which_command = command.Label.ToString();
+            if (which_command == "Yes")
+            {
+                my_settings.Values["location-consent"] = true;
+            }
+            else if (which_command == "No")
+            {
+                my_settings.Values["location-consent"] = false;
+            }
+        }
     }
 }
+
+// for now we use a button to get the informatiom from the arduino via bluetooth le
+// not entirely sure how to send the data yet. may send the data over UART
+// not sure how to define the data yet. if all processing is done on the arudino
+// then we just send the states back here.
+
+
+// example: custom bluetooth LE characteristics
+// 4 bytes
+
+// first byte: not sure actually
+// bit 0: connected [1] or not [0]
+// bit 1: backpack is worn [1] or stationary [0]
+// bit 2:
+// bit 3: 
+// bit 4:
+// bit 5:
+// bit 6:
+// bit 7:
+
+
+// second byte: battery level
+// bit 0: need to charge [1] or not [0]
+// bit 1: 
+// bit 2: 1-7 will be the digits for the charge percentage
+// bit 3: 2^7 = 128, maximum charge percentage is 100%
+// bit 4:
+// bit 5:
+// bit 6:
+// bit 7:
+
+
+// third byte: worn backpack
+// bit 0: left shoulder - worn[1] or not [0]
+// bit 1: right shoulder - worn[1] or not [0]
+// bit 2: left shoulder - worn[1] or not [0]
+// bit 3: right shoulder - worn[1] or not [0]
+// bit 4: left back - worn[1] or not [0]
+// bit 5: right back - worn[1] or not [0]
+// bit 6:
+// bit 7:
+
+
+// fourth byte: stationary backpack
+// bit 0: normal
+// bit 1: face down
+// bit 2: back down
+// bit 3: left side
+// bit 4: right side
+// bit 5:
+// bit 6:
+// bit 7:
+
+
+// fifth byte:
+// bit 0: connected [1] or not [0]
+// bit 1: backpack is worn [1] or stationary [0]
+// bit 2:
+// bit 3: 
+// bit 4:
+// bit 5:
+// bit 6:
+// bit 7:
+
+
+// sixth byte:
+// bit 0: connected [1] or not [0]
+// bit 1: backpack is worn [1] or stationary [0]
+// bit 2:
+// bit 3: 
+// bit 4:
+// bit 5:
+// bit 6:
+// bit 7:
+
+
+// seventh byte:
+// bit 0: 
+// bit 1: 
+// bit 2:
+// bit 3: 
+// bit 4:
+// bit 5:
+// bit 6:
+// bit 7:
+
+
+// eighth byte:
+// bit 0: 
+// bit 1: 
+// bit 2:
+// bit 3: 
+// bit 4:
+// bit 5:
+// bit 6:
+// bit 7:

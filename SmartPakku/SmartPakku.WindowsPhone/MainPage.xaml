@@ -76,6 +76,7 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="50"/>
                             <RowDefinition Height="50"/>
+                            <RowDefinition Height="50"/>
                         </Grid.RowDefinitions>
                         <Maps:MapControl Grid.Row="0" x:Name="locatorMap" MapServiceToken="4jnXlYu5f1DDcJY40vb-1g" />
 
@@ -101,9 +102,15 @@
                         
                         </StackPanel>
 
-                        <TextBlock Name="positionTextBlock" 
+                        
+                        <TextBlock Name="statusTextBlock" 
                             Grid.Row="2"
                             FontSize="22" />
+                        
+                        <TextBlock Name="positionTextBlock" 
+                            Grid.Row="3"
+                            FontSize="22" />
+                        
                     </Grid >
                     
                 </Grid>

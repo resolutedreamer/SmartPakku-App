@@ -35,6 +35,7 @@ namespace SmartPakku
     {
         ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
 
+        Geoposition pos;
         private Geolocator locator = null;
         private CoreDispatcher _cd;
 
@@ -45,7 +46,6 @@ namespace SmartPakku
         {
             this.InitializeComponent();
             _cd = Window.Current.CoreWindow.Dispatcher;
-            lets_map.update_current_location();
         }
 
         /// <summary>
@@ -82,6 +82,41 @@ namespace SmartPakku
                 return;
             }
 
+
+            // get current location
+            Geopoint my_point = lets_map.get_current_point();
+
+            // get current location icon
+            MapIcon my_icon = lets_map.get_icon();
+
+            // get last saved backpack location icon
+            MapIcon my_backpack_icon = lets_map.get_backpack_icon();
+
+            // set map to current location
+            if (my_point != null)
+            {
+                await locatorMap.TrySetViewAsync(my_point);
+            }
+            
+            // place current location icon
+            if (my_icon != null)
+            {
+                locatorMap.MapElements.Add(my_icon);
+            }
+
+
+            // place icon for last saved backpack location
+            if (my_backpack_icon != null)
+            {
+                locatorMap.MapElements.Add(my_backpack_icon);
+            }
+
+            //old_map_update();
+        }
+
+
+        async void old_map_update()
+        {
             Geoposition my_position;
             Geopoint my_point;
             MapIcon my_icon;
@@ -100,6 +135,7 @@ namespace SmartPakku
             {
                 // If we were able to set up the locator
                 locator.DesiredAccuracyInMeters = 50;
+                //locator.ReportInterval = 30000;
                 locator.MovementThreshold = 3.0;
                 locator.PositionChanged +=
                     new TypedEventHandler<Geolocator,
@@ -125,8 +161,8 @@ namespace SmartPakku
                     || !my_settings.Values.ContainsKey("backpack-location-longitude"))
                 // if latitude was not saved or longitude was not saved, save both now, very slightly off the current position.
                 {
-                    my_settings.Values["backpack-location-latitude"] = my_position.Coordinate.Point.Position.Latitude + .00001;
-                    my_settings.Values["backpack-location-longitude"] = my_position.Coordinate.Point.Position.Longitude + .00001;
+                    my_settings.Values["backpack-location-latitude"] = my_position.Coordinate.Point.Position.Latitude + .000000001;
+                    my_settings.Values["backpack-location-longitude"] = my_position.Coordinate.Point.Position.Longitude + .000000002;
                 }
 
                 backpack_position.Latitude = (double)my_settings.Values["backpack-location-latitude"];
@@ -142,18 +178,17 @@ namespace SmartPakku
                 BackpackHere = new MapIcon();
                 BackpackHere.Location = backpack_point;
                 BackpackHere.NormalizedAnchorPoint = new Point(0.5, 1.0);
-                BackpackHere.Title = "Backpack Location";
+                BackpackHere.Title = "Super Backpack Location";
                 locatorMap.MapElements.Add(BackpackHere);
 
             }
         }
 
-
         async private void geo_PositionChanged(Geolocator sender, PositionChangedEventArgs e)
         {
             await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                Geoposition pos = e.Position;
+                pos = e.Position;
             }
 
             );
@@ -181,24 +216,25 @@ namespace SmartPakku
         private async void phoneButton_Click(object sender, RoutedEventArgs e)
         {
             // update the current point
-            lets_map.update_current_location();
+            await lets_map.update_current_location();
             // get the current point
-            Geopoint myPoint = lets_map.get_current_point();
+            Geopoint myPoint = await lets_map.get_current_point();
             if (myPoint == null)
             {
-                positionTextBlock.Text = "myPoint is null!";
+                statusTextBlock.Text = "myPoint is null!";
             }
             else
             {
+                statusTextBlock.Text = "We got the current position:";
                 await locatorMap.TrySetViewAsync(myPoint, 10D);
                 positionTextBlock.Text = String.Format("{0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
             }
 
         }
-        private void saveButton_Click(object sender, RoutedEventArgs e)
+        private async void saveButton_Click(object sender, RoutedEventArgs e)
         {
             // update the current location
-            lets_map.update_current_location();
+            await lets_map.update_current_location();
             //store the current location
             lets_map.store_current_location();
 
@@ -206,11 +242,12 @@ namespace SmartPakku
             Geopoint myPoint = lets_map.get_saved_backpack_location();
             if (myPoint == null)
             {
-                positionTextBlock.Text = "The point we have saved is null!";
+                statusTextBlock.Text = "The point we have saved is null!";
             }
             else
             {
-                positionTextBlock.Text = String.Format("The Point we have saved is {0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
+                statusTextBlock.Text = "The Point we have saved is:";
+                positionTextBlock.Text = String.Format("{0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
             }
         }
 
@@ -219,13 +256,27 @@ namespace SmartPakku
             Geopoint myPoint = lets_map.get_saved_backpack_location();
             if (myPoint == null)
             {
-                positionTextBlock.Text = "The point we have saved is null!";
+                statusTextBlock.Text = "The point we have saved is null!";
             }
             else
             {
+                MapIcon BackpackHereAsWell = new MapIcon();
+                BackpackHereAsWell.Location = myPoint;
+                BackpackHereAsWell.NormalizedAnchorPoint = new Point(0.5, 1.0);
+                BackpackHereAsWell.Title = "Backpack Location";
+                
+
                 MapIcon BackpackHere = lets_map.get_backpack_icon();
-                locatorMap.MapElements.Add(BackpackHere);
-                positionTextBlock.Text = String.Format("The point we have saved is {0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
+                if (BackpackHereAsWell == null)
+                {
+                    statusTextBlock.Text = "Problem with backpack icon";
+                }
+                else
+                {
+                    locatorMap.MapElements.Add(BackpackHereAsWell);
+                    statusTextBlock.Text = "Retrived saved point and added icon:";
+                    positionTextBlock.Text = String.Format("{0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
+                }
             }
             
         }

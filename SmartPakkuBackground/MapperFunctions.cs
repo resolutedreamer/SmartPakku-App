@@ -21,46 +21,73 @@ namespace SmartPakkuBackground
         private Geoposition my_position;
         private Geopoint my_point;
         private MapIcon my_icon;
+        private MapIcon my_pack_icon;
 
-        public MapIcon get_backpack_icon()
+        
+
+        public MapIcon get_icon()
         {
             my_icon = new MapIcon();
-            if (my_point == null)
-            {
-                throw new Exception("my_point is null, cannot make new backpack icon, try again?");
+            if (my_point != null)
+            {                
+                my_icon.Location = my_point;
+                my_icon.NormalizedAnchorPoint = new Point(0.5, 1.0);
+                my_icon.Title = "My Location";
+                return my_icon;
             }
             else
             {
-                my_icon.Location = my_point;
-                my_icon.NormalizedAnchorPoint = new Point(0.5, 1.0);
-                my_icon.Title = "Backpack Location";
-                return my_icon;
+                return null;
+            }
+        }
+
+        public MapIcon get_backpack_icon()
+        {
+            my_pack_icon = new MapIcon();
+            if (my_settings.Values.ContainsKey("backpack-location-latitude") && my_settings.Values.ContainsKey("backpack-location-longitude"))
+            {
+                BasicGeoposition tmp_position = new BasicGeoposition();
+                tmp_position.Latitude = (double)my_settings.Values["backpack-location-latitude"];
+                tmp_position.Longitude = (double)my_settings.Values["backpack-location-longitude"];
+                Geopoint tmp_point = new Geopoint(tmp_position);
+
+                my_pack_icon.Location = tmp_point;
+                my_pack_icon.NormalizedAnchorPoint = new Point(0.5, 1.0);
+                my_pack_icon.Title = "Backpack Location";
+                return my_pack_icon;
+            }
+            else
+            {
+                return null;
             }
         }
 
         public MapperFunctions()
         {
             locator = new Geolocator();
+            locator.DesiredAccuracyInMeters = 50;
         }
 
-        public Geoposition get_current_position()
-        {            
+        public async Geoposition get_current_position()
+        {
+            await update_current_location();
             return my_position;
         }
 
-        public Geopoint get_current_point()
-        {            
+        public async Geopoint get_current_point()
+        {
+            await update_current_location();
             return my_point;
         }
 
-
-        public async void update_current_location()
+        private async Task update_current_location()
         {
             my_position = await locator.GetGeopositionAsync();
             my_point = my_position.Coordinate.Point;
         }
 
-        
+
+
         public void store_current_location()
         {
             my_settings.Values["backpack-location-latitude"] = my_position.Coordinate.Point.Position.Latitude;

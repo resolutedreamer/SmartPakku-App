@@ -81,7 +81,6 @@
   <ItemGroup>
     <Compile Include="BatteryTask.cs" />
     <Compile Include="ConnectivityTask.cs" />
-    <Compile Include="MapperFunctions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

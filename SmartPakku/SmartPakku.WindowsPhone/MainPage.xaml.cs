@@ -44,8 +44,6 @@ namespace SmartPakku
         Geopoint my_point;
         MapIcon my_icon;
 
-        BasicGeoposition backpack_position;
-        Geopoint backpack_point;
         MapIcon BackpackHere;
 
         public MainPage()
@@ -109,41 +107,24 @@ namespace SmartPakku
                         PositionChangedEventArgs>(geo_PositionChanged);
 
                 // First, find the current location
-                my_position = await locator.GetGeopositionAsync();
-                my_point = my_position.Coordinate.Point;
-                await locatorMap.TrySetViewAsync(my_point, 18D);
+                my_point = await get_current_point();
+                if (my_point != null)
+                {
+                    await locatorMap.TrySetViewAsync(my_point);
+                }
 
                 // Second, place an icon at the current location
                 my_icon = get_icon();
-
-
-                // Third, get the backpack position
-
-                backpack_position = new Windows.Devices.Geolocation.BasicGeoposition();
-                if (!my_settings.Values.ContainsKey("backpack-location-latitude")
-                    || !my_settings.Values.ContainsKey("backpack-location-longitude"))
-                // if latitude was not saved or longitude was not saved, save both now, very slightly off the current position.
+                if (my_icon != null)
                 {
-                    my_settings.Values["backpack-location-latitude"] = my_position.Coordinate.Point.Position.Latitude + .000000001;
-                    my_settings.Values["backpack-location-longitude"] = my_position.Coordinate.Point.Position.Longitude + .000000002;
+                    locatorMap.MapElements.Add(my_icon);
                 }
 
-                backpack_position.Latitude = (double)my_settings.Values["backpack-location-latitude"];
-                backpack_position.Longitude = (double)my_settings.Values["backpack-location-longitude"];
-
-
-
-                // Third part 2, turn the position into a geopoint
-                backpack_point = new Windows.Devices.Geolocation.Geopoint(backpack_position);
-
-                // fourth, place an icon where the backpack should be
-
-                BackpackHere = new MapIcon();
-                BackpackHere.Location = backpack_point;
-                BackpackHere.NormalizedAnchorPoint = new Point(0.5, 1.0);
-                BackpackHere.Title = "Super Backpack Location";
-                locatorMap.MapElements.Add(BackpackHere);
-
+                BackpackHere = get_backpack_icon();
+                if (BackpackHere != null)
+                {
+                    locatorMap.MapElements.Add(BackpackHere);
+                }
             }
         }
 
@@ -213,12 +194,9 @@ namespace SmartPakku
         {
             if (my_settings.Values.ContainsKey("backpack-location-latitude") && my_settings.Values.ContainsKey("backpack-location-longitude"))
             {
-                double lat = Convert.ToDouble(my_settings.Values["backpack-location-latitude"].ToString());
-                double lon = Convert.ToDouble(my_settings.Values["backpack-location-longitude"].ToString());
-
                 BasicGeoposition myPosition = new BasicGeoposition();
-                myPosition.Latitude = lat;
-                myPosition.Longitude = lon;
+                myPosition.Latitude = (double)my_settings.Values["backpack-location-latitude"];
+                myPosition.Longitude = (double)my_settings.Values["backpack-location-longitude"];
 
                 Geopoint myPoint = new Geopoint(myPosition);
                 return myPoint;
@@ -300,7 +278,7 @@ namespace SmartPakku
             }
         }
 
-        private void backpackButton_Click(object sender, RoutedEventArgs e)
+        private async void backpackButton_Click(object sender, RoutedEventArgs e)
         {
             Geopoint myPoint = get_saved_backpack_location();
             if (myPoint == null)
@@ -309,20 +287,15 @@ namespace SmartPakku
             }
             else
             {
-                MapIcon BackpackHereAsWell = new MapIcon();
-                BackpackHereAsWell.Location = myPoint;
-                BackpackHereAsWell.NormalizedAnchorPoint = new Point(0.5, 1.0);
-                BackpackHereAsWell.Title = "Backpack Location";
-                
-
+                await locatorMap.TrySetViewAsync(myPoint);
                 MapIcon BackpackHere = get_backpack_icon();
-                if (BackpackHereAsWell == null)
+                if (BackpackHere == null)
                 {
                     statusTextBlock.Text = "Problem with backpack icon";
                 }
                 else
                 {
-                    locatorMap.MapElements.Add(BackpackHereAsWell);
+                    locatorMap.MapElements.Add(BackpackHere);
                     statusTextBlock.Text = "Retrived saved point and added icon:";
                     positionTextBlock.Text = String.Format("{0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
                 }

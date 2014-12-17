@@ -32,7 +32,7 @@ namespace SmartPakku
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        ApplicationDataContainer permissions = ApplicationData.Current.LocalSettings;
+        ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
 
 
         #region THEIRCODE
@@ -110,15 +110,15 @@ namespace SmartPakku
         {
             this.navigationHelper.OnNavigatedTo(e);
 
-            // PERMISSIONS
-            if (permissions.Values.ContainsKey("location"))
+            // my_settings
+            if (my_settings.Values.ContainsKey("location-consent"))
             {
-                GPSSwitch.IsOn = (bool)permissions.Values["location"];
+                GPSSwitch.IsOn = (bool)my_settings.Values["location-consent"];
             }
 
-            if (permissions.Values.ContainsKey("live-tiles"))
+            if (my_settings.Values.ContainsKey("live-tiles-consent"))
             {
-                LiveTilesSwitch.IsOn = (bool)permissions.Values["live-tiles"];
+                LiveTilesSwitch.IsOn = (bool)my_settings.Values["live-tiles-consent"];
             }
 
         }
@@ -138,18 +138,18 @@ namespace SmartPakku
 
         
 
-        // PERMISSIONS
+        // my_settings
 
         private void GPSSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             var ToggleSwitchValue = GPSSwitch.IsOn;
-            permissions.Values["location"] = ToggleSwitchValue;
+            my_settings.Values["location-consent"] = ToggleSwitchValue;
         }
 
         private void LiveTilesSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             var ToggleSwitchValue = LiveTilesSwitch.IsOn;
-            permissions.Values["live-tiles"] = ToggleSwitchValue;
+            my_settings.Values["live-tiles-consent"] = ToggleSwitchValue;
         }
 
         // WIZARD ACCESS
@@ -166,6 +166,7 @@ namespace SmartPakku
         }
 
 
+
         // ABOUT
 
         // CREDITS
@@ -173,6 +174,37 @@ namespace SmartPakku
 
         #endregion
 
-        
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (my_settings.Values.ContainsKey("location-consent"))
+            {
+                my_settings.Values.Remove("location-consent");
+            }
+            if (my_settings.Values.ContainsKey("live-tiles-consent"))
+            {
+                my_settings.Values.Remove("live-tiles-consent");
+            }
+            if (my_settings.Values.ContainsKey("setup-wizard-complete"))
+            {
+                my_settings.Values.Remove("setup-wizard-complete");
+            }
+            if (my_settings.Values.ContainsKey("backpack-location-latitude"))
+            {
+                my_settings.Values.Remove("backpack-location-latitude");
+            }
+            if (my_settings.Values.ContainsKey("backpack-location-latitude"))
+            {
+                my_settings.Values.Remove("backpack-location-longitude");
+            }
+
+            try
+            {
+                Frame.Navigate(typeof(MainPage));
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
     }
 }

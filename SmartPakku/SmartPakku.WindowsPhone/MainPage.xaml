@@ -54,9 +54,11 @@
 
             <!--Locator-->
             <PivotItem
+                x:Name="locator_pivot"
                 x:Uid="Locator"
                 Margin="19,14.5,0,0"
-                Header="locator">
+                Header="locator"
+                >
                 <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>

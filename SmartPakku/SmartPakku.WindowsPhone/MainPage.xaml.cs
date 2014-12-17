@@ -9,6 +9,8 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
 using Windows.Storage;
+using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -28,9 +30,19 @@ namespace SmartPakku
     /// </summary>
     public sealed partial class MainPage : Page
     {
+
+        ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
+
+        private Geolocator locator = null;
+        private CoreDispatcher _cd;
+
+        
+
+
         public MainPage()
         {
             this.InitializeComponent();
+            _cd = Window.Current.CoreWindow.Dispatcher;
         }
 
         /// <summary>
@@ -40,32 +52,165 @@ namespace SmartPakku
         /// This parameter is typically used to configure the page.</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            /*
+            if ((bool)my_settings.Values["setup-wizard-complete"] == false)
+            {
+                // User has not completed the setup wizard
+                // therefore, go open the setup wizard
+
+                // Uncomment this out to implement the startup wizard
+                try
+                {
+                    Frame.Navigate(typeof(Wizard1_PairDevice));
+                }
+                catch
+                {
+                    throw new Exception();
+                }
+            }
+            */
+
             //this.navigationHelper.OnNavigatedTo(e);
+            Geoposition my_position;
+            Geopoint my_point;
+            MapIcon IamHere;
 
-            // MUST ENABLE THE LOCATION CAPABILITY
-            // First, find the current location
+            BasicGeoposition backpack_position;
+            Geopoint backpack_point;
+            MapIcon BackpackHere;
 
-            var locator = new Geolocator();
-            locator.DesiredAccuracyInMeters = 50;
+            if ( ! my_settings.Values.ContainsKey("location-consent") )
+            {
+                // User not yet has opted in or out of Location
+                // get ready to show the prompt
 
-            Geoposition my_position = await locator.GetGeopositionAsync();
-            Geopoint my_point = my_position.Coordinate.Point;
-            await locatorMap.TrySetViewAsync(my_point, 18D);
+                //Creating instance for the MessageDialog Class  
+                //and passing the message in it's Constructor               
+                MessageDialog msgbox = new MessageDialog("This app accesses your phone's location. Is that ok?", "Location");
 
-            // Second, place an icon at the current location
+                // Add commands and set their callbacks; both buttons use the same callback function instead of inline event handlers
+                msgbox.Commands.Add( new UICommand("Yes",
+                    new UICommandInvokedHandler(this.CommandInvokedHandler)));
+                msgbox.Commands.Add( new UICommand("No",
+                    new UICommandInvokedHandler(this.CommandInvokedHandler)) );
 
-            MapIcon IamHere = new MapIcon();
-            IamHere.Location = my_point;
-            IamHere.NormalizedAnchorPoint = new Point(0.5, 1.0);
-            IamHere.Title = "Current Location";
-            locatorMap.MapElements.Add(IamHere);
+                // Set the command that will be invoked by default
+                msgbox.DefaultCommandIndex = 0;
 
+                // Set the command to be invoked when escape is pressed
+                msgbox.CancelCommandIndex = 1;
+
+                // Show the message dialog
+                await msgbox.ShowAsync();
+            }
+
+
+            // they've gone through the setup wizard, and they have the
+            // location capability to be either on or off
+
+            // now check if they've allowed location or not
+            bool location_allowed = (bool)my_settings.Values["location-consent"];
             
+            if (!location_allowed)
+            {
+                // location is not allowed
+                // disable the locator and return immediately
+                // thereby skipping over all of the code involving
+                // loading up the mapping service.
+                locator_pivot.Visibility = Visibility.Collapsed;
+                return;
+            }
+            // otherwise continue
 
+            // Set up the locator
+            // MUST ENABLE THE LOCATION CAPABILITY
+
+            if (locator == null)
+            {
+                locator = new Geolocator();
+            }
+            if (locator != null)
+            {
+                // If we were able to set up the locator
+                locator.DesiredAccuracyInMeters = 50;
+                locator.MovementThreshold = 3.0;
+                locator.PositionChanged +=
+                    new TypedEventHandler<Geolocator,
+                        PositionChangedEventArgs>(geo_PositionChanged);
+
+                // First, find the current location
+                my_position = await locator.GetGeopositionAsync();
+                my_point = my_position.Coordinate.Point;
+                await locatorMap.TrySetViewAsync(my_point, 18D);
+
+                // Second, place an icon at the current location
+
+                IamHere = new MapIcon();
+                IamHere.Location = my_point;
+                IamHere.NormalizedAnchorPoint = new Point(0.5, 1.0);
+                IamHere.Title = "Current Location";
+                locatorMap.MapElements.Add(IamHere);
+
+                // Third, get the backpack position
+
+                backpack_position = new Windows.Devices.Geolocation.BasicGeoposition();
+                if (!my_settings.Values.ContainsKey("backpack-location-latitude") 
+                    || !my_settings.Values.ContainsKey("backpack-location-longitude"))
+                // if latitude was not saved or longitude was not saved, save both now, very slightly off the current position.
+                {
+                    my_settings.Values["backpack-location-latitude"] = my_position.Coordinate.Point.Position.Latitude + .01;
+                    my_settings.Values["backpack-location-longitude"] = my_position.Coordinate.Point.Position.Longitude + .01;
+                }
+
+                backpack_position.Latitude = (double)my_settings.Values["backpack-location-latitude"];
+                backpack_position.Longitude = (double)my_settings.Values["backpack-location-longitude"];
+                
+
+
+                // Third part 2, turn the position into a geopoint
+                backpack_point = new Windows.Devices.Geolocation.Geopoint(backpack_position);
+
+                // fourth, place an icon where the backpack should be
+
+                BackpackHere = new MapIcon();
+                BackpackHere.Location = backpack_point;
+                BackpackHere.NormalizedAnchorPoint = new Point(0.5, 1.0);
+                BackpackHere.Title = "Backpack Location";
+                locatorMap.MapElements.Add(BackpackHere);
+
+            }
         }
 
 
+        async private void geo_PositionChanged(Geolocator sender, PositionChangedEventArgs e)
+        {
+            await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                Geoposition pos = e.Position;
+            }
+            
+            );
+        }
 
+        private void CommandInvokedHandler(IUICommand command)
+        {
+            // Display message showing the label of the command that was invoked
+            //rootPage.NotifyUser("The '" + command.Label + "' command has been selected.",
+            //    NotifyType.StatusMessage);
+
+
+            var which_command = command.Label.ToString();
+            if (which_command == "Yes")
+            {
+                my_settings.Values["location-consent"] = true;
+            }
+            else if (which_command == "No")
+            {
+                my_settings.Values["location-consent"] = false;
+            }
+
+
+        }
 
         // pack assistant
 
@@ -182,7 +327,10 @@ namespace SmartPakku
 
         // location
 
-        ApplicationDataContainer saved_locations = ApplicationData.Current.LocalSettings;
+
+
+
+
 
 
         // This function will store the position at the center of the map
@@ -196,8 +344,8 @@ namespace SmartPakku
             var lat = locatorMap.Center.Position.Latitude;
             var lon = locatorMap.Center.Position.Longitude;
 
-            saved_locations.Values["backpack-location-latitude"] = lat.ToString();
-            saved_locations.Values["backpack-location-longitude"] = lon.ToString();
+            my_settings.Values["backpack-location-latitude"] = lat.ToString();
+            my_settings.Values["backpack-location-longitude"] = lon.ToString();
         }
 
 
@@ -228,10 +376,10 @@ namespace SmartPakku
 
         private async void backpackButton_Click(object sender, RoutedEventArgs e)
         {
-            if (saved_locations.Values.ContainsKey("backpack-location-latitude") && saved_locations.Values.ContainsKey("backpack-location-longitude"))
+            if (my_settings.Values.ContainsKey("backpack-location-latitude") && my_settings.Values.ContainsKey("backpack-location-longitude"))
             {
-                double lat = Convert.ToDouble(saved_locations.Values["backpack-location-latitude"].ToString());
-                double lon = Convert.ToDouble(saved_locations.Values["backpack-location-longitude"].ToString());
+                double lat = Convert.ToDouble(my_settings.Values["backpack-location-latitude"].ToString());
+                double lon = Convert.ToDouble(my_settings.Values["backpack-location-longitude"].ToString());
 
                 BasicGeoposition myPosition = new Windows.Devices.Geolocation.BasicGeoposition();
                 myPosition.Latitude = lat;

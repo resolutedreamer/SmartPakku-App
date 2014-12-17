@@ -48,6 +48,8 @@
                 <StackPanel Grid.Row="1">
                     <TextBlock x:Name="SetupWizardText" Text="Setup Wizard" FontSize="16" Margin="0,3,0,3"/>
                     <Button x:Name="SetupWizardButton" Content="Start" Click="SetupWizardButton_Click"/>
+                    <TextBlock x:Name="ResetText" Text="Reset The App" FontSize="16" Margin="0,3,0,3"/>
+                    <Button x:Name="ResetButton" Content="Reset Now" Click="ResetButton_Click"/>
                 </StackPanel>
             </PivotItem>
             

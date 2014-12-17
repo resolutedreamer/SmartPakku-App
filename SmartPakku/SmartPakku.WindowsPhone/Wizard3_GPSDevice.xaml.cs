@@ -29,6 +29,10 @@ namespace SmartPakku
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
+
+       ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
+
+
         public Wizard3_GPSDevice()
         {
             this.InitializeComponent();
@@ -100,6 +104,13 @@ namespace SmartPakku
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
+
+            if (my_settings.Values.ContainsKey("location-consent"))
+            {
+                GPSSwitch.IsOn = (bool)my_settings.Values["location-consent"];
+            }
+
+
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -115,6 +126,7 @@ namespace SmartPakku
             // if it was not set yet, set it to disabled here and continue774
             try
             {
+                my_settings.Values["setup-wizard-complete"] = true;
                 Frame.Navigate(typeof(MainPage));
             }
             catch
@@ -123,13 +135,11 @@ namespace SmartPakku
             }
         }
 
-        // TODO Store DATA
-
         private void GPSSwitch_Toggled(object sender, RoutedEventArgs e)
         {
-            ApplicationDataContainer permissions = ApplicationData.Current.LocalSettings;
+            
             var ToggleSwitchValue = GPSSwitch.IsOn;
-            permissions.Values["location"] = ToggleSwitchValue;
+            my_settings.Values["LocationConsent"] = ToggleSwitchValue;
         }
     }
 }

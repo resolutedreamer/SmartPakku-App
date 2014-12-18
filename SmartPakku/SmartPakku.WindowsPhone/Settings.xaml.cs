@@ -156,27 +156,7 @@ namespace SmartPakku
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            if (my_settings.Values.ContainsKey("location-consent"))
-            {
-                my_settings.Values.Remove("location-consent");
-            }
-            if (my_settings.Values.ContainsKey("live-tiles-consent"))
-            {
-                my_settings.Values.Remove("live-tiles-consent");
-            }
-            if (my_settings.Values.ContainsKey("setup-wizard-complete"))
-            {
-                my_settings.Values.Remove("setup-wizard-complete");
-            }
-            if (my_settings.Values.ContainsKey("backpack-location-latitude"))
-            {
-                my_settings.Values.Remove("backpack-location-latitude");
-            }
-            if (my_settings.Values.ContainsKey("backpack-location-latitude"))
-            {
-                my_settings.Values.Remove("backpack-location-longitude");
-            }
-
+            my_settings.Values.Clear();
             try
             {
                 Frame.Navigate(typeof(Wizard1_PairDevice));

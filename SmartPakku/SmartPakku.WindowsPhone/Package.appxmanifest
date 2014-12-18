@@ -29,8 +29,12 @@
       <Extensions>
         <Extension Category="windows.backgroundTasks" EntryPoint="SmartPakkuBackground.ConnectivityTask">
           <BackgroundTasks>
-            <m2:Task Type="deviceUse" />
             <m3:Task Type="deviceConnectionChange" />
+          </BackgroundTasks>
+        </Extension>
+        <Extension Category="windows.backgroundTasks" EntryPoint="SmartPakkuBackground.BatteryTask">
+          <BackgroundTasks>
+            <m3:Task Type="gattCharacteristicNotification" />
           </BackgroundTasks>
         </Extension>
       </Extensions>

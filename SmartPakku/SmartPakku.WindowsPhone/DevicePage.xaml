@@ -6,8 +6,19 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Class="SmartPakku.DevicePage"
     mc:Ignorable="d"
+    
+    xmlns:SmartPakkuBackground="using:SmartPakkuBackground" x:Name="page"
+    xmlns:SmartPakkuCommon="using:SmartPakkuCommon"
+    
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    d:DataContext="{d:DesignInstance Type=SmartPakkuCommon:SmartPack}"
     >
+
+    <Page.Resources>
+        <local:AlertLevelRadioButtonValueConverter x:Key="AlertLevelRadioButtonValueConverter"/>
+    </Page.Resources>
+    
+    
     <Page.BottomAppBar>
         <CommandBar>
             <AppBarButton Icon="Forward" Label="Continue" Click="AppBarButton_Click" />
@@ -53,12 +64,15 @@
                 <!--Remember, I removed the setting of the event handlesrs for these buttons-->
                 <RadioButton Content="No alert"
                              IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
+                             IsChecked="{Binding AlertLevel, ConverterParameter=None, Converter={StaticResource AlertLevelRadioButtonValueConverter}, Mode=TwoWay}"
                              />
                 <RadioButton Content="Mild alert"
                              IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
+                             IsChecked="{Binding AlertLevel, ConverterParameter=Mild, Converter={StaticResource AlertLevelRadioButtonValueConverter}, Mode=TwoWay}"
                              />
                 <RadioButton Content="High alert"
                              IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
+                             IsChecked="{Binding AlertLevel, ConverterParameter=High, Converter={StaticResource AlertLevelRadioButtonValueConverter}, Mode=TwoWay}"
                              />
             </StackPanel>
         </Grid>

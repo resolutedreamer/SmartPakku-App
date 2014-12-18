@@ -13,7 +13,7 @@
 
     
     <Page.BottomAppBar>
-        <CommandBar ClosedDisplayMode="Minimal">
+        <CommandBar Name="MyBar" ClosedDisplayMode="Minimal">
             <CommandBar.SecondaryCommands>
                 <AppBarButton Name="SettingsButton" Label="settings" Click="AppBarButton_Click" />
             </CommandBar.SecondaryCommands>
@@ -31,7 +31,7 @@
                 CommonNavigationTransitionInfo.IsStaggerElement="True">
                 <StackPanel Grid.Row="1">
                     <TextBlock Text="Backpack Status:" FontSize="36" Margin="0,15,0,15"/>
-                    <TextBlock Text="Connected!" FontSize="24" />
+                    <TextBlock Name="backpackStatus" Text="Unknown" FontSize="24" />
                     <Grid x:Name="TestingPanel">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -44,9 +44,9 @@
                                 Content="Get Suggestion" Click="getPackStatus_Click"/>
                     </Grid>
                 
-                    <TextBlock x:Name="Status" Text="1" FontSize="48" Margin="0,15,0,15"/>
+                    <TextBlock x:Name="Status" Text="1" FontSize="36" Margin="0,15,0,15"/>
                     <Image x:Name="StatusImage" HorizontalAlignment="Center" VerticalAlignment="Center"
-                           Source=""/>
+                           Source="" Width="150" Height="150"/>
                     <TextBlock x:Name="Location" Text="1" FontSize="36" Margin="0,15,0,15"/>
                     <TextBlock x:Name="Recommendation" Text="1" FontSize="18" Margin="0,15,0,15"/>
                 </StackPanel>
@@ -125,8 +125,8 @@
                 <StackPanel Grid.Row="1">
                     <Button Content="Get Battery Level" Click="Button_Click_1" />
                     <TextBlock Text="Remining Battery:" FontSize="36" Margin="0,15,0,15"/>
-                    <TextBlock Text="100%" FontSize="100" Margin="0,15,0,15"/>
-                    <TextBlock Text="Recommendation: Charge now!" FontSize="18" Margin="0,15,0,15"/>
+                    <TextBlock Name="battery_percentage"  Text="100 %" FontSize="100" Margin="0,15,0,15"/>
+                    <TextBlock Name="recommendation" Text="" FontSize="18" Margin="0,15,0,15"/>
                 </StackPanel>
             </PivotItem>
         </Pivot>

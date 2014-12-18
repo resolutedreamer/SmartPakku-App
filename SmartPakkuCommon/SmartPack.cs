@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using Windows.Devices.Bluetooth;
+using Windows.Devices.Bluetooth.GenericAttributeProfile;
 
 using System.Runtime.InteropServices.WindowsRuntime; // extension method byte[].AsBuffer()
 
@@ -20,7 +21,8 @@ using GattDeviceService = Windows.Devices.Bluetooth.GenericAttributeProfile.Gatt
 using GattServiceUuids = Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids;
 using GattWriteOption = Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteOption;
 using Task = System.Threading.Tasks.Task;
-
+using Windows.Storage.Streams;
+using Windows.ApplicationModel.Background;
 
 namespace SmartPakkuCommon
 {
@@ -37,6 +39,11 @@ namespace SmartPakkuCommon
         private bool alertOnDevice;                 // true iff we want device to alert upon disconnection
         private AlertLevel alertLevel;              // alert level that device will set upon disconnection
 
+        private GattDeviceService batteryService;  // constant, may be null
+        private GattDeviceService heartRateService;  // constant, may be null
+
+        private double latitude, longitude;
+        private int battery_level, status;
 
 
         // trivial properties
@@ -46,6 +53,25 @@ namespace SmartPakkuCommon
         public bool HasLinkLossService { get { return linkLossService != null; } }
         public string Name { get { return device.Name; } }
         public string TaskName { get { return addressString; } }
+
+
+
+        public string DeviceId { get { return device.DeviceId; } }
+
+        public string AddressString { get { return addressString; } }
+
+        public double Latitude { get { return latitude; } }
+        public double Longitude { get { return longitude; } }
+
+        public int BatteryLevel { get { return battery_level; } }
+        public int Status { get { return status; } }
+
+        public bool HasBatteryService { get { return batteryService != null; } }
+
+        public BackgroundTaskRegistration BatteryTaskRegistration { get; set; }
+
+
+
 
         // settable properties, persisted in LocalSettings
 
@@ -84,6 +110,9 @@ namespace SmartPakkuCommon
         {
             this.device = device;
             addressString = device.BluetoothAddress.ToString("x012");
+
+            battery_level = -1;
+            status = -1;
             try
             {
                 linkLossService = device.GetGattService(GattServiceUuids.LinkLoss);
@@ -95,6 +124,17 @@ namespace SmartPakkuCommon
                 // linkLossServer will remain equal to null.
             }
 
+            try
+            {
+                batteryService = device.GetGattService(GattServiceUuids.Battery);                
+                heartRateService = device.GetGattService(GattServiceUuids.HeartRate);
+            }
+            catch (Exception)
+            {
+
+            }
+
+
             if (localSettings.Values.ContainsKey(addressString))
             {
                 string[] values = ((string)localSettings.Values[addressString]).Split(',');
@@ -102,6 +142,16 @@ namespace SmartPakkuCommon
                 alertOnDevice = bool.Parse(values[1]);
                 alertLevel = (AlertLevel)Enum.Parse(typeof(AlertLevel), values[2]);
             }
+
+            
+            if (localSettings.Values.ContainsKey("backpack-location-latitude")
+                && localSettings.Values.ContainsKey("backpack-location-longitude"))
+            {
+                latitude = (double)localSettings.Values["backpack-location-latitude"];
+                longitude = (double)localSettings.Values["backpack-location-longitude"];
+            }
+
+
         }
 
         // React to a change in configuration parameters:
@@ -111,7 +161,8 @@ namespace SmartPakkuCommon
         private async void SaveSettings()
         {
             // Save this device's settings into nonvolatile storage
-            localSettings.Values[addressString] = string.Join(",", alertOnPhone, alertOnDevice, alertLevel);
+            string tmp = string.Join(",", alertOnPhone, alertOnDevice, alertLevel);
+            localSettings.Values[addressString] = tmp;
 
             // If the device is connected and wants to hear about the alert level on link loss, tell it
             if (alertOnDevice && device.ConnectionStatus == BluetoothConnectionStatus.Connected)
@@ -126,7 +177,7 @@ namespace SmartPakkuCommon
                 trigger.MaintainConnection = true;
                 BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
                 builder.Name = TaskName;
-                builder.TaskEntryPoint = "KeepTheKeysBackground.KeyFobTask";
+                builder.TaskEntryPoint = "SmartPakkuBackground.ConnectivityTask";
                 builder.SetTrigger(trigger);
                 TaskRegistration = builder.Register();
             }
@@ -137,6 +188,32 @@ namespace SmartPakkuCommon
                 TaskRegistration.Unregister(false);
                 TaskRegistration = null;
             }
+
+            // Can't forget about the battery!
+
+            // If we need a battery_background task and one isn't already registered, create one
+            if (BatteryTaskRegistration == null)
+            {
+
+                GattCharacteristic BatteryLevelCharacteristic =
+                    batteryService.GetCharacteristics(GattCharacteristicUuids.BatteryLevel)[0];
+                GattCharacteristicNotificationTrigger bat_notify_trigger =
+                    new GattCharacteristicNotificationTrigger(BatteryLevelCharacteristic);
+
+                BackgroundTaskBuilder battery_builder = new BackgroundTaskBuilder();
+                battery_builder.Name = TaskName + "2";
+                battery_builder.TaskEntryPoint = "SmartPakkuBackground.BatteryTask";
+                battery_builder.SetTrigger(bat_notify_trigger);
+                BatteryTaskRegistration = battery_builder.Register();
+            }
+
+            // If we don't need a background task but have one, unregister it
+            if (TaskRegistration != null)
+            {
+                BatteryTaskRegistration.Unregister(false);
+                BatteryTaskRegistration = null;
+            }
+
         }
 
         // Set the alert-level characteristic on the remote device
@@ -150,8 +227,8 @@ namespace SmartPakkuCommon
                 data[0] = (byte)alertLevel;
 
                 // The LinkLoss service should contain exactly one instance of the AlertLevel characteristic
-                GattCharacteristic characteristic = linkLossService.GetCharacteristics(GattCharacteristicUuids.AlertLevel)[0];
-
+                GattCharacteristic characteristic = 
+                    linkLossService.GetCharacteristics(GattCharacteristicUuids.AlertLevel)[0];
                 await characteristic.WriteValueAsync(data.AsBuffer(), GattWriteOption.WriteWithResponse);
             }
             catch (Exception)
@@ -159,6 +236,50 @@ namespace SmartPakkuCommon
                 // ignore exception
             }
         }
+
+
+        public async Task update_battery_level()
+        {
+            GattCharacteristic BatteryLevelCharacteristic = 
+                batteryService.GetCharacteristics(GattCharacteristicUuids.BatteryLevel)[0];
+            var result = await BatteryLevelCharacteristic.ReadValueAsync();
+            if (result.Status == GattCommunicationStatus.Success)
+            {
+                IBuffer tmp = result.Value;
+                byte[] GattCharVals = tmp.ToArray();
+                byte winner = GattCharVals[0];                
+                battery_level = winner;
+            }
+            else
+            {
+                // cannot update
+                battery_level = -1;
+            }
+        }
+
+        public async Task update_status()
+        {
+            if (heartRateService != null)
+            {
+                GattCharacteristic HeartX =
+                    heartRateService.GetCharacteristics(GattCharacteristicUuids.BodySensorLocation)[0];
+                var result = await HeartX.ReadValueAsync();
+                if (result.Status == GattCommunicationStatus.Success)
+                {
+                    IBuffer tmp = result.Value;
+                    byte[] GattCharVals = tmp.ToArray();
+                    byte winner = GattCharVals[0];
+                    status = winner;
+                }
+                else
+                {
+                    // cannot update
+                    status = -1;
+                }
+            }
+        }
+
+
 
         // Provide a human-readable name for this object.
         public override string ToString()

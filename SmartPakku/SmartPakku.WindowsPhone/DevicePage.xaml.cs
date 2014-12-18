@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.Storage;
+using SmartPakkuCommon;
 
 namespace SmartPakku
 {
@@ -39,6 +40,9 @@ namespace SmartPakku
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
+            SmartPack holdthis = (SmartPack)DataContext;
+            string ehh = holdthis.DeviceId;
+            string x = (string)my_settings.Values[holdthis.AddressString];
             my_settings.Values["setup-wizard-complete"] = true;
             Frame.Navigate(typeof(MainPage), "no-refunds");
         }

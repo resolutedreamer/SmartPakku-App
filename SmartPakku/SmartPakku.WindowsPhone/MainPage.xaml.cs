@@ -25,6 +25,9 @@ using Windows.Devices.Bluetooth;
 using Windows.Devices.Background;
 using System.Threading.Tasks;
 
+using SmartPakkuCommon;
+using Windows.UI.Xaml.Media.Imaging;
+
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
 namespace SmartPakku
@@ -46,10 +49,15 @@ namespace SmartPakku
 
         MapIcon BackpackHere;
 
+        BluetoothLEDevice bleDevice;
+        SmartPack device;
+
+
         public MainPage()
         {
             this.InitializeComponent();
             _cd = Window.Current.CoreWindow.Dispatcher;
+
         }
 
         /// <summary>
@@ -59,9 +67,29 @@ namespace SmartPakku
         /// This parameter is typically used to configure the page.</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.ToString() == "no-refunds")
+            bool first_run = e.ToString() == "no-refunds";
+            if (first_run)
             {
                 Frame.BackStack.Clear();
+            }
+
+            if (my_settings.Values.ContainsKey("smartpack-device-id"))
+            {
+                backpackStatus.Text = "Initializing...";
+                string saved_device = my_settings.Values["smartpack-device-id"].ToString();
+                bleDevice = await BluetoothLEDevice.FromIdAsync(saved_device);
+                device = new SmartPack(bleDevice);
+                
+                await device.update_battery_level();
+                await device.update_status();
+
+                int bat_percent = device.BatteryLevel;
+                int status = device.Status;
+
+                update_battery_page(bat_percent);
+                update_adjustments_page(status);
+
+                backpackStatus.Text = "Connected!";
             }
 
 
@@ -69,7 +97,7 @@ namespace SmartPakku
             {
                 // User not yet has opted in or out of Location
                 // so you should ask if they want to use it or not
-                location_permission_prompt();
+                await location_permission_prompt();
             }
 
             // they've gone through the setup wizard, and they have the
@@ -85,11 +113,30 @@ namespace SmartPakku
                 LocatorOff.Visibility = Visibility.Visible;
                 return;
             }
-            await map_init();
+            await map_init(first_run);
         }
 
+        private void update_adjustments_page(int status)
+        {
+            if (status == 1)
+            {
+                Status.Text = "Being Worn!";
+                var x = new BitmapImage(new Uri("ms-appx:///Assets/backpack-wearing.png"));
+                StatusImage.Source = x;
+                Location.Text = "With both shoulders";
+                Recommendation.Text = "Do Nothing!";
+            }
+            else if (status == 2)
+            {
 
-        private async Task map_init()
+            }
+            else
+            {
+
+            }
+        }
+
+        private async Task map_init(bool first_run)
         {
             // Set up the locator
             if (locator == null)
@@ -110,7 +157,7 @@ namespace SmartPakku
                 my_point = await get_current_point();
                 if (my_point != null)
                 {
-                    await locatorMap.TrySetViewAsync(my_point);
+                    await locatorMap.TrySetViewAsync(my_point, 16D);
                 }
 
                 // Second, place an icon at the current location
@@ -120,7 +167,7 @@ namespace SmartPakku
                     locatorMap.MapElements.Add(my_icon);
                 }
 
-                BackpackHere = get_backpack_icon();
+                BackpackHere = await get_backpack_icon(first_run);
                 if (BackpackHere != null)
                 {
                     locatorMap.MapElements.Add(BackpackHere);
@@ -144,7 +191,7 @@ namespace SmartPakku
             }
         }
 
-        public MapIcon get_backpack_icon()
+        public async Task<MapIcon> get_backpack_icon(bool firstrun)
         {
             MapIcon tmp_backpack_icon = new MapIcon();
             if (my_settings.Values.ContainsKey("backpack-location-latitude") && my_settings.Values.ContainsKey("backpack-location-longitude"))
@@ -159,6 +206,20 @@ namespace SmartPakku
                 tmp_backpack_icon.Title = "Backpack Location";
                 return tmp_backpack_icon;
             }
+            else if (firstrun == true)
+            {
+                await store_current_location();
+
+                BasicGeoposition tmp_position = new BasicGeoposition();
+                tmp_position.Latitude = (double)my_settings.Values["backpack-location-latitude"];
+                tmp_position.Longitude = (double)my_settings.Values["backpack-location-longitude"];
+                Geopoint tmp_point = new Geopoint(tmp_position);
+
+                tmp_backpack_icon.Location = tmp_point;
+                tmp_backpack_icon.NormalizedAnchorPoint = new Point(0.5, 1.0);
+                tmp_backpack_icon.Title = "Backpack Location";
+                return tmp_backpack_icon;
+            } 
             else
             {
                 return null;
@@ -183,8 +244,9 @@ namespace SmartPakku
             my_position = await locator.GetGeopositionAsync();
             my_point = my_position.Coordinate.Point;
         }
-        public void store_current_location()
+        public async Task store_current_location()
         {
+            await update_current_location();
             my_settings.Values["backpack-location-latitude"] = my_position.Coordinate.Point.Position.Latitude;
             my_settings.Values["backpack-location-longitude"] = my_position.Coordinate.Point.Position.Longitude;
         }
@@ -225,15 +287,15 @@ namespace SmartPakku
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Status.Text = "Being Worn!";
-            Location.Text = "Dynamically Updating!";
-            Recommendation.Text = "Do Nothing!";
+            int status = 1;
+            update_adjustments_page(status);
         }
 
 
         private void getPackStatus_Click(object sender, RoutedEventArgs e)
         {
-
+            int status = device.Status;
+            update_adjustments_page(status);
         }
 
 
@@ -253,17 +315,15 @@ namespace SmartPakku
             else
             {
                 statusTextBlock.Text = "We got the current position:";
-                await locatorMap.TrySetViewAsync(myPoint, 10D);
+                await locatorMap.TrySetViewAsync(myPoint, 16D);
                 positionTextBlock.Text = String.Format("{0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
             }
 
         }
         private async void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            // update the current location
-            await update_current_location();
             //store the current location
-            store_current_location();
+            await store_current_location();
 
             //then print result to screen
             Geopoint myPoint = get_saved_backpack_location();
@@ -287,8 +347,9 @@ namespace SmartPakku
             }
             else
             {
-                await locatorMap.TrySetViewAsync(myPoint);
-                MapIcon BackpackHere = get_backpack_icon();
+                await locatorMap.TrySetViewAsync(myPoint, 16D);
+                bool firstrun = false;
+                MapIcon BackpackHere = await get_backpack_icon(firstrun);
                 if (BackpackHere == null)
                 {
                     statusTextBlock.Text = "Problem with backpack icon";
@@ -300,7 +361,7 @@ namespace SmartPakku
                     positionTextBlock.Text = String.Format("{0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
                 }
             }
-            
+
         }
 
 
@@ -312,7 +373,34 @@ namespace SmartPakku
         // FIRST MAKE A BUTTON TO HANDLE THE REQUEST AND DISPALY RESULT IN A TEXT BOX
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            
+            int bat_percent = device.BatteryLevel;
+            update_battery_page(bat_percent);
+        }
+
+        private void update_battery_page(int bat_percent)
+        {
+            backpackStatus.Text = "Updating Battery Level...";
+            if (device.HasBatteryService)
+            {                
+                if ((bat_percent <= 0) || (bat_percent > 100))
+                {
+                    battery_percentage.Text = "???";
+                    recommendation.Text = "Error: Invalid Battery Level";
+                }
+                else
+                {
+                    battery_percentage.Text = bat_percent.ToString() + " %";
+                    recommendation.Text = "";
+                    if (bat_percent < 8)
+                    {
+                        recommendation.Text = "Warning: Battery Critically Low - Charge Now!";
+                    }
+                    else if (bat_percent < 20)
+                    {
+                        recommendation.Text = "Warning: Battery Low - Consider Charging";
+                    }
+                }
+            }
         }
 
 
@@ -330,7 +418,7 @@ namespace SmartPakku
 
 
 
-        private async void location_permission_prompt()
+        private async Task location_permission_prompt()
         {
             //Creating instance for the MessageDialog Class  
             //and passing the message in it's Constructor               

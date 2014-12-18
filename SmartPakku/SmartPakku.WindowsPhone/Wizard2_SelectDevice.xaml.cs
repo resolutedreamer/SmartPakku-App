@@ -32,6 +32,7 @@ using BackgroundExecutiondManager = Windows.ApplicationModel.Background.Backgrou
 using BackgroundTaskRegistration = Windows.ApplicationModel.Background.BackgroundTaskRegistration;
 using DeviceInformation = Windows.Devices.Enumeration.DeviceInformation;
 using BluetoothLEDevice = Windows.Devices.Bluetooth.BluetoothLEDevice;
+using Windows.Storage;
 
 // End Section
 
@@ -53,8 +54,6 @@ namespace SmartPakku
         {
 
             Devices = new ObservableCollection<SmartPack>();
-
-
             this.InitializeComponent();
 
             this.navigationHelper = new NavigationHelper(this);
@@ -88,9 +87,9 @@ namespace SmartPakku
             Devices.Clear();
             foreach (DeviceInformation di in await DeviceInformation.FindAllAsync(BluetoothLEDevice.GetDeviceSelector()))
             {
-                BluetoothLEDevice bleDevice = await BluetoothLEDevice.FromIdAsync(di.Id);
+                string INEEDTHIS = di.Id;
+                BluetoothLEDevice bleDevice = await BluetoothLEDevice.FromIdAsync(INEEDTHIS);
                 SmartPack device = new SmartPack(bleDevice);
-
                 Devices.Add(device);
             }
         }
@@ -103,25 +102,17 @@ namespace SmartPakku
         #endregion
 
 
-
-        private async void RunButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Get the list of paired Bluetooth LE devicdes, and add them to our 'devices' list. Associate each device with
-            // its pre-existing registration if any, and remove that registration from our dictionary.
-            Devices.Clear();
-            foreach (DeviceInformation di in await DeviceInformation.FindAllAsync(BluetoothLEDevice.GetDeviceSelector()))
-            {
-                BluetoothLEDevice bleDevice = await BluetoothLEDevice.FromIdAsync(di.Id);
-                SmartPack device = new SmartPack(bleDevice);
-                Devices.Add(device);
-            }
-        }
-
         private void deviceListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+            // We selected SmartPack x, so save the DeviceId of this SmartPack into settings
+            var x = (SmartPack)deviceListBox.SelectedItem;
+            localSettings.Values["smartpack-device-id"] = x.DeviceId;
+
             if (deviceListBox.SelectedItem != null)
             {
-                Frame.Navigate(typeof(DevicePage), deviceListBox.SelectedItem);
+                Frame.Navigate(typeof(DevicePage), x);
             }
         }
     }

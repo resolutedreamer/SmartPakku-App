@@ -134,7 +134,9 @@ namespace SmartPakku
             {
                 deviceContainerId = "{" + device.Properties["System.Devices.ContainerId"] + "}";
 
-                service = await GattDeviceService.FromIdAsync(device.Id);
+                var x = device.Id;
+
+                service = await GattDeviceService.FromIdAsync(x);
                 if (service != null)
                 {
                     IsServiceInitialized = true;

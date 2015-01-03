@@ -16,6 +16,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)DataModel\SampleDataSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Scenario1_DeviceEvents.xaml.cs">
+      <DependentUpon>Scenario1_DeviceEvents.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)UARTService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HeartRateService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UARTMain.xaml.cs">
@@ -36,6 +39,10 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Scenario1_DeviceEvents.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)UARTMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

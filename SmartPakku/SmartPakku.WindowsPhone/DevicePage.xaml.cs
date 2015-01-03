@@ -41,8 +41,13 @@ namespace SmartPakku
         {
             ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
             SmartPack holdthis = (SmartPack)DataContext;
+
+
+            //// WHAT DID I DO HERE?
             string ehh = holdthis.DeviceId;
             string x = (string)my_settings.Values[holdthis.AddressString];
+
+
             my_settings.Values["setup-wizard-complete"] = true;
             Frame.Navigate(typeof(MainPage), "no-refunds");
         }

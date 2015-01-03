@@ -1,33 +1,22 @@
-﻿using SmartPakku.Common;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using System;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Graphics.Display;
 using Windows.Storage;
 using Windows.UI.Core;
 using Windows.UI.Popups;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using SmartPakkuBackground;
 using Windows.Devices.Bluetooth;
-using Windows.Devices.Background;
 using System.Threading.Tasks;
-
-using SmartPakkuCommon;
 using Windows.UI.Xaml.Media.Imaging;
 
+using SmartPakkuCommon;
+using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Windows.Devices.Enumeration;
+using Windows.Devices.Enumeration.Pnp;
+using System.Collections;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -39,50 +28,50 @@ namespace SmartPakku
     public sealed partial class MainPage : Page
     {
         ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
-
-        Geoposition pos;
-        private Geolocator locator = null;
-        private CoreDispatcher _cd;
-
-        Geoposition my_position;
-        Geopoint my_point;
-        MapIcon my_icon;
-
-        MapIcon BackpackHere;
-
-        BluetoothLEDevice bleDevice;
-        SmartPack device;
-
+        Geoposition pos; private Geolocator locator = null; private CoreDispatcher _cd;
+        Geoposition my_position; Geopoint my_point; MapIcon my_icon; MapIcon BackpackHere;
+        DeviceInformation QQ; BluetoothLEDevice bleDevice; SmartPack device;
         public static MainPage Current;
 
         public MainPage()
         {
             this.InitializeComponent();
             _cd = Window.Current.CoreWindow.Dispatcher;
-
         }
-
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             bool first_run = e.ToString() == "no-refunds";
+            string saved_device_id;
+            string saved_device_containerid;
+
+            Fill_HeartRate_Box_Prep();
+            
+
             if (first_run)
             {
                 Frame.BackStack.Clear();
             }
 
-            if (my_settings.Values.ContainsKey("smartpack-device-id"))
+            if (!my_settings.Values.ContainsKey("location-consent"))
+            {
+                // User not yet has opted in or out of Location
+                // so you should ask if they want to use it or not
+                await location_permission_prompt();
+            }
+
+            if (my_settings.Values.ContainsKey("smartpack-device-id") && my_settings.Values.ContainsKey("smartpack-device-containerid"))
             {
                 backpackStatus.Text = "Initializing...";
-                string saved_device = my_settings.Values["smartpack-device-id"].ToString();
+                saved_device_id = my_settings.Values["smartpack-device-id"].ToString();
+                saved_device_containerid = my_settings.Values["smartpack-device-containerid"].ToString();
+
                 try
                 {
-                    bleDevice = await BluetoothLEDevice.FromIdAsync(saved_device);
-                    device = new SmartPack(bleDevice);
+                    QQ = await DeviceInformation.CreateFromIdAsync(saved_device_id, new string[] { "System.Devices.ContainerId" });
+                    PrepDevice(QQ);
+
+                    bleDevice = await BluetoothLEDevice.FromIdAsync(saved_device_id);
+                    device = new SmartPack(bleDevice, saved_device_containerid);
 
                     await device.update_battery_level();
                     await device.update_status();
@@ -94,19 +83,14 @@ namespace SmartPakku
                     update_adjustments_page(status);
 
                     backpackStatus.Text = "Connected!";
+
+                    //update_adjustments_page(device.Status);
+                    update_adjustments_page(1);
                 }
                 catch
                 {
                     backpackStatus.Text = "Error connecting to SmartPack.\nPlease repeat the setup wizard."; 
                 }
-            }
-
-
-            if (!my_settings.Values.ContainsKey("location-consent"))
-            {
-                // User not yet has opted in or out of Location
-                // so you should ask if they want to use it or not
-                await location_permission_prompt();
             }
 
             // they've gone through the setup wizard, and they have the
@@ -122,28 +106,237 @@ namespace SmartPakku
                 LocatorOff.Visibility = Visibility.Visible;
                 return;
             }
+
+
+            //List_HeartRate_Devices();
+            
+            
+
             await map_init(first_run);
+        }
+
+
+#region Adjustments
+        // Adjustments Pivot
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            int status = 1;
+            update_adjustments_page(status);
+        }
+
+        private void getPackStatus_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Scenario1_DeviceEvents));
+            int status = 1;
+            //int status = device.Status;
+            update_adjustments_page(status);
         }
 
         private void update_adjustments_page(int status)
         {
-            if (status == 1)
+            switch (status)
             {
-                Status.Text = "Being Worn!";
-                var x = new BitmapImage(new Uri("ms-appx:///Assets/backpack-wearing.png"));
-                StatusImage.Source = x;
-                Location.Text = "With both shoulders";
-                Recommendation.Text = "Do Nothing!";
+                case 1:
+                    Status.Text = "Being Worn!";
+                    var x = new BitmapImage(new Uri("ms-appx:///Assets/backpack-wearing.png"));
+                    StatusImage.Source = x;
+                    Location.Text = "With both shoulders";
+                    Recommendation.Text = "Do Nothing!";
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    break;
+                default:
+                    break;
             }
-            else if (status == 2)
-            {
+        }
 
+        #region HeartRateStuff
+        private void Fill_HeartRate_Box_Prep()
+        {
+            bool z = HeartRateService.Instance.IsServiceInitialized;
+            if (z)
+            {
+                foreach (var measurement in HeartRateService.Instance.DataPoints)
+                {
+                    outputListBox.Items.Add(measurement.ToString());
+                }
+                outputGrid.Visibility = Visibility.Visible;
+            }
+            HeartRateService.Instance.ValueChangeCompleted += Instance_ValueChangeCompleted;
+        }
+
+        private async void List_HeartRate_Devices()
+        {
+            backpackStatus.Text = "Listing SmartPack Devices";
+
+            var devices = await DeviceInformation.FindAllAsync(
+                GattDeviceService.GetDeviceSelectorFromUuid(GattServiceUuids.HeartRate),
+                new string[] { "System.Devices.ContainerId" });
+
+
+            DevicesListBox.Items.Clear();
+
+            if (devices.Count > 0)
+            {
+                foreach (var device in devices)
+                {
+                    DevicesListBox.Items.Add(device);
+                }
+                DevicesListBox.Visibility = Visibility.Visible;
             }
             else
             {
-
+                backpackStatus.Text = "Could not find any Heart Rate devices. Please make sure your device is paired " +
+                    "and powered on!";
             }
         }
+
+        private async void Instance_ValueChangeCompleted(HeartRateMeasurement heartRateMeasurementValue)
+        {
+            // Serialize UI update to the the main UI thread.
+            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                backpackStatus.Text = "Latest received heart rate measurement:\n" +
+                    heartRateMeasurementValue.HeartRateValue;
+
+                outputListBox.Items.Insert(0, heartRateMeasurementValue);
+            });
+        }
+
+        private async void PrepDevice(DeviceInformation device)
+        {
+            //var device = DevicesListBox.SelectedItem as DeviceInformation;
+            DevicesListBox.Visibility = Visibility.Collapsed;
+
+            backpackStatus.Text = "Initializing device...";
+            HeartRateService.Instance.DeviceConnectionUpdated += OnDeviceConnectionUpdated;
+            await HeartRateService.Instance.InitializeServiceAsync(device);
+            outputGrid.Visibility = Visibility.Visible;
+            try
+            {
+                // Check if the device is initially connected, and display the appropriate message to the user
+
+
+                var x = PnpObjectType.DeviceContainer;
+                var y = device.Properties["System.Devices.ContainerId"].ToString();
+                var z = new string[] { "System.Devices.Connected" };
+
+                var deviceObject = await PnpObject.CreateFromIdAsync(x, y, z);
+
+                bool isConnected;
+                if (Boolean.TryParse(deviceObject.Properties["System.Devices.Connected"].ToString(), out isConnected))
+                {
+                    OnDeviceConnectionUpdated(isConnected);
+                }
+            }
+            catch (Exception)
+            {
+                backpackStatus.Text = "Retrieving device properties failed";
+            }
+        }
+
+        private async void OnDeviceConnectionUpdated(bool isConnected)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                if (isConnected)
+                {
+                    backpackStatus.Text = "Waiting for device to send data...";
+                }
+                else
+                {
+                    backpackStatus.Text = "Waiting for device to connect...";
+                }
+            });
+        }
+
+        private void DevicesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var X = QQ;
+            var device = DevicesListBox.SelectedItem as DeviceInformation;
+            DevicesListBox.Visibility = Visibility.Collapsed;
+            PrepDevice(device);
+        }
+        #endregion
+
+#endregion
+
+#region Location
+        // Location Pivot
+        private async void phoneButton_Click(object sender, RoutedEventArgs e)
+        {
+            // update the current point
+            await update_current_location();
+            // get the current point
+            Geopoint myPoint = await get_current_point();
+            if (myPoint == null)
+            {
+                statusTextBlock.Text = "myPoint is null!";
+            }
+            else
+            {
+                statusTextBlock.Text = "We got the current position:";
+                await locatorMap.TrySetViewAsync(myPoint, 16D);
+                positionTextBlock.Text = String.Format("{0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
+            }
+
+        }
+        private async void saveButton_Click(object sender, RoutedEventArgs e)
+        {
+            //store the current location
+            await store_current_location();
+
+            //then print result to screen
+            Geopoint myPoint = get_saved_backpack_location();
+            if (myPoint == null)
+            {
+                statusTextBlock.Text = "The point we have saved is null!";
+            }
+            else
+            {
+                statusTextBlock.Text = "The Point we have saved is:";
+                positionTextBlock.Text = String.Format("{0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
+            }
+        }
+
+        private async void backpackButton_Click(object sender, RoutedEventArgs e)
+        {
+            Geopoint myPoint = get_saved_backpack_location();
+            if (myPoint == null)
+            {
+                statusTextBlock.Text = "The point we have saved is null!";
+            }
+            else
+            {
+                await locatorMap.TrySetViewAsync(myPoint, 16D);
+                bool firstrun = false;
+                MapIcon BackpackHere = await get_backpack_icon(firstrun);
+                if (BackpackHere == null)
+                {
+                    statusTextBlock.Text = "Problem with backpack icon";
+                }
+                else
+                {
+                    locatorMap.MapElements.Add(BackpackHere);
+                    statusTextBlock.Text = "Retrived saved point and added icon:";
+                    positionTextBlock.Text = String.Format("{0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
+                }
+            }
+
+        }
+        // Location Page
 
         private async Task map_init(bool first_run)
         {
@@ -228,13 +421,12 @@ namespace SmartPakku
                 tmp_backpack_icon.NormalizedAnchorPoint = new Point(0.5, 1.0);
                 tmp_backpack_icon.Title = "Backpack Location";
                 return tmp_backpack_icon;
-            } 
+            }
             else
             {
                 return null;
             }
         }
-
 
         private async Task<Geoposition> get_current_position()
         {
@@ -260,7 +452,6 @@ namespace SmartPakku
             my_settings.Values["backpack-location-longitude"] = my_position.Coordinate.Point.Position.Longitude;
         }
 
-
         public Geopoint get_saved_backpack_location()
         {
             if (my_settings.Values.ContainsKey("backpack-location-latitude") && my_settings.Values.ContainsKey("backpack-location-longitude"))
@@ -278,10 +469,6 @@ namespace SmartPakku
             }
         }
 
-
-
-
-
         async private void geo_PositionChanged(Geolocator sender, PositionChangedEventArgs e)
         {
             await _cd.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -291,97 +478,43 @@ namespace SmartPakku
 
             );
         }
-
-        // pack assistant
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async Task location_permission_prompt()
         {
-            int status = 1;
-            update_adjustments_page(status);
+            //Creating instance for the MessageDialog Class  
+            //and passing the message in it's Constructor               
+            MessageDialog msgbox = new MessageDialog("This app accesses your phone's location. Is that ok?", "Location");
+
+            // Add commands and set their callbacks; both buttons use the same callback function instead of inline event handlers
+            msgbox.Commands.Add(new UICommand("Yes",
+                new UICommandInvokedHandler(this.CommandInvokedHandler)));
+            msgbox.Commands.Add(new UICommand("No",
+                new UICommandInvokedHandler(this.CommandInvokedHandler)));
+
+            // Set the command that will be invoked by default
+            msgbox.DefaultCommandIndex = 0;
+
+            // Set the command to be invoked when escape is pressed
+            msgbox.CancelCommandIndex = 1;
+
+            // Show the message dialog
+            await msgbox.ShowAsync();
         }
-
-
-        private void getPackStatus_Click(object sender, RoutedEventArgs e)
+        private void CommandInvokedHandler(IUICommand command)
         {
-            Frame.Navigate(typeof(UARTMain));
-            int status = 1;
-            //int status = device.Status;
-            update_adjustments_page(status);
-        }
-
-
-
-        // location
-
-        private async void phoneButton_Click(object sender, RoutedEventArgs e)
-        {
-            // update the current point
-            await update_current_location();
-            // get the current point
-            Geopoint myPoint = await get_current_point();
-            if (myPoint == null)
+            var which_command = command.Label.ToString();
+            if (which_command == "Yes")
             {
-                statusTextBlock.Text = "myPoint is null!";
+                my_settings.Values["location-consent"] = true;
             }
-            else
+            else if (which_command == "No")
             {
-                statusTextBlock.Text = "We got the current position:";
-                await locatorMap.TrySetViewAsync(myPoint, 16D);
-                positionTextBlock.Text = String.Format("{0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
-            }
-
-        }
-        private async void saveButton_Click(object sender, RoutedEventArgs e)
-        {
-            //store the current location
-            await store_current_location();
-
-            //then print result to screen
-            Geopoint myPoint = get_saved_backpack_location();
-            if (myPoint == null)
-            {
-                statusTextBlock.Text = "The point we have saved is null!";
-            }
-            else
-            {
-                statusTextBlock.Text = "The Point we have saved is:";
-                positionTextBlock.Text = String.Format("{0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
+                my_settings.Values["location-consent"] = false;
             }
         }
+#endregion
 
-        private async void backpackButton_Click(object sender, RoutedEventArgs e)
-        {
-            Geopoint myPoint = get_saved_backpack_location();
-            if (myPoint == null)
-            {
-                statusTextBlock.Text = "The point we have saved is null!";
-            }
-            else
-            {
-                await locatorMap.TrySetViewAsync(myPoint, 16D);
-                bool firstrun = false;
-                MapIcon BackpackHere = await get_backpack_icon(firstrun);
-                if (BackpackHere == null)
-                {
-                    statusTextBlock.Text = "Problem with backpack icon";
-                }
-                else
-                {
-                    locatorMap.MapElements.Add(BackpackHere);
-                    statusTextBlock.Text = "Retrived saved point and added icon:";
-                    positionTextBlock.Text = String.Format("{0}, {1}", myPoint.Position.Latitude, myPoint.Position.Longitude);
-                }
-            }
-
-        }
-
-
-        // battery life
-
-        // TODO Print the number given from the LiPo Fuel Gauge to the Arduino to Bluetooth LE
-
-        // DO NOT MAKE IT ASYNC YET
-        // FIRST MAKE A BUTTON TO HANDLE THE REQUEST AND DISPALY RESULT IN A TEXT BOX
+#region Battery
+        // Battery Pivot
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             int bat_percent = device.BatteryLevel;
@@ -413,8 +546,9 @@ namespace SmartPakku
                 }
             }
         }
+        #endregion
 
-
+#region AppBar
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -426,45 +560,21 @@ namespace SmartPakku
                 throw new Exception();
             }
         }
-
-
-
-        private async Task location_permission_prompt()
+        private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            //Creating instance for the MessageDialog Class  
-            //and passing the message in it's Constructor               
-            MessageDialog msgbox = new MessageDialog("This app accesses your phone's location. Is that ok?", "Location");
-
-            // Add commands and set their callbacks; both buttons use the same callback function instead of inline event handlers
-            msgbox.Commands.Add(new UICommand("Yes",
-                new UICommandInvokedHandler(this.CommandInvokedHandler)));
-            msgbox.Commands.Add(new UICommand("No",
-                new UICommandInvokedHandler(this.CommandInvokedHandler)));
-
-            // Set the command that will be invoked by default
-            msgbox.DefaultCommandIndex = 0;
-
-            // Set the command to be invoked when escape is pressed
-            msgbox.CancelCommandIndex = 1;
-
-            // Show the message dialog
-            await msgbox.ShowAsync();
-        }
-        private void CommandInvokedHandler(IUICommand command)
-        {
-            // Display message showing the label of the command that was invoked
-            //rootPage.NotifyUser("The '" + command.Label + "' command has been selected.",
-            //    NotifyType.StatusMessage);
-            var which_command = command.Label.ToString();
-            if (which_command == "Yes")
+            if (TestingPanel.Visibility == Visibility.Collapsed)
             {
-                my_settings.Values["location-consent"] = true;
+                TestingPanel.Visibility = Visibility.Visible;
+                DevicesListBox.Visibility = Visibility.Visible;
+                outputGrid.Visibility = Visibility.Visible;
             }
-            else if (which_command == "No")
+            else
             {
-                my_settings.Values["location-consent"] = false;
+                TestingPanel.Visibility = Visibility.Collapsed;
             }
         }
+#endregion
+
     }
 }
 

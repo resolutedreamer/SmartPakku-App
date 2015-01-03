@@ -10,12 +10,29 @@
     
     xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
     >
+    
+    <Page.Resources>
+        
+        <Style x:Key="BasicTextStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe WP"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+        
+        <Style x:Key="SampleHeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe WP Semilight"/>
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
+        </Style>
+        
+    </Page.Resources>
 
     
     <Page.BottomAppBar>
         <CommandBar Name="MyBar" ClosedDisplayMode="Minimal">
             <CommandBar.SecondaryCommands>
                 <AppBarButton Name="SettingsButton" Label="settings" Click="AppBarButton_Click" />
+                <AppBarButton Name="DebugButton" Label="debug" Click="DebugButton_Click" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
@@ -29,27 +46,59 @@
                 Margin="19,14.5,0,0"
                 Header="adjustments"
                 CommonNavigationTransitionInfo.IsStaggerElement="True">
-                <StackPanel Grid.Row="1">
-                    <TextBlock Text="Backpack Status:" FontSize="36" Margin="0,15,0,15"/>
-                    <TextBlock Name="backpackStatus" Text="Unknown" FontSize="24" />
-                    <Grid x:Name="TestingPanel">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                Content="Being Worn" Click="Button_Click"/>
-                        <Button x:Name="getPackStatus"
-                                Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
-                                Content="Get Suggestion" Click="getPackStatus_Click"/>
-                    </Grid>
+                <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" >                  
+                    <StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Backpack Status:" Style="{StaticResource SampleHeaderTextStyle}" Margin="0,0,0,12"/>
+                            <TextBlock Name="backpackStatus" Text="Unknown" Style="{StaticResource BasicTextStyle}"/>
+                        </StackPanel>
+                    
+                        <StackPanel>
+                            <ScrollViewer Grid.Row="1" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
+                                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                                    
+                                    <ListBox x:Name="DevicesListBox" Visibility="Collapsed" SelectionChanged="DevicesListBox_SelectionChanged">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Name}"/>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                    <Grid x:Name="outputGrid" Visibility="Collapsed">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <ListBox Grid.Row="1" Name="outputListBox" MinWidth="200" Height="200" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Grid>
+                                </StackPanel>
+                            </ScrollViewer>
+                            <Grid x:Name="TestingPanel" Visibility="Collapsed" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                        Content="Being Worn" Click="Button_Click"/>
+                                <Button x:Name="getPackStatus"
+                                        Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                                        Content="Get Suggestion" Click="getPackStatus_Click"/>
+                            </Grid>    
+                        </StackPanel>
+                        
+                        <StackPanel>
+                            <TextBlock x:Name="Status" Text="Pack State" FontSize="36" Margin="0,15,0,15"/>
+                            <Image x:Name="StatusImage" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    Source="" Width="150" Height="150"/>
+                            <TextBlock x:Name="Location" Text="Pack Location" FontSize="36" Margin="0,15,0,15"/>
+                            <TextBlock x:Name="Recommendation" Text="Pack Advice" FontSize="18" Margin="0,15,0,15"/>    
+                        </StackPanel>                       
+                        
+                    </StackPanel>
+                </ScrollViewer>
                 
-                    <TextBlock x:Name="Status" Text="1" FontSize="36" Margin="0,15,0,15"/>
-                    <Image x:Name="StatusImage" HorizontalAlignment="Center" VerticalAlignment="Center"
-                           Source="" Width="150" Height="150"/>
-                    <TextBlock x:Name="Location" Text="1" FontSize="36" Margin="0,15,0,15"/>
-                    <TextBlock x:Name="Recommendation" Text="1" FontSize="18" Margin="0,15,0,15"/>
-                </StackPanel>
             </PivotItem>
 
             <!--Locator-->

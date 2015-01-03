@@ -23,6 +23,8 @@ using GattWriteOption = Windows.Devices.Bluetooth.GenericAttributeProfile.GattWr
 using Task = System.Threading.Tasks.Task;
 using Windows.Storage.Streams;
 using Windows.ApplicationModel.Background;
+using Windows.Devices.Enumeration;
+using System.Threading.Tasks;
 
 namespace SmartPakkuCommon
 {
@@ -44,6 +46,9 @@ namespace SmartPakkuCommon
 
         private double latitude, longitude;
         private int battery_level, status;
+        private string device_id, device_container_id;
+
+
 
 
         // trivial properties
@@ -54,9 +59,9 @@ namespace SmartPakkuCommon
         public string Name { get { return device.Name; } }
         public string TaskName { get { return addressString; } }
 
+        public string DeviceId { get { return device_id; } }
 
-
-        public string DeviceId { get { return device.DeviceId; } }
+        public string DeviceContainerId { get { return device_container_id; } }
 
         public string AddressString { get { return addressString; } }
 
@@ -106,9 +111,11 @@ namespace SmartPakkuCommon
             }
         }
 
-        public SmartPack(BluetoothLEDevice device)
+        public SmartPack(BluetoothLEDevice device, string Selected_Device_ContainerID)
         {
             this.device = device;
+            device_container_id = Selected_Device_ContainerID;
+
             addressString = device.BluetoothAddress.ToString("x012");
 
             battery_level = -1;
@@ -154,6 +161,65 @@ namespace SmartPakkuCommon
             }
 
 
+        }
+
+        public SmartPack(DeviceInformation device_max, BluetoothLEDevice device)
+        {
+            this.device = device;
+            device_container_id = device_max.Properties["System.Devices.ContainerId"].ToString();
+            device_id = device_max.Id;
+
+            addressString = device.BluetoothAddress.ToString("x012");
+
+            battery_level = -1;
+            status = -1;
+
+            try
+            {
+                linkLossService = device.GetGattService(GattServiceUuids.LinkLoss);
+            }
+            catch (Exception)
+            {
+                // e.HResult == 0x80070490 means that the device doesn't have the requested service.
+                // We can still alert on the phone upon disconnection, but cannot ask the device to alert.
+                // linkLossServer will remain equal to null.
+            }
+
+
+            try
+            {
+                batteryService = device.GetGattService(GattServiceUuids.Battery);
+                heartRateService = device.GetGattService(GattServiceUuids.HeartRate);
+            }
+            catch (Exception)
+            {
+
+            }
+
+
+            if (localSettings.Values.ContainsKey(addressString))
+            {
+                string[] values = ((string)localSettings.Values[addressString]).Split(',');
+                alertOnPhone = bool.Parse(values[0]);
+                alertOnDevice = bool.Parse(values[1]);
+                alertLevel = (AlertLevel)Enum.Parse(typeof(AlertLevel), values[2]);
+            }
+
+
+            if (localSettings.Values.ContainsKey("backpack-location-latitude")
+                && localSettings.Values.ContainsKey("backpack-location-longitude"))
+            {
+                latitude = (double)localSettings.Values["backpack-location-latitude"];
+                longitude = (double)localSettings.Values["backpack-location-longitude"];
+            }
+
+
+        }
+
+        private async Task<BluetoothLEDevice> ZZ(DeviceInformation device)
+        {
+            BluetoothLEDevice a = await BluetoothLEDevice.FromIdAsync(device.Id);
+            return a;
         }
 
         // React to a change in configuration parameters:

@@ -1,25 +1,7 @@
 ﻿using SmartPakku.Common;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Windows.Devices.Enumeration;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Graphics.Display;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
-
-
 
 // I Added This Section
 
@@ -27,12 +9,10 @@ using System.Collections.ObjectModel;
 using SmartPakkuCommon;
 
 //  Make it obvious which namespace provided each referenced type:
-using BackgroundAccessStatus = Windows.ApplicationModel.Background.BackgroundAccessStatus;
-using BackgroundExecutiondManager = Windows.ApplicationModel.Background.BackgroundExecutionManager;
-using BackgroundTaskRegistration = Windows.ApplicationModel.Background.BackgroundTaskRegistration;
 using DeviceInformation = Windows.Devices.Enumeration.DeviceInformation;
 using BluetoothLEDevice = Windows.Devices.Bluetooth.BluetoothLEDevice;
 using Windows.Storage;
+using Windows.Devices.Bluetooth.GenericAttributeProfile;
 
 // End Section
 
@@ -41,9 +21,6 @@ namespace SmartPakku
 {
     public sealed partial class Wizard2_SelectDevice : Page
     {
-
-        
-
         public ObservableCollection<SmartPack> Devices { get; private set; }
 
         private NavigationHelper navigationHelper;
@@ -85,11 +62,14 @@ namespace SmartPakku
             // Get the list of paired Bluetooth LE devicdes, and add them to our 'devices' list. Associate each device with
             // its pre-existing registration if any, and remove that registration from our dictionary.
             Devices.Clear();
-            foreach (DeviceInformation di in await DeviceInformation.FindAllAsync(BluetoothLEDevice.GetDeviceSelector()))
+            foreach (DeviceInformation di in await DeviceInformation.FindAllAsync(
+                GattDeviceService.GetDeviceSelectorFromUuid(GattServiceUuids.HeartRate), new string[] { "System.Devices.ContainerId" }))
+            //BluetoothLEDevice.GetDeviceSelector(), new string[] { "System.Devices.ContainerId" } ))
             {
-                string INEEDTHIS = di.Id;
-                BluetoothLEDevice bleDevice = await BluetoothLEDevice.FromIdAsync(INEEDTHIS);
-                SmartPack device = new SmartPack(bleDevice);
+                string Selected_Device_ID = di.Id;
+                string Selected_Device_ContainerID = di.Properties["System.Devices.ContainerId"].ToString();
+                BluetoothLEDevice bleDevice = await BluetoothLEDevice.FromIdAsync(Selected_Device_ID);                
+                SmartPack device = new SmartPack(di, bleDevice);
                 Devices.Add(device);
             }
         }
@@ -108,7 +88,13 @@ namespace SmartPakku
 
             // We selected SmartPack x, so save the DeviceId of this SmartPack into settings
             var x = (SmartPack)deviceListBox.SelectedItem;
-            localSettings.Values["smartpack-device-id"] = x.DeviceId;
+
+            var y = x.DeviceId;
+            var z = x.DeviceContainerId;
+
+
+            localSettings.Values["smartpack-device-id"] = y;
+            localSettings.Values["smartpack-device-containerid"] = z;
 
             if (deviceListBox.SelectedItem != null)
             {

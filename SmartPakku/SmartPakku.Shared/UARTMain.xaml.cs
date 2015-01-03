@@ -36,15 +36,12 @@ namespace SmartPakku
             {
                 foreach (var measurement in UARTService.Instance.DataPoints)
                 {
-                    outputListBox.Items.Add(measurement.ToString());
+                    outputListBox.Items.Add("RX: "+measurement.ToString());
                 }
-                outputGrid.Visibility = Visibility.Visible;
-
+                
                 RunButton.IsEnabled = false;
             }
             UARTService.Instance.ValueChangeCompleted_2 += Instance_ValueChangeCompleted;
-
-
 
         }
         
@@ -63,11 +60,8 @@ namespace SmartPakku
             // Serialize UI update to the the main UI thread.
             await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                statusTextBlock.Text = "Latest received heart rate measurement: " +
-                    UARTElementValue.HeartRateValue;
-
-
-
+                statusTextBlock.Text = "Received: " +
+                    UARTElementValue.sent_text;                
                 outputListBox.Items.Insert(0, UARTElementValue);
             });
         }
@@ -109,8 +103,6 @@ namespace SmartPakku
             statusTextBlock.Text = "Initializing device...";
             UARTService.Instance.DeviceConnectionUpdated_2 += OnDeviceConnectionUpdated;
             await UARTService.Instance.InitializeServiceAsync(device);
-
-            outputGrid.Visibility = Visibility.Visible;
 
             try
             {
@@ -159,6 +151,9 @@ namespace SmartPakku
                 // send the data using the function UART_Transmit
                 await UARTService.Instance.UART_Transmit(data, length);
                 sendThisText.Text = "";
+
+                outputListBox.Items.Add("TX: " + data);
+
             }
             catch
             {

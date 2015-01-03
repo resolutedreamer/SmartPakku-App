@@ -105,7 +105,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
@@ -127,20 +127,11 @@
                 </StackPanel>
             </ScrollViewer>
 
-                    
-            <Grid Grid.Row="2" x:Name="outputGrid" Visibility="Visible">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                <ListBox Grid.Row="1" Name="outputListBox" MinWidth="200" Height="200" HorizontalAlignment="Stretch"/>
-                </Grid>
-            </Grid>
+            <ListBox Grid.Row="2" Name="outputListBox" MinWidth="200" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             
             <StackPanel Grid.Row="3" Orientation="Horizontal">
-                <TextBox Name="sendThisText" Height="Auto" Width="100" ></TextBox>
-                <Button Click="Button_Click" Height="Auto" Width="Auto">Send!</Button>    
+                <TextBox Name="sendThisText" Margin="10" Height="Auto" MinWidth="225" ></TextBox>
+                <Button Margin="10" Click="Button_Click" Height="Auto" Width="Auto">Send!</Button>    
             </StackPanel>
             
             

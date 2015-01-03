@@ -18,8 +18,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataModel\SampleDataSource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UARTService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HeartRateService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Scenario1_DeviceEvents.xaml.cs">
-      <DependentUpon>Scenario1_DeviceEvents.xaml</DependentUpon>
+    <Compile Include="$(MSBuildThisFileDirectory)UARTMain.xaml.cs">
+      <DependentUpon>UARTMain.xaml</DependentUpon>
     </Compile>
     <Content Include="$(MSBuildThisFileDirectory)Assets\backpack-resting.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\battery-life.png" />
@@ -36,7 +36,7 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="$(MSBuildThisFileDirectory)Scenario1_DeviceEvents.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)UARTMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

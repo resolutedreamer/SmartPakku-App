@@ -131,7 +131,7 @@ namespace SmartPakku
             }
             catch
             {
-                throw new Exception();
+                throw new Exception("Couldn't navigate to MainPage");
             }
         }
 

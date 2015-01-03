@@ -116,7 +116,7 @@ namespace SmartPakku
             }
             catch
             {
-
+                throw new Exception("Couldn't navigate to Wizard_2");
             }
         }
 

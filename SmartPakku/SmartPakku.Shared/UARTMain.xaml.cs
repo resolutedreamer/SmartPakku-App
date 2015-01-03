@@ -4,15 +4,10 @@
 //
 //*********************************************************
 
-using System.Collections.Generic;
-using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using SmartPakku;
 using System;
-
-using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Enumeration.Pnp;
@@ -22,10 +17,10 @@ namespace SmartPakku
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Scenario1_DeviceEvents : Page
+    public sealed partial class UARTMain : Page
     {
         
-        public Scenario1_DeviceEvents()
+        public UARTMain()
         {
             this.InitializeComponent();
         }

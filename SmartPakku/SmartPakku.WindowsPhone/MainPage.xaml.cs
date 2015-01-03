@@ -303,7 +303,7 @@ namespace SmartPakku
 
         private void getPackStatus_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(Scenario1_DeviceEvents));
+            Frame.Navigate(typeof(UARTMain));
             int status = 1;
             //int status = device.Status;
             update_adjustments_page(status);

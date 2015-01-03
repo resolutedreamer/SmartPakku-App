@@ -142,7 +142,7 @@ namespace SmartPakku
             {
                 if (isConnected)
                 {
-                    statusTextBlock.Text = "Waiting for device to send data...";
+                    statusTextBlock.Text = "Connected!";
                 }
                 else
                 {
@@ -170,6 +170,11 @@ namespace SmartPakku
                 
             }
 
+        }
+
+        private async void PairButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-bluetooth:"));
         }
     }
 }

@@ -296,7 +296,6 @@ namespace SmartPakku
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(Scenario1_DeviceEvents));
             int status = 1;
             update_adjustments_page(status);
         }
@@ -304,7 +303,9 @@ namespace SmartPakku
 
         private void getPackStatus_Click(object sender, RoutedEventArgs e)
         {
-            int status = device.Status;
+            Frame.Navigate(typeof(Scenario1_DeviceEvents));
+            int status = 1;
+            //int status = device.Status;
             update_adjustments_page(status);
         }
 

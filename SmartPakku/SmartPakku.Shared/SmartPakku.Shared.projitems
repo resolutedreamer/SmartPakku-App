@@ -18,7 +18,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataModel\SampleDataSource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UARTService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HeartRateService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SampleConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenario1_DeviceEvents.xaml.cs">
       <DependentUpon>Scenario1_DeviceEvents.xaml</DependentUpon>
     </Compile>

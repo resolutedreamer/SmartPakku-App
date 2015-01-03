@@ -46,8 +46,10 @@
     <DeviceCapability Name="location" />
     <m2:DeviceCapability Name="bluetooth.genericAttributeProfile">
       <m2:Device Id="any">
-        <m2:Function Type="serviceId:6E400001-B5A3-F393-E0A9-E50E24DCCA9E" />
-        <m2:Function Type="serviceId:1803" />
+        <m2:Function Type="serviceId:6E400001-B5A3-F393-E0A9-E50E24DCCA9E"/>
+        <m2:Function Type="serviceId:1803"/>
+        <m2:Function Type="serviceId:180F"/>
+        <m2:Function Type="serviceId:180D"/>        
       </m2:Device>
     </m2:DeviceCapability>
   </Capabilities>

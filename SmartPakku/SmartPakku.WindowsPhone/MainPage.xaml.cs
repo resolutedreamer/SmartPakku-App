@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using SmartPakkuCommon;
 using Windows.UI.Xaml.Media.Imaging;
 
+
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
 namespace SmartPakku
@@ -52,6 +53,7 @@ namespace SmartPakku
         BluetoothLEDevice bleDevice;
         SmartPack device;
 
+        public static MainPage Current;
 
         public MainPage()
         {
@@ -77,19 +79,26 @@ namespace SmartPakku
             {
                 backpackStatus.Text = "Initializing...";
                 string saved_device = my_settings.Values["smartpack-device-id"].ToString();
-                bleDevice = await BluetoothLEDevice.FromIdAsync(saved_device);
-                device = new SmartPack(bleDevice);
-                
-                await device.update_battery_level();
-                await device.update_status();
+                try
+                {
+                    bleDevice = await BluetoothLEDevice.FromIdAsync(saved_device);
+                    device = new SmartPack(bleDevice);
 
-                int bat_percent = device.BatteryLevel;
-                int status = device.Status;
+                    await device.update_battery_level();
+                    await device.update_status();
 
-                update_battery_page(bat_percent);
-                update_adjustments_page(status);
+                    int bat_percent = device.BatteryLevel;
+                    int status = device.Status;
 
-                backpackStatus.Text = "Connected!";
+                    update_battery_page(bat_percent);
+                    update_adjustments_page(status);
+
+                    backpackStatus.Text = "Connected!";
+                }
+                catch
+                {
+                    backpackStatus.Text = "Error connecting to SmartPack.\nPlease repeat the setup wizard."; 
+                }
             }
 
 
@@ -287,6 +296,7 @@ namespace SmartPakku
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Frame.Navigate(typeof(Scenario1_DeviceEvents));
             int status = 1;
             update_adjustments_page(status);
         }

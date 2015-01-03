@@ -113,6 +113,7 @@ namespace SmartPakkuCommon
 
             battery_level = -1;
             status = -1;
+
             try
             {
                 linkLossService = device.GetGattService(GattServiceUuids.LinkLoss);
@@ -123,6 +124,7 @@ namespace SmartPakkuCommon
                 // We can still alert on the phone upon disconnection, but cannot ask the device to alert.
                 // linkLossServer will remain equal to null.
             }
+
 
             try
             {
@@ -192,23 +194,29 @@ namespace SmartPakkuCommon
             // Can't forget about the battery!
 
             // If we need a battery_background task and one isn't already registered, create one
-            if (BatteryTaskRegistration == null)
+            if (BatteryTaskRegistration == null && batteryService != null)
             {
+                try
+                {
+                    GattCharacteristic BatteryLevelCharacteristic =   
+                        batteryService.GetCharacteristics(GattCharacteristicUuids.BatteryLevel)[0];
+                    GattCharacteristicNotificationTrigger bat_notify_trigger =
+                        new GattCharacteristicNotificationTrigger(BatteryLevelCharacteristic);
 
-                GattCharacteristic BatteryLevelCharacteristic =
-                    batteryService.GetCharacteristics(GattCharacteristicUuids.BatteryLevel)[0];
-                GattCharacteristicNotificationTrigger bat_notify_trigger =
-                    new GattCharacteristicNotificationTrigger(BatteryLevelCharacteristic);
+                    BackgroundTaskBuilder battery_builder = new BackgroundTaskBuilder();
+                    battery_builder.Name = TaskName + "2";
+                    battery_builder.TaskEntryPoint = "SmartPakkuBackground.BatteryTask";
+                    battery_builder.SetTrigger(bat_notify_trigger);
+                    BatteryTaskRegistration = battery_builder.Register();
+                }
+                catch
+                {
 
-                BackgroundTaskBuilder battery_builder = new BackgroundTaskBuilder();
-                battery_builder.Name = TaskName + "2";
-                battery_builder.TaskEntryPoint = "SmartPakkuBackground.BatteryTask";
-                battery_builder.SetTrigger(bat_notify_trigger);
-                BatteryTaskRegistration = battery_builder.Register();
+                }
             }
 
             // If we don't need a background task but have one, unregister it
-            if (TaskRegistration != null)
+            if (BatteryTaskRegistration != null)
             {
                 BatteryTaskRegistration.Unregister(false);
                 BatteryTaskRegistration = null;

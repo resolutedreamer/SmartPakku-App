@@ -16,6 +16,12 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)DataModel\SampleDataSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UARTService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HeartRateService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SampleConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Scenario1_DeviceEvents.xaml.cs">
+      <DependentUpon>Scenario1_DeviceEvents.xaml</DependentUpon>
+    </Compile>
     <Content Include="$(MSBuildThisFileDirectory)Assets\backpack-resting.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\battery-life.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\locator.png" />
@@ -29,5 +35,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\SuspensionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ObservableDictionary.cs" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Scenario1_DeviceEvents.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>

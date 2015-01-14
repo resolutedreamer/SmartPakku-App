@@ -16,6 +16,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)DataModel\SampleDataSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MongoLabCommunication.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenario1_DeviceEvents.xaml.cs">
       <DependentUpon>Scenario1_DeviceEvents.xaml</DependentUpon>
     </Compile>

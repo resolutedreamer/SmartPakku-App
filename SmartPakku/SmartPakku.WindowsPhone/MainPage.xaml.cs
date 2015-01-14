@@ -17,6 +17,8 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Enumeration.Pnp;
 using System.Collections;
+using Windows.Data.Json;
+using System.Collections.Generic;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -77,15 +79,12 @@ namespace SmartPakku
                     await device.update_status();
 
                     int bat_percent = device.BatteryLevel;
-                    int status = device.Status;
+                    //int status = device.Status;
 
                     update_battery_page(bat_percent);
-                    update_adjustments_page(status);
+                    //update_adjustments_page(status);
 
                     backpackStatus.Text = "Connected!";
-
-                    //update_adjustments_page(device.Status);
-                    update_adjustments_page(1);
                 }
                 catch
                 {
@@ -117,152 +116,281 @@ namespace SmartPakku
 
 
 #region Adjustments
+
+        int switch_on = 0;
+        List<WeightMeasurement> lots_of_measurements;
+        WeightMeasurement a_measurement;
+
         // Adjustments Pivot
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void update_adjustments_page(WeightMeasurement a_weight_measurement)
         {
-            int status = 1;
-            update_adjustments_page(status);
-        }
-
-        private void getPackStatus_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Scenario1_DeviceEvents));
-            int status = 1;
-            //int status = device.Status;
-            update_adjustments_page(status);
-        }
-
-        private void update_adjustments_page(int status)
-        {
-            switch (status)
+            // invalid status
+            if (a_weight_measurement.status == -1)
             {
-                case 1:
-                    Status.Text = "Being Worn!";
-                    var x = new BitmapImage(new Uri("ms-appx:///Assets/backpack-wearing.png"));
-                    StatusImage.Source = x;
-                    Location.Text = "With both shoulders";
-                    Recommendation.Text = "Do Nothing!";
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    break;
-                case 8:
-                    break;
-                default:
-                    break;
-            }
-        }
+                left_waist.Text = "Error";
+                left_waist_weight.Text = "";
 
-        #region HeartRateStuff
-        private void Fill_HeartRate_Box_Prep()
-        {
-            bool z = HeartRateService.Instance.IsServiceInitialized;
-            if (z)
+                right_waist.Text = "Please Reconnect the Sensor";
+                right_waist_weight.Text = "";
+
+                left_shoulder.Text = "and try to get status again";
+                left_shoulder_weight.Text = "";
+
+                right_shoulder.Text = "";
+                right_shoulder_weight.Text = "";
+            }
+            // just in case this function was called before 
+            // a complete weight measurement was ready
+            else if (!(a_weight_measurement.ready))
             {
-                foreach (var measurement in HeartRateService.Instance.DataPoints)
-                {
-                    outputListBox.Items.Add(measurement.ToString());
-                }
-                outputGrid.Visibility = Visibility.Visible;
+                return;
             }
-            HeartRateService.Instance.ValueChangeCompleted += Instance_ValueChangeCompleted;
-        }
 
-        private async void List_HeartRate_Devices()
-        {
-            backpackStatus.Text = "Listing SmartPack Devices";
-
-            var devices = await DeviceInformation.FindAllAsync(
-                GattDeviceService.GetDeviceSelectorFromUuid(GattServiceUuids.HeartRate),
-                new string[] { "System.Devices.ContainerId" });
-
-
-            DevicesListBox.Items.Clear();
-
-            if (devices.Count > 0)
-            {
-                foreach (var device in devices)
-                {
-                    DevicesListBox.Items.Add(device);
-                }
-                DevicesListBox.Visibility = Visibility.Visible;
-            }
+            // status is valid, and the weight measurements are complete
             else
             {
-                backpackStatus.Text = "Could not find any Heart Rate devices. Please make sure your device is paired " +
-                    "and powered on!";
-            }
-        }
-
-        private async void Instance_ValueChangeCompleted(HeartRateMeasurement heartRateMeasurementValue)
-        {
-            // Serialize UI update to the the main UI thread.
-            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
-                backpackStatus.Text = "Latest received heart rate measurement:\n" +
-                    heartRateMeasurementValue.HeartRateValue;
-
-                outputListBox.Items.Insert(0, heartRateMeasurementValue);
-            });
-        }
-
-        private async void PrepDevice(DeviceInformation device)
-        {
-            //var device = DevicesListBox.SelectedItem as DeviceInformation;
-            DevicesListBox.Visibility = Visibility.Collapsed;
-
-            backpackStatus.Text = "Initializing device...";
-            HeartRateService.Instance.DeviceConnectionUpdated += OnDeviceConnectionUpdated;
-            await HeartRateService.Instance.InitializeServiceAsync(device);
-            outputGrid.Visibility = Visibility.Visible;
-            try
-            {
-                // Check if the device is initially connected, and display the appropriate message to the user
-
-
-                var x = PnpObjectType.DeviceContainer;
-                var y = device.Properties["System.Devices.ContainerId"].ToString();
-                var z = new string[] { "System.Devices.Connected" };
-
-                var deviceObject = await PnpObject.CreateFromIdAsync(x, y, z);
-
-                bool isConnected;
-                if (Boolean.TryParse(deviceObject.Properties["System.Devices.Connected"].ToString(), out isConnected))
+                // FSR0 Pressed
+                // Left Shoulder
+                if (a_weight_measurement.fsrPressed0)
                 {
-                    OnDeviceConnectionUpdated(isConnected);
-                }
-            }
-            catch (Exception)
-            {
-                backpackStatus.Text = "Retrieving device properties failed";
-            }
-        }
-
-        private async void OnDeviceConnectionUpdated(bool isConnected)
-        {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
-                if (isConnected)
-                {
-                    backpackStatus.Text = "Waiting for device to send data...";
+                    left_shoulder.Text = "Left Shoulder: Worn";
+                    left_shoulder_weight.Text = "Weight: " + a_weight_measurement.fsrForces0.ToString();
                 }
                 else
                 {
-                    backpackStatus.Text = "Waiting for device to connect...";
+                    left_shoulder.Text = "Left Shoulder: Not Worn";
+                    left_shoulder_weight.Text = "Weight: None";
                 }
-            });
+
+                // FSR1 Pressed
+                // Left Waist
+                if (a_weight_measurement.fsrPressed1)
+                {
+                    left_waist.Text = "Left Waist: Worn";
+                    left_waist_weight.Text = "Weight: " + a_weight_measurement.fsrForces1.ToString();
+                }
+                else
+                {
+                    left_waist.Text = "Left Waist: Not Worn";
+                    left_waist_weight.Text = "Weight: None";
+                }
+
+                // FSR2 Pressed
+                // Right Waist
+                if (a_weight_measurement.fsrPressed2)
+                {
+                    right_waist.Text = "Right Waist: Worn";
+                    right_waist_weight.Text = "Weight: " + a_weight_measurement.fsrForces2.ToString();
+                }
+                else
+                {
+                    right_waist.Text = "Right Waist: Not Worn";
+                    right_waist_weight.Text = "Weight: None";
+                }
+
+                // FSR3 Pressed
+                // Right shoulder
+                if (a_weight_measurement.fsrPressed3)
+                {
+                    right_shoulder.Text = "Right Shoulder: Worn";
+                    right_shoulder_weight.Text = "Weight: " + a_weight_measurement.fsrForces3.ToString();
+                }
+                else
+                {
+                    right_shoulder.Text = "Right Shoulder: Not Worn";
+                    right_shoulder_weight.Text = "Weight: None";
+                }
+            }
+
+            Status.Text = "Being Worn!";
+            var x = new BitmapImage(new Uri("ms-appx:///Assets/backpack-wearing.png"));
+            StatusImage.Source = x;
+            Location.Text = "With both shoulders";
+            Recommendation.Text = "Do Nothing!";
         }
 
-        private void DevicesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        #region HeartRateStuff
+            private void Fill_HeartRate_Box_Prep()
+            {
+                bool z = HeartRateService.Instance.IsServiceInitialized;
+                if (z)
+                {
+                    foreach (var measurement in HeartRateService.Instance.DataPoints)
+                    {
+                        outputListBox.Items.Add(measurement.ToString());
+                    }
+                    outputGrid.Visibility = Visibility.Visible;
+                }
+                HeartRateService.Instance.ValueChangeCompleted += Instance_ValueChangeCompleted;
+            }
+
+            private async void List_HeartRate_Devices()
+            {
+                backpackStatus.Text = "Listing SmartPack Devices";
+
+                var devices = await DeviceInformation.FindAllAsync(
+                    GattDeviceService.GetDeviceSelectorFromUuid(GattServiceUuids.HeartRate),
+                    new string[] { "System.Devices.ContainerId" });
+
+
+                DevicesListBox.Items.Clear();
+
+                if (devices.Count > 0)
+                {
+                    foreach (var device in devices)
+                    {
+                        DevicesListBox.Items.Add(device);
+                    }
+                    DevicesListBox.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    backpackStatus.Text = "Could not find any Heart Rate devices. Please make sure your device is paired " +
+                        "and powered on!";
+                }
+            }
+
+            private async void Instance_ValueChangeCompleted(HeartRateMeasurement heartRateMeasurementValue)
+            {
+                // Store the Value as appropriate
+                var ReceivedValue = heartRateMeasurementValue.HeartRateValue;
+                switch (switch_on)
+                {
+                    case 1:
+                        // we got an 's' last time so this time we got status
+                        a_measurement.status = (short)ReceivedValue;
+
+                        var A = ReceivedValue & 1;
+                        var B = ReceivedValue & 2;
+                        var C = ReceivedValue & 4;
+                        var D = ReceivedValue & 8;
+                    
+                        // FSR0 Pressed
+                        // Left shoulder
+                        if (A == 1)
+                            a_measurement.fsrPressed0 = true;
+                        else
+                            a_measurement.fsrPressed0 = false;
+
+                        // FSR1 Pressed
+                        // Left Waist
+                        if (B == 2)
+                            a_measurement.fsrPressed1 = true;
+                        else
+                            a_measurement.fsrPressed1 = false;
+
+                        // FSR2 Pressed
+                        // Right Waist
+                        if (C == 4)
+                            a_measurement.fsrPressed2 = true;
+                        else
+                            a_measurement.fsrPressed2 = false;
+
+                        // FSR2 Pressed
+                        // Right shoulder
+                        if (D == 8)
+                            a_measurement.fsrPressed3 = true;
+                        else
+                            a_measurement.fsrPressed3 = false;
+
+                        break;
+                    case 2:
+                        // we got status last time so this time we got fsrForces0
+                        a_measurement.fsrForces0 = ReceivedValue;
+                        break;
+                    case 3:
+                        // we got fsrForces0 last time so this time we got fsrForces1
+                        a_measurement.fsrForces1 = ReceivedValue;
+                        break;
+                    case 4:
+                        // we got fsrForces1 last time so this time we got fsrForces2
+                        a_measurement.fsrForces2 = ReceivedValue;
+                        break;
+                    case 5:
+                        // we got fsrForces2 last time so this time we got fsrForces3
+                        a_measurement.fsrForces3 = ReceivedValue;
+                        break;
+                    case 6:
+                        // we got fsrForces3 last time so this time we got 's'
+                        // the prior measurement was ready so add it to the list
+                        // and start setting up a new measurement
+                        a_measurement.ready = true;
+                        lots_of_measurements.Add(a_measurement);
+                        a_measurement = new WeightMeasurement();
+                        break;
+                    default:
+                        // we have not gotten an 's' yet
+                        break;
+                }
+
+                if (ReceivedValue == 's')
+                {
+                    switch_on = 1;
+                }
+                else
+                {
+                    switch_on ++;
+                }
+
+                // Serialize UI update to the the main UI thread.
+                await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    backpackStatus.Text = "Latest received heart rate measurement:\n" +
+                        heartRateMeasurementValue.HeartRateValue;
+
+                    outputListBox.Items.Insert(0, heartRateMeasurementValue);
+                });
+
+            }
+
+            private async void PrepDevice(DeviceInformation device)
+            {
+                //var device = DevicesListBox.SelectedItem as DeviceInformation;
+                DevicesListBox.Visibility = Visibility.Collapsed;
+
+                backpackStatus.Text = "Initializing device...";
+                HeartRateService.Instance.DeviceConnectionUpdated += OnDeviceConnectionUpdated;
+                await HeartRateService.Instance.InitializeServiceAsync(device);
+                outputGrid.Visibility = Visibility.Visible;
+                try
+                {
+                    // Check if the device is initially connected, and display the appropriate message to the user
+
+
+                    var x = PnpObjectType.DeviceContainer;
+                    var y = device.Properties["System.Devices.ContainerId"].ToString();
+                    var z = new string[] { "System.Devices.Connected" };
+
+                    var deviceObject = await PnpObject.CreateFromIdAsync(x, y, z);
+
+                    bool isConnected;
+                    if (Boolean.TryParse(deviceObject.Properties["System.Devices.Connected"].ToString(), out isConnected))
+                    {
+                        OnDeviceConnectionUpdated(isConnected);
+                    }
+                }
+                catch (Exception)
+                {
+                    backpackStatus.Text = "Retrieving device properties failed";
+                }
+            }
+
+            private async void OnDeviceConnectionUpdated(bool isConnected)
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    if (isConnected)
+                    {
+                        backpackStatus.Text = "Waiting for device to send data...";
+                    }
+                    else
+                    {
+                        backpackStatus.Text = "Waiting for device to connect...";
+                    }
+                });
+            }
+
+            private void DevicesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var X = QQ;
             var device = DevicesListBox.SelectedItem as DeviceInformation;
@@ -270,6 +398,28 @@ namespace SmartPakku
             PrepDevice(device);
         }
         #endregion
+
+        #region TestingButtons
+
+            private async void Button_Click_2(object sender, RoutedEventArgs e)
+            {
+                string thisdata = a_measurement.ToString();
+                await send_data(thisdata);
+
+                get_data();
+            }
+
+            private void Button_Click(object sender, RoutedEventArgs e)
+            {
+            
+            }
+
+            private void getPackStatus_Click(object sender, RoutedEventArgs e)
+            {
+                Frame.Navigate(typeof(Scenario1_DeviceEvents));
+            }
+        #endregion
+
 
 #endregion
 
@@ -548,6 +698,7 @@ namespace SmartPakku
         }
         #endregion
 
+
 #region AppBar
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
@@ -573,103 +724,23 @@ namespace SmartPakku
                 TestingPanel.Visibility = Visibility.Collapsed;
             }
         }
+        #endregion
+
+#region Web
+
+        
+        private async void get_data()
+        {
+            JsonObject MyData = await MongoLabCommunication.GetMongo1();
+            return;
+        }
+        private async Task<bool> send_data(string to_send)
+        {
+            JsonObject MyData = JsonObject.Parse(to_send);
+            bool success = await MongoLabCommunication.SendMongo1(MyData);
+            return success;
+        }
 #endregion
 
     }
 }
-
-// for now we use a button to get the informatiom from the arduino via bluetooth le
-// not entirely sure how to send the data yet. may send the data over UART
-// not sure how to define the data yet. if all processing is done on the arudino
-// then we just send the states back here.
-
-
-// example: custom bluetooth LE characteristics
-// 4 bytes
-
-// first byte: not sure actually
-// bit 0: connected [1] or not [0]
-// bit 1: backpack is worn [1] or stationary [0]
-// bit 2:
-// bit 3: 
-// bit 4:
-// bit 5:
-// bit 6:
-// bit 7:
-
-
-// second byte: battery level
-// bit 0: need to charge [1] or not [0]
-// bit 1: 
-// bit 2: 1-7 will be the digits for the charge percentage
-// bit 3: 2^7 = 128, maximum charge percentage is 100%
-// bit 4:
-// bit 5:
-// bit 6:
-// bit 7:
-
-
-// third byte: worn backpack
-// bit 0: left shoulder - worn[1] or not [0]
-// bit 1: right shoulder - worn[1] or not [0]
-// bit 2: left shoulder - worn[1] or not [0]
-// bit 3: right shoulder - worn[1] or not [0]
-// bit 4: left back - worn[1] or not [0]
-// bit 5: right back - worn[1] or not [0]
-// bit 6:
-// bit 7:
-
-
-// fourth byte: stationary backpack
-// bit 0: normal
-// bit 1: face down
-// bit 2: back down
-// bit 3: left side
-// bit 4: right side
-// bit 5:
-// bit 6:
-// bit 7:
-
-
-// fifth byte:
-// bit 0: connected [1] or not [0]
-// bit 1: backpack is worn [1] or stationary [0]
-// bit 2:
-// bit 3: 
-// bit 4:
-// bit 5:
-// bit 6:
-// bit 7:
-
-
-// sixth byte:
-// bit 0: connected [1] or not [0]
-// bit 1: backpack is worn [1] or stationary [0]
-// bit 2:
-// bit 3: 
-// bit 4:
-// bit 5:
-// bit 6:
-// bit 7:
-
-
-// seventh byte:
-// bit 0: 
-// bit 1: 
-// bit 2:
-// bit 3: 
-// bit 4:
-// bit 5:
-// bit 6:
-// bit 7:
-
-
-// eighth byte:
-// bit 0: 
-// bit 1: 
-// bit 2:
-// bit 3: 
-// bit 4:
-// bit 5:
-// bit 6:
-// bit 7:

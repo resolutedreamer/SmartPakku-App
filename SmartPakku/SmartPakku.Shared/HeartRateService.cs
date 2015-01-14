@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
 
@@ -9,8 +7,6 @@ using Windows.Storage.Streams;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Enumeration.Pnp;
-
-using SmartPakku;
 
 
 namespace SmartPakku
@@ -27,6 +23,8 @@ namespace SmartPakku
             return HeartRateValue.ToString() + " bpm @ " + Timestamp.ToString();
         }
     }
+
+    
 
     public delegate void ValueChangeCompletedHandler(HeartRateMeasurement heartRateMeasurementValue);
 
@@ -53,6 +51,7 @@ namespace SmartPakku
         private GattDeviceService service;
         private GattCharacteristic characteristic;
         private List<HeartRateMeasurement> datapoints;
+        private List<WeightMeasurement> datapoints2;
         private PnpObjectWatcher watcher;
         private String deviceContainerId;
 

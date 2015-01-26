@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="SmartPakku.Wizard1_PairDevice"
+    x:Class="SmartPakku.Wizard0_Welcome"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SmartPakku"
@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.BottomAppBar>
-        <CommandBar>
+        <CommandBar>   
             <AppBarButton Icon="Forward" Label="Continue" Click="AppBarButton_Click"/>
         </CommandBar>
     </Page.BottomAppBar>
@@ -29,18 +29,20 @@
         <!-- Title Panel -->
         <StackPanel Grid.Row="0" Margin="19,0,0,0">
             <TextBlock Text="smartpakku" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
-            <TextBlock Text="setup wizard" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+            <TextBlock Text="welcome" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
             <StackPanel Margin="0,0,0,10">
-                    <TextBlock Text="Step 1: Pair Device" Style="{StaticResource SubheaderTextBlockStyle}"/>
+                    <TextBlock Text="thank you for downloading smartpakku" Style="{StaticResource SubheaderTextBlockStyle}"  Margin="0,0,0,10"/>
                     <TextBlock TextWrapping="Wrap" Style="{StaticResource BodyTextBlockStyle}">
-                        Pair your smartpack. This button will bring you to the Windows Phone Bluetooth
-                        Settings page where you can find and pair your device to your phone.
+                        If you are downloading this app, you have just embarked on the 
+                        first step on improving your back health for years to come. Thank
+                        you for joining us on this journey. <LineBreak/>
+                        <LineBreak/>We can now begin setting up your smartpack.
+                        Please press the button on the bottom to continue.
                     </TextBlock>
-                    <Button x:Name="RunButton" Grid.Row="1" Content="Run" Margin="0,0,10,0" Click="RunButton_Click"/>
             </StackPanel>
         </Grid>
     </Grid>

@@ -15,7 +15,9 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="SmartPakku.Windows.App">
-      <m2:VisualElements DisplayName="SmartPakku" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="SmartPakku.Windows" ForegroundText="light" BackgroundColor="#464646">
+      <m2:VisualElements DisplayName="SmartPakku" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="SmartPakku.Windows" ForegroundText="light" BackgroundColor="#464646" ToastCapable="false">
+        <m2:DefaultTile Square310x310Logo="Assets\AppStore\Square310x310Logo.png" Wide310x150Logo="Assets\AppStore\widelogo.png" Square70x70Logo="Assets\AppStore\Square70x70Logo.png">
+        </m2:DefaultTile>
         <m2:SplashScreen Image="Assets\SplashScreen.png" />
       </m2:VisualElements>
     </Application>

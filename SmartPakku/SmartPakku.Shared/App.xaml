@@ -3,4 +3,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SmartPakku">
+    <Application.Resources>
+        <ResourceDictionary>
+            <x:String x:Key="AppName">SmartPakku</x:String>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

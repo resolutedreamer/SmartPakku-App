@@ -1,62 +1,100 @@
-﻿<!-- Copyright (c) Microsoft. All rights reserved. -->
-<Page
+﻿<Page
+    x:Name="pageRoot"
     x:Class="SmartPakku.MainPage"
+    DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SmartPakku"
+    xmlns:common="using:SmartPakku.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-
+    <!--
+        This grid acts as a root panel for the page that defines two rows:
+        * Row 0 contains the back button and page title
+        * Row 1 contains the rest of the page layout
+    -->
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"  MinWidth="230" MaxWidth="600"/>
-            <ColumnDefinition Width="8*"/>
-        </Grid.ColumnDefinitions>
-        <Grid x:Name="LeftPane" Background="#FF140044" Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="115"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="100"/>
-            </Grid.RowDefinitions>
-            <StackPanel VerticalAlignment="Top" Grid.Row="0" Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" Margin="5,20,0,0">
-                    <Image Source="Assets/windows-sdk.png" Stretch="None"/>
-                    <TextBlock Text="Windows platform sample" Foreground="White" Style="{StaticResource TagLineTextStyle}"/>
-                </StackPanel>
-                <TextBlock x:Name="SampleTitle" Foreground="White" Style="{StaticResource SampleHeaderTextStyle}" Margin="30,10,30,0" TextWrapping="Wrap" Text="Sample title here"/>
-            </StackPanel>
-            <ListBox x:Name="ScenarioControl" Grid.Row="1" SelectionChanged="ScenarioControl_SelectionChanged"
-                 SelectionMode="Single" HorizontalAlignment="Left" Style="{StaticResource ScenarioListBoxStyle}"
-                 VerticalAlignment="Top">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Converter={StaticResource ScenarioConverter}}" Style="{StaticResource ListItemTextStyle}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0,10,0,20" VerticalAlignment="Top">
-                <TextBlock Margin="10,0,0,0" Foreground="White" TextWrapping="Wrap" >Status:</TextBlock>
-                <Border x:Name="StatusBorder" Margin="0,0,0,0" Visibility="Collapsed">
-                    <TextBlock x:Name="StatusBlock" Foreground="White" FontWeight="Bold" MaxHeight="200" TextTrimming="CharacterEllipsis"  Margin="20,10,10,20" TextWrapping="Wrap" />
-                </Border>
-            </StackPanel>
-            <StackPanel Grid.Row="3" Orientation="Vertical" Margin="10,0,5,10" VerticalAlignment="Bottom" >
-                <Image Source="Assets/microsoft-sdk.png"  Stretch="None" HorizontalAlignment="Left"/>
-                <TextBlock Text="&#xA9; Microsoft Corporation. All rights reserved." Foreground="White" Style="{StaticResource CopyrightTextStyle}"/>
-                <StackPanel x:Name="FooterPanel" Orientation="Horizontal" HorizontalAlignment="Left">
-                    <HyperlinkButton Content="Terms" Tag="http://www.microsoft.com/About/Legal/EN/US/IntellectualProperty/Copyright/default.aspx"
-                        Click="Footer_Click" FontSize="12" Style="{StaticResource HyperlinkStyle}"/>
-                    <TextBlock Text="|" Style="{StaticResource SeparatorStyle}" VerticalAlignment="Center"/>
-                    <HyperlinkButton Content="Trademarks" Tag="http://www.microsoft.com/About/Legal/EN/US/IntellectualProperty/Trademarks/EN-US.aspx"
-                        Click="Footer_Click" FontSize="12" Style="{StaticResource HyperlinkStyle}"/>
-                    <TextBlock Text="|"  Style="{StaticResource SeparatorStyle}" VerticalAlignment="Center"/>
-                    <HyperlinkButton Content="Privacy" Tag="http://privacy.microsoft.com" Click="Footer_Click" FontSize="12" Style="{StaticResource HyperlinkStyle}"/>
-                </StackPanel>
-            </StackPanel>
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="140"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Back button and page title -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="backButton" Margin="39,59,39,0" Command="{Binding NavigationHelper.GoBackCommand, ElementName=pageRoot}"
+                        Style="{StaticResource NavigationBackButtonNormalStyle}"
+                        VerticalAlignment="Top"
+                        AutomationProperties.Name="Back"
+                        AutomationProperties.AutomationId="BackButton"
+                        AutomationProperties.ItemType="Navigation Button"/>
+            <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
+                        IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
         </Grid>
-        <Frame Grid.Column="1" x:Name="ScenarioFrame" Margin="30,50,30,0" />
+        <Grid Grid.Row="1" Margin="50, 0, 50 , 50">
+            <Grid.RowDefinitions>
+                
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                                
+                <StackPanel Grid.Column="0" Grid.Row="0">    
+                    <TextBlock x:Name="left_shoulder" 
+                        Text="Left Shoulder:" Style="{StaticResource SubheaderTextBlockStyle}" Margin="0,0,0,2"/>
+                    <TextBlock x:Name="left_shoulder_weight"
+                                Text="Weight: " FontSize="14" Margin="0,0,0,15"/>
+                </StackPanel>
+                                
+                <StackPanel Grid.Column="0" Grid.Row="1">
+                    <TextBlock x:Name="left_waist"
+                                Text="Left Waist: " Style="{StaticResource SubheaderTextBlockStyle}" Margin="0,0,0,2"/>
+                    <TextBlock x:Name="left_waist_weight"
+                                Text="Weight: "  FontSize="14" Margin="0,0,0,15"/>    
+                </StackPanel>
+                                
+                <StackPanel Grid.Column="1" Grid.Row="0">
+                    <TextBlock x:Name="right_shoulder"
+                                Text="Right Shoulder:" Style="{StaticResource SubheaderTextBlockStyle}" Margin="0,0,0,2"/>
+                    <TextBlock x:Name="right_shoulder_weight"
+                                Text="Weight: " FontSize="14" Margin="0,0,0,15"/>             
+                </StackPanel>
+                                
+                <StackPanel Grid.Column="1" Grid.Row="1">
+                    <TextBlock x:Name="right_waist"
+                                Text="Right Waist: " Style="{StaticResource SubheaderTextBlockStyle}" Margin="0,0,0,2"/>
+                    <TextBlock x:Name="right_waist_weight"
+                                Text="Weight: "  FontSize="14" Margin="0,0,0,15"/>                                    
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Column="1">
+                    
+            </Grid>
+            
+            
+            
+        </Grid>
     </Grid>
 </Page>

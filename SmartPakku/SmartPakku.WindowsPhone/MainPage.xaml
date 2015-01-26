@@ -90,34 +90,80 @@
                             </Grid>    
                         </StackPanel>
                         
+                            <!--
                         <StackPanel>
-                            <TextBlock x:Name="Status" Text="Pack State" FontSize="36" Margin="0,15,0,15"/>
-                            
-                            <StackPanel>
-                                <TextBlock x:Name="left_shoulder" Text="Left Shoulder: " FontSize="18" Margin="0,0,0,2"/>
-                                <TextBlock x:Name="left_shoulder_weight" Text="Weight: " FontSize="14" Margin="0,0,0,15"/>
+                            <TextBlock x:Name="Status" Text="Pack State" Style="{StaticResource SubheaderTextBlockStyle}"/>
+                            <TextBlock x:Name="left_shoulder" Text="Left Shoulder: " FontSize="18" Margin="0,0,0,2"/>
+                            <TextBlock x:Name="left_shoulder_weight" Text="Weight: " FontSize="14" Margin="0,0,0,15"/>
                                 
-                                <TextBlock x:Name="left_waist" Text="Left Waist: " FontSize="18" Margin="0,0,0,2"/>
-                                <TextBlock x:Name="left_waist_weight" Text="Weight: "  FontSize="14" Margin="0,0,0,15"/>
+                            <TextBlock x:Name="left_waist" Text="Left Waist: " FontSize="18" Margin="0,0,0,2"/>
+                            <TextBlock x:Name="left_waist_weight" Text="Weight: "  FontSize="14" Margin="0,0,0,15"/>
                                 
-                                <TextBlock x:Name="right_waist" Text="Right Waist: " FontSize="18" Margin="0,0,0,2"/>
-                                <TextBlock x:Name="right_waist_weight" Text="Weight: "  FontSize="14" Margin="0,0,0,15"/>
+                            <TextBlock x:Name="right_waist" Text="Right Waist: " FontSize="18" Margin="0,0,0,2"/>
+                            <TextBlock x:Name="right_waist_weight" Text="Weight: "  FontSize="14" Margin="0,0,0,15"/>
                                 
-                                <TextBlock x:Name="right_shoulder" Text="Right Shoulder: " FontSize="18" Margin="0,0,0,2"/>
-                                <TextBlock x:Name="right_shoulder_weight" Text="Weight: " FontSize="14" Margin="0,0,0,15"/>
-                            </StackPanel>
-                            
-                                                        
+                            <TextBlock x:Name="right_shoulder" Text="Right Shoulder: " FontSize="18" Margin="0,0,0,2"/>
+                            <TextBlock x:Name="right_shoulder_weight" Text="Weight: " FontSize="14" Margin="0,0,0,15/>                                             
+                        </StackPanel>                       
+                        -->        
+                        <StackPanel>
+                            <TextBlock x:Name="Status" Text="Pack State" Style="{StaticResource SubheaderTextBlockStyle}"/>
                             <Image x:Name="StatusImage" HorizontalAlignment="Center" VerticalAlignment="Center"
                                     Source="" Width="150" Height="150"/>
-                            <TextBlock x:Name="Location" Text="Pack Location" FontSize="36" Margin="0,15,0,15"/>
-                            <TextBlock x:Name="Recommendation" Text="Pack Advice" FontSize="18" Margin="0,15,0,15"/>
-                            
-                        </StackPanel>                       
+                            <TextBlock x:Name="Location" Text="Pack Location" Style="{StaticResource SubheaderTextBlockStyle}"/>
+                            <TextBlock x:Name="Recommendation" Text="Pack Advice" Style="{StaticResource BodyTextBlockStyle}"/>
+                        </StackPanel>
+                        
                         
                     </StackPanel>
                 </ScrollViewer>
                 
+            </PivotItem>
+<PivotItem
+                x:Uid="PackAssistant"
+                Margin="19,14.5,0,0"
+                Header="pack state"
+                CommonNavigationTransitionInfo.IsStaggerElement="True">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                                
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                                
+                    <StackPanel Grid.Column="0" Grid.Row="0">    
+                        <TextBlock x:Name="left_shoulder" 
+                            Text="Left Shoulder:" Style="{StaticResource SubheaderTextBlockStyle}" Margin="0,0,0,2"/>
+                        <TextBlock x:Name="left_shoulder_weight"
+                                    Text="Weight: " FontSize="14" Margin="0,0,0,15"/>
+                    </StackPanel>
+                                
+                    <StackPanel Grid.Column="0" Grid.Row="1">
+                        <TextBlock x:Name="left_waist"
+                                    Text="Left Waist: " Style="{StaticResource SubheaderTextBlockStyle}" Margin="0,0,0,2"/>
+                        <TextBlock x:Name="left_waist_weight"
+                                    Text="Weight: "  FontSize="14" Margin="0,0,0,15"/>    
+                    </StackPanel>
+                                
+                    <StackPanel Grid.Column="1" Grid.Row="0">
+                        <TextBlock x:Name="right_shoulder"
+                                    Text="Right Shoulder:" Style="{StaticResource SubheaderTextBlockStyle}" Margin="0,0,0,2"/>
+                        <TextBlock x:Name="right_shoulder_weight"
+                                    Text="Weight: " FontSize="14" Margin="0,0,0,15"/>             
+                    </StackPanel>
+                                
+                    <StackPanel Grid.Column="1" Grid.Row="1">
+                        <TextBlock x:Name="right_waist"
+                                    Text="Right Waist: " Style="{StaticResource SubheaderTextBlockStyle}" Margin="0,0,0,2"/>
+                        <TextBlock x:Name="right_waist_weight"
+                                    Text="Weight: "  FontSize="14" Margin="0,0,0,15"/>                                    
+                    </StackPanel>
+                </Grid>
+                        
             </PivotItem>
 
             <!--Locator-->

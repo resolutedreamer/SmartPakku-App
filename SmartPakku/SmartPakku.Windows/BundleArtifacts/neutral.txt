@@ -1,0 +1,4 @@
+MainPackage=F:\ZDrive\Act Now!\EE M202A - SmartPakku\4) WP\SmartPakku\SmartPakku\SmartPakku.Windows\bin\Release\SmartPakku.Windows_1.1.0.0_AnyCPU.appx
+SymbolPackage=F:\ZDrive\Act Now!\EE M202A - SmartPakku\4) WP\SmartPakku\SmartPakku\SmartPakku.Windows\AppPackages\SmartPakku.Windows_1.1.0.0_Test\SmartPakku.Windows_1.1.0.0_AnyCPU.appxsym
+ResourcePack=F:\ZDrive\Act Now!\EE M202A - SmartPakku\4) WP\SmartPakku\SmartPakku\SmartPakku.Windows\bin\Release\SmartPakku.Windows_1.1.0.0_scale-140.appx
+ResourcePack=F:\ZDrive\Act Now!\EE M202A - SmartPakku\4) WP\SmartPakku\SmartPakku\SmartPakku.Windows\bin\Release\SmartPakku.Windows_1.1.0.0_scale-180.appx

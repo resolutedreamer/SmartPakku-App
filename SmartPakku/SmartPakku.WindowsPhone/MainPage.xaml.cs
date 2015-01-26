@@ -118,8 +118,8 @@ namespace SmartPakku
 #region Adjustments
 
         int switch_on = 0;
-        List<WeightMeasurement> lots_of_measurements;
-        WeightMeasurement a_measurement;
+        List<WeightMeasurement> lots_of_measurements = new List<WeightMeasurement>();
+        WeightMeasurement a_measurement = new WeightMeasurement();
 
         // Adjustments Pivot
         private void update_adjustments_page(WeightMeasurement a_weight_measurement)
@@ -252,6 +252,8 @@ namespace SmartPakku
 
             private async void Instance_ValueChangeCompleted(HeartRateMeasurement heartRateMeasurementValue)
             {
+            a_measurement.state_ID = "54b726e9e4b064b9f80549ab";
+
                 // Store the Value as appropriate
                 var ReceivedValue = heartRateMeasurementValue.HeartRateValue;
                 switch (switch_on)
@@ -401,17 +403,17 @@ namespace SmartPakku
 
         #region TestingButtons
 
-            private async void Button_Click_2(object sender, RoutedEventArgs e)
+            private void Button_Click_2(object sender, RoutedEventArgs e)
             {
-                string thisdata = a_measurement.ToString();
-                await send_data(thisdata);
-
-                get_data();
+                Frame.Navigate(typeof(WeightMeasurementTest));
+                /*string thisdata = a_measurement.ToString();
+                //await send_data(thisdata);
+                JsonObject MyObject = await MongoLabCommunication.GetMongo1();*/
             }
 
-            private void Button_Click(object sender, RoutedEventArgs e)
+            private async void Button_Click(object sender, RoutedEventArgs e)
             {
-            
+                JsonObject MyData = await MongoLabCommunication.GetMongo1();
             }
 
             private void getPackStatus_Click(object sender, RoutedEventArgs e)
@@ -725,22 +727,6 @@ namespace SmartPakku
             }
         }
         #endregion
-
-#region Web
-
-        
-        private async void get_data()
-        {
-            JsonObject MyData = await MongoLabCommunication.GetMongo1();
-            return;
-        }
-        private async Task<bool> send_data(string to_send)
-        {
-            JsonObject MyData = JsonObject.Parse(to_send);
-            bool success = await MongoLabCommunication.SendMongo1(MyData);
-            return success;
-        }
-#endregion
 
     }
 }

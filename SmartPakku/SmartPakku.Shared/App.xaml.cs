@@ -125,7 +125,7 @@ namespace SmartPakku
                 {
                     // User has not completed the setup wizard
                     // therefore, go open the setup wizard instead of the app main page
-                    if (!rootFrame.Navigate(typeof(Wizard1_PairDevice)))
+                    if (!rootFrame.Navigate(typeof(Wizard0_Welcome)))
                     {
                         throw new Exception("Failed to create initial page");
                     }
@@ -151,7 +151,7 @@ namespace SmartPakku
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                if (!rootFrame.Navigate(typeof(HubPage), e.Arguments))
+                if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
                 {
                     throw new Exception("Failed to create initial page");
                 }

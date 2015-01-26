@@ -51,7 +51,6 @@ namespace SmartPakku
         private GattDeviceService service;
         private GattCharacteristic characteristic;
         private List<HeartRateMeasurement> datapoints;
-        private List<WeightMeasurement> datapoints2;
         private PnpObjectWatcher watcher;
         private String deviceContainerId;
 

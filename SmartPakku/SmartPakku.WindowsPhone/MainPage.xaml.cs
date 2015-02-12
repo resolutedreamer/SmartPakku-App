@@ -55,14 +55,13 @@ namespace SmartPakku
                 await location_permission_prompt();
             }
 
-            if (my_settings.Values.ContainsKey("smartpack-device-id") && my_settings.Values.ContainsKey("smartpack-device-containerid"))
+            if (my_settings.Values.ContainsKey("smartpack-device-id"))
             {
                 try
                 {
                     backpackStatus.Text = "Initializing...";
                     
                     string saved_device_id = my_settings.Values["smartpack-device-id"].ToString();
-                    string saved_device_containerid = my_settings.Values["smartpack-device-containerid"].ToString();
 
                     device_connector = await DeviceInformation.CreateFromIdAsync(saved_device_id, new string[] { "System.Devices.ContainerId" });
                     PrepDevice(device_connector);

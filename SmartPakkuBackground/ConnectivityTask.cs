@@ -46,11 +46,9 @@ namespace SmartPakkuBackground
 
                 // We don't allow for more than one smartpack, so both could actually be pulled from settings
                 string device_id = details.DeviceId;
-                string container_id = my_settings.Values["smartpack-device-containerid"].ToString();
-
 
                 BluetoothLEDevice bleDevice = await BluetoothLEDevice.FromIdAsync(device_id);
-                SmartPack device = new SmartPack(bleDevice, container_id);
+                SmartPack device = new SmartPack(bleDevice);
 
 
                 if (bleDevice.ConnectionStatus == BluetoothConnectionStatus.Connected)

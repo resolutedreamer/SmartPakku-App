@@ -67,7 +67,6 @@ namespace SmartPakku
             //BluetoothLEDevice.GetDeviceSelector(), new string[] { "System.Devices.ContainerId" } ))
             {
                 string Selected_Device_ID = di.Id;
-                string Selected_Device_ContainerID = di.Properties["System.Devices.ContainerId"].ToString();
                 BluetoothLEDevice bleDevice = await BluetoothLEDevice.FromIdAsync(Selected_Device_ID);                
                 SmartPack device = new SmartPack(di, bleDevice);
                 Devices.Add(device);

@@ -111,11 +111,9 @@ namespace SmartPakkuCommon
             }
         }
 
-        public SmartPack(BluetoothLEDevice device, string Selected_Device_ContainerID)
+        public SmartPack(BluetoothLEDevice device)
         {
             this.device = device;
-            device_container_id = Selected_Device_ContainerID;
-
             addressString = device.BluetoothAddress.ToString("x012");
 
             battery_level = -1;
@@ -132,7 +130,6 @@ namespace SmartPakkuCommon
                 // linkLossServer will remain equal to null.
             }
 
-
             try
             {
                 batteryService = device.GetGattService(GattServiceUuids.Battery);                
@@ -143,7 +140,6 @@ namespace SmartPakkuCommon
 
             }
 
-
             if (localSettings.Values.ContainsKey(addressString))
             {
                 string[] values = ((string)localSettings.Values[addressString]).Split(',');
@@ -151,7 +147,6 @@ namespace SmartPakkuCommon
                 alertOnDevice = bool.Parse(values[1]);
                 alertLevel = (AlertLevel)Enum.Parse(typeof(AlertLevel), values[2]);
             }
-
             
             if (localSettings.Values.ContainsKey("backpack-location-latitude")
                 && localSettings.Values.ContainsKey("backpack-location-longitude"))
@@ -159,7 +154,6 @@ namespace SmartPakkuCommon
                 latitude = (double)localSettings.Values["backpack-location-latitude"];
                 longitude = (double)localSettings.Values["backpack-location-longitude"];
             }
-
 
         }
 

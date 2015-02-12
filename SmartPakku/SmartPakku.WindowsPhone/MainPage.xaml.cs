@@ -47,67 +47,65 @@ namespace SmartPakku
             {
                 Frame.BackStack.Clear();
             }
-            
-            if (!my_settings.Values.ContainsKey("location-consent"))
-            {
-                // User not yet has opted in or out of Location
-                // so you should ask if they want to use it or not
-                await location_permission_prompt();
-            }
 
-            if (my_settings.Values.ContainsKey("smartpack-device-id"))
-            {
-                try
-                {
-                    backpackStatus.Text = "Initializing...";
-                    
-                    // connect to the backpack
-                    string saved_device_id = my_settings.Values["smartpack-device-id"].ToString();
-                    device_connector = await DeviceInformation.CreateFromIdAsync(saved_device_id, new string[] { "System.Devices.ContainerId" });
-                    PrepDevice(device_connector);
+            // connect to the backpack
+            connect_to_backpack(); 
 
-                    // get the current battery level and update the battery level display
-                    await device.update_battery_level();
-                    int bat_percent = device.BatteryLevel;
-                    update_battery_page(bat_percent);
+            // get the current battery level and update the battery level display
+            await device.update_battery_level();
+            update_battery_page(device.BatteryLevel);
 
-                    await device.update_status();
-                    //int status = device.Status;
-                    //update_adjustments_page(status);
-
-                    backpackStatus.Text = "Connected!";
-                }
-                catch
-                {
-                    backpackStatus.Text = "Error connecting to SmartPack.\nPlease reconnect and try again."; 
-                }   
-            }
-            else
-            {
-                backpackStatus.Text = "SmartPack data improperly saved.\nPlease repeat the setup wizard.";
-            }
-
-            // If the app had run previously, add the values to the datapoint box
+            // add any old values to the datapoint box
             Fill_HeartRate_Box_Prep();
 
+            // get the current state and update the state display and adjustments page
+            await device.update_status();
+            //int status = device.Status;
+            //update_adjustments_page(status);
 
-            // they've gone through the setup wizard, and they have the
-            // location capability to be either on or off
-            // now check if they've allowed location or not
+            // setup the map as needed
+            setup_map(first_run);
+        }
+
+        private async void setup_map(bool first_run)
+        {
+            // check if they've allowed location or not
             bool location_allowed = (bool)my_settings.Values["location-consent"];
 
             if (location_allowed == false)
             {
+                // location is not allowed
+
                 // disable the locator and skip over
                 // loading up the mapping service.
                 LocatorContent.Visibility = Visibility.Collapsed;
                 LocatorOff.Visibility = Visibility.Visible;
                 return;
             }
+            else
+            {
+                // location is allowed
+
+                // load up the mapping service.                
+                await map_init(first_run);
+            }
             
-            //List_HeartRate_Devices();
-            
-            await map_init(first_run);
+        }
+
+        private async void connect_to_backpack()
+        {
+            try
+            {
+                backpackStatus.Text = "Initializing...";
+                string saved_device_id = my_settings.Values["smartpack-device-id"].ToString();
+                device_connector = await DeviceInformation.CreateFromIdAsync(saved_device_id, new string[] { "System.Devices.ContainerId" });
+                PrepDevice(device_connector);
+                backpackStatus.Text = "Connected!";
+            }
+            catch
+            {
+                backpackStatus.Text = "Error connecting to SmartPack.\nPlease reconnect and try again.";
+            }
         }
 
 #region Adjustments

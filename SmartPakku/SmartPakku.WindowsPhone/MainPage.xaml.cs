@@ -20,21 +20,20 @@ using System.Collections;
 using Windows.Data.Json;
 using System.Collections.Generic;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
-
 namespace SmartPakku
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainPage : Page
     {
         ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
         Geoposition pos; private Geolocator locator = null; private CoreDispatcher _cd;
         Geoposition my_position; Geopoint my_point; MapIcon my_icon; MapIcon BackpackHere;
-        DeviceInformation QQ; BluetoothLEDevice bleDevice; SmartPack device;
+        DeviceInformation device_connector; BluetoothLEDevice bleDevice; SmartPack device;
         public static MainPage Current;
 
+        int switch_on = 0;
+        List<WeightMeasurement> lots_of_measurements = new List<WeightMeasurement>();
+        WeightMeasurement a_measurement = new WeightMeasurement();
+        
         public MainPage()
         {
             this.InitializeComponent();
@@ -43,17 +42,12 @@ namespace SmartPakku
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             bool first_run = e.ToString() == "no-refunds";
-            string saved_device_id;
-            string saved_device_containerid;
-
-            Fill_HeartRate_Box_Prep();
             
-
             if (first_run)
             {
                 Frame.BackStack.Clear();
             }
-
+            
             if (!my_settings.Values.ContainsKey("location-consent"))
             {
                 // User not yet has opted in or out of Location
@@ -63,34 +57,40 @@ namespace SmartPakku
 
             if (my_settings.Values.ContainsKey("smartpack-device-id") && my_settings.Values.ContainsKey("smartpack-device-containerid"))
             {
-                backpackStatus.Text = "Initializing...";
-                saved_device_id = my_settings.Values["smartpack-device-id"].ToString();
-                saved_device_containerid = my_settings.Values["smartpack-device-containerid"].ToString();
-
                 try
                 {
-                    QQ = await DeviceInformation.CreateFromIdAsync(saved_device_id, new string[] { "System.Devices.ContainerId" });
-                    PrepDevice(QQ);
+                    backpackStatus.Text = "Initializing...";
+                    
+                    string saved_device_id = my_settings.Values["smartpack-device-id"].ToString();
+                    string saved_device_containerid = my_settings.Values["smartpack-device-containerid"].ToString();
 
-                    bleDevice = await BluetoothLEDevice.FromIdAsync(saved_device_id);
-                    device = new SmartPack(bleDevice, saved_device_containerid);
+                    device_connector = await DeviceInformation.CreateFromIdAsync(saved_device_id, new string[] { "System.Devices.ContainerId" });
+                    PrepDevice(device_connector);
+
 
                     await device.update_battery_level();
-                    await device.update_status();
-
                     int bat_percent = device.BatteryLevel;
-                    //int status = device.Status;
-
                     update_battery_page(bat_percent);
+
+                    await device.update_status();
+                    //int status = device.Status;
                     //update_adjustments_page(status);
 
                     backpackStatus.Text = "Connected!";
                 }
                 catch
                 {
-                    backpackStatus.Text = "Error connecting to SmartPack.\nPlease repeat the setup wizard."; 
-                }
+                    backpackStatus.Text = "Error connecting to SmartPack.\nPlease reconnect and try again."; 
+                }   
             }
+            else
+            {
+                backpackStatus.Text = "SmartPack data improperly saved.\nPlease repeat the setup wizard.";
+            }
+
+            // If the app had run previously, add the values to the datapoint box
+            Fill_HeartRate_Box_Prep();
+
 
             // they've gone through the setup wizard, and they have the
             // location capability to be either on or off
@@ -105,21 +105,13 @@ namespace SmartPakku
                 LocatorOff.Visibility = Visibility.Visible;
                 return;
             }
-
-
+            
             //List_HeartRate_Devices();
             
-            
-
             await map_init(first_run);
         }
 
-
 #region Adjustments
-
-        int switch_on = 0;
-        List<WeightMeasurement> lots_of_measurements = new List<WeightMeasurement>();
-        WeightMeasurement a_measurement = new WeightMeasurement();
 
         // Adjustments Pivot
         private void update_adjustments_page(WeightMeasurement a_weight_measurement)
@@ -201,19 +193,19 @@ namespace SmartPakku
                     right_shoulder_weight.Text = "Weight: None";
                 }
             }
-
+            /*
             Status.Text = "Being Worn!";
             var x = new BitmapImage(new Uri("ms-appx:///Assets/backpack-wearing.png"));
             StatusImage.Source = x;
             Location.Text = "With both shoulders";
-            Recommendation.Text = "Do Nothing!";
+            Recommendation.Text = "Do Nothing!";*/
         }
 
-        #region HeartRateStuff
+#region HeartRateStuff
             private void Fill_HeartRate_Box_Prep()
             {
-                bool z = HeartRateService.Instance.IsServiceInitialized;
-                if (z)
+                bool previous_run = HeartRateService.Instance.IsServiceInitialized;
+                if (previous_run)
                 {
                     foreach (var measurement in HeartRateService.Instance.DataPoints)
                     {
@@ -252,10 +244,24 @@ namespace SmartPakku
 
             private async void Instance_ValueChangeCompleted(HeartRateMeasurement heartRateMeasurementValue)
             {
-            a_measurement.state_ID = "54b726e9e4b064b9f80549ab";
+                UInt16 ReceivedValue = heartRateMeasurementValue.HeartRateValue;
+                do_stuff(ReceivedValue);
+                // Serialize UI update to the the main UI thread.
+                await this.Dispatcher.RunAsync
+                (
+                    Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        backpackStatus.Text = "Latest received heart rate measurement:\n" +
+                            heartRateMeasurementValue.HeartRateValue;
+                        outputListBox.Items.Insert(0, heartRateMeasurementValue);
+                    }
+                );
+            }
 
-                // Store the Value as appropriate
-                var ReceivedValue = heartRateMeasurementValue.HeartRateValue;
+            private async void do_stuff(UInt16 ReceivedValue)
+            {
+                // A new value has arrived, so store the new in the appropriate location
+                a_measurement.state_ID = (string)my_settings.Values["state-id"];
                 switch (switch_on)
                 {
                     case 1:
@@ -266,58 +272,50 @@ namespace SmartPakku
                         var B = ReceivedValue & 2;
                         var C = ReceivedValue & 4;
                         var D = ReceivedValue & 8;
-                    
-                        // FSR0 Pressed
-                        // Left shoulder
-                        if (A == 1)
-                            a_measurement.fsrPressed0 = true;
-                        else
-                            a_measurement.fsrPressed0 = false;
 
-                        // FSR1 Pressed
-                        // Left Waist
-                        if (B == 2)
-                            a_measurement.fsrPressed1 = true;
-                        else
-                            a_measurement.fsrPressed1 = false;
+                        // FSR0, Left shoulder
+                        a_measurement.fsrPressed0 = (A == 1) ? true : false;
+                        
+                        // FSR1, Left Waist
+                        a_measurement.fsrPressed1 = (B == 2) ? true : false;
+                        
+                        // FSR2, Right Waist
+                        a_measurement.fsrPressed2 = (C == 4) ? true : false;
 
-                        // FSR2 Pressed
-                        // Right Waist
-                        if (C == 4)
-                            a_measurement.fsrPressed2 = true;
-                        else
-                            a_measurement.fsrPressed2 = false;
-
-                        // FSR2 Pressed
-                        // Right shoulder
-                        if (D == 8)
-                            a_measurement.fsrPressed3 = true;
-                        else
-                            a_measurement.fsrPressed3 = false;
-
+                        // FSR2, Right shoulder
+                        a_measurement.fsrPressed3 = (D == 8) ? true : false;
                         break;
                     case 2:
                         // we got status last time so this time we got fsrForces0
                         a_measurement.fsrForces0 = ReceivedValue;
+
                         break;
                     case 3:
                         // we got fsrForces0 last time so this time we got fsrForces1
                         a_measurement.fsrForces1 = ReceivedValue;
+
                         break;
                     case 4:
                         // we got fsrForces1 last time so this time we got fsrForces2
                         a_measurement.fsrForces2 = ReceivedValue;
+
                         break;
                     case 5:
                         // we got fsrForces2 last time so this time we got fsrForces3
                         a_measurement.fsrForces3 = ReceivedValue;
+
                         break;
                     case 6:
                         // we got fsrForces3 last time so this time we got 's'
                         // the prior measurement was ready so add it to the list
                         // and start setting up a new measurement
                         a_measurement.ready = true;
+                        update_UI(a_measurement);
                         lots_of_measurements.Add(a_measurement);
+                        
+                        string sendthis = a_measurement.ToString();
+                        var success = await MongoLabCommunication.SendMongo1(sendthis, MongoLabCommunication.default_credentials);
+                        
                         a_measurement = new WeightMeasurement();
                         break;
                     default:
@@ -325,42 +323,40 @@ namespace SmartPakku
                         break;
                 }
 
-                if (ReceivedValue == 's')
-                {
-                    switch_on = 1;
-                }
-                else
-                {
-                    switch_on ++;
-                }
-
-                // Serialize UI update to the the main UI thread.
-                await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    backpackStatus.Text = "Latest received heart rate measurement:\n" +
-                        heartRateMeasurementValue.HeartRateValue;
-
-                    outputListBox.Items.Insert(0, heartRateMeasurementValue);
-                });
-
+                // If we got an 's' begin the sequence
+                switch_on = (ReceivedValue == 's') ? 1 : switch_on++;
             }
 
-            private async void PrepDevice(DeviceInformation device)
+
+
+            private void update_UI(WeightMeasurement measured_weight)
+            {                
+                left_shoulder.Text = "Left Shoulder: " + a_measurement.fsrPressed0;
+                right_shoulder.Text = "Right Shoulder: " + a_measurement.fsrPressed1;
+                left_waist.Text = "Left Waist: " + a_measurement.fsrPressed2;
+                right_waist.Text = "Right Waist: " + a_measurement.fsrPressed3;
+                
+                left_shoulder_weight.Text = "Weight: " + a_measurement.fsrForces0;
+                left_waist_weight.Text = "Weight: " + a_measurement.fsrForces1;
+                right_waist_weight.Text = "Weight: " + a_measurement.fsrForces2;
+                right_waist_weight.Text = "Weight: " + a_measurement.fsrForces3;
+            }
+
+
+            private async void PrepDevice(DeviceInformation device_connector)
             {
                 //var device = DevicesListBox.SelectedItem as DeviceInformation;
                 DevicesListBox.Visibility = Visibility.Collapsed;
 
                 backpackStatus.Text = "Initializing device...";
                 HeartRateService.Instance.DeviceConnectionUpdated += OnDeviceConnectionUpdated;
-                await HeartRateService.Instance.InitializeServiceAsync(device);
+                await HeartRateService.Instance.InitializeServiceAsync(device_connector);
                 outputGrid.Visibility = Visibility.Visible;
                 try
                 {
                     // Check if the device is initially connected, and display the appropriate message to the user
-
-
                     var x = PnpObjectType.DeviceContainer;
-                    var y = device.Properties["System.Devices.ContainerId"].ToString();
+                    var y = device_connector.Properties["System.Devices.ContainerId"].ToString();
                     var z = new string[] { "System.Devices.Connected" };
 
                     var deviceObject = await PnpObject.CreateFromIdAsync(x, y, z);
@@ -393,15 +389,14 @@ namespace SmartPakku
             }
 
             private void DevicesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var X = QQ;
-            var device = DevicesListBox.SelectedItem as DeviceInformation;
-            DevicesListBox.Visibility = Visibility.Collapsed;
-            PrepDevice(device);
-        }
-        #endregion
+            {
+                var device_connector = DevicesListBox.SelectedItem as DeviceInformation;
+                DevicesListBox.Visibility = Visibility.Collapsed;
+                PrepDevice(device_connector);
+            }
+#endregion
 
-        #region TestingButtons
+#region TestingButtons
 
             private void Button_Click_2(object sender, RoutedEventArgs e)
             {
@@ -413,14 +408,19 @@ namespace SmartPakku
 
             private async void Button_Click(object sender, RoutedEventArgs e)
             {
-                JsonObject MyData = await MongoLabCommunication.GetMongo1();
+                JsonObject MyData = await MongoLabCommunication.GetMongo1(MongoLabCommunication.default_credentials);
             }
 
             private void getPackStatus_Click(object sender, RoutedEventArgs e)
             {
-                Frame.Navigate(typeof(Scenario1_DeviceEvents));
+                //Do nothing
             }
-        #endregion
+
+            private void Button_Click_3(object sender, RoutedEventArgs e)
+            {
+
+            }
+#endregion
 
 
 #endregion
@@ -620,6 +620,7 @@ namespace SmartPakku
                 return null;
             }
         }
+        
 
         async private void geo_PositionChanged(Geolocator sender, PositionChangedEventArgs e)
         {
@@ -698,7 +699,7 @@ namespace SmartPakku
                 }
             }
         }
-        #endregion
+#endregion
 
 
 #region AppBar
@@ -728,5 +729,6 @@ namespace SmartPakku
         }
         #endregion
 
+       
     }
 }

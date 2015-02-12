@@ -20,7 +20,8 @@ namespace SmartPakku
 
         public override string ToString()
         {
-            return HeartRateValue.ToString() + " bpm @ " + Timestamp.ToString();
+            string value = (HeartRateValue == 115) ? "New Measurement" : (HeartRateValue.ToString() + " @ " + Timestamp.ToString() );
+            return value;
         }
     }
 

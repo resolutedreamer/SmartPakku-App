@@ -9,17 +9,22 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <StackPanel>
-            <TextBox Name="status" Text="10" />
-            <ToggleSwitch Name="fsrPressed0" Header="fsrPressed0"/>
-            <ToggleSwitch Name="fsrPressed1" Header="fsrPressed1"/>
-            <ToggleSwitch Name="fsrPressed2" Header="fsrPressed2"/>
-            <ToggleSwitch Name="fsrPressed3" Header="fsrPressed3"/>
-            <TextBox Name="fsrForces0" Text="5"/>
-            <TextBox Name="fsrForces1" Text="23"/>
-            <TextBox Name="fsrForces2" Text="78"/>
-            <TextBox Name="fsrForces3" Text="64"/>
-            <Button Click="Button_Click">POST Data!</Button>
-        </StackPanel>
+        <ScrollViewer>
+            <StackPanel>
+                <TextBox Name="status" Text="10" />
+                <TextBox Name="state_id" Text="54b726e9e4b064b9f80549ab" />
+                <ToggleSwitch Name="fsrPressed0" Header="fsrPressed0"/>
+                <ToggleSwitch Name="fsrPressed1" Header="fsrPressed1"/>
+                <ToggleSwitch Name="fsrPressed2" Header="fsrPressed2"/>
+                <ToggleSwitch Name="fsrPressed3" Header="fsrPressed3"/>
+                <TextBox Name="fsrForces0" Text="5"/>
+                <TextBox Name="fsrForces1" Text="23"/>
+                <TextBox Name="fsrForces2" Text="78"/>
+                <TextBox Name="fsrForces3" Text="64"/>
+                <TextBox Name="LocationX" Text="78.2"/>
+                <TextBox Name="LocationY" Text="64.5"/>
+                <Button Click="Button_Click">POST Data!</Button>
+            </StackPanel>
+        </ScrollViewer>        
     </Grid>
 </Page>

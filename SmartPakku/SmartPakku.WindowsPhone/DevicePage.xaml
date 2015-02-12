@@ -54,6 +54,18 @@
             </Grid.RowDefinitions>
             
             <TextBlock Grid.Row="1" Text="{Binding Name, Mode=OneTime}" FontSize="50"/>
+
+            <CheckBox Grid.Row="2" x:Name="alertOnPhoneCheckBox" Content="Create phone notification on link loss" FontSize="20"
+			    IsChecked="{Binding AlertOnPhone, Mode=TwoWay}"/>
+            
+            <ToggleSwitch x:Name="GPSSwitch"
+                                  Grid.Row="3"
+                                  Header="Location Services"
+                                  VerticalAlignment="Stretch"
+                                  Toggled="GPSSwitch_Toggled"
+                                  />
+
+            <!--
             <CheckBox Grid.Row="2" x:Name="alertOnPhoneCheckBox" Content="Create phone notification on link loss" FontSize="20"
 			    IsChecked="{Binding AlertOnPhone, Mode=TwoWay}"/>
             <CheckBox Grid.Row="3" x:Name="alertOnDeviceCheckBox" Content="Set device alert level on link loss" FontSize="20"
@@ -61,7 +73,6 @@
 			    IsChecked="{Binding AlertOnDevice, Mode=TwoWay}"/>
             <StackPanel Grid.Row="4" Orientation="Vertical" Margin="40,0,0,0">
                 
-                <!--Remember, I removed the setting of the event handlesrs for these buttons-->
                 <RadioButton Content="No alert"
                              IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
                              IsChecked="{Binding AlertLevel, ConverterParameter=None, Converter={StaticResource AlertLevelRadioButtonValueConverter}, Mode=TwoWay}"
@@ -74,7 +85,8 @@
                              IsEnabled="{Binding IsChecked, ElementName=alertOnDeviceCheckBox}"
                              IsChecked="{Binding AlertLevel, ConverterParameter=High, Converter={StaticResource AlertLevelRadioButtonValueConverter}, Mode=TwoWay}"
                              />
-            </StackPanel>
+            </StackPanel>-->
+            
         </Grid>
         
     </Grid>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="31905WAKProductions.SmartPakku" Publisher="CN=AF8D2646-A3D4-4BDC-8F0D-6E6228A8D466" Version="1.1.0.0" />
+  <Identity Name="31905WAKProductions.SmartPakku" Publisher="CN=AF8D2646-A3D4-4BDC-8F0D-6E6228A8D466" Version="1.1.1.1" />
   <mp:PhoneIdentity PhoneProductId="a3a8470e-556b-4133-9095-30b63b1a29e8" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>SmartPakku</DisplayName>
@@ -17,7 +17,6 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="SmartPakku.WindowsPhone.App">
       <m3:VisualElements DisplayName="SmartPakku" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="SmartPakku.WindowsPhone" ForegroundText="light" BackgroundColor="transparent" ToastCapable="true">
-        <m3:LockScreen Notification="badgeAndTileText" BadgeLogo="Assets\PhoneStore\BadgeLogo.png" />
         <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png">
           <m3:ShowNameOnTiles>
             <m3:ShowOn Tile="square150x150Logo" />
@@ -46,10 +45,9 @@
     <DeviceCapability Name="location" />
     <m2:DeviceCapability Name="bluetooth.genericAttributeProfile">
       <m2:Device Id="any">
-        <m2:Function Type="serviceId:6E400001-B5A3-F393-E0A9-E50E24DCCA9E"/>
-        <m2:Function Type="serviceId:1803"/>
-        <m2:Function Type="name:battery"/>
-        <m2:Function Type="name:heartRate"/>        
+        <m2:Function Type="serviceId:1803" />
+        <m2:Function Type="name:battery" />
+        <m2:Function Type="name:heartRate" />
       </m2:Device>
     </m2:DeviceCapability>
   </Capabilities>

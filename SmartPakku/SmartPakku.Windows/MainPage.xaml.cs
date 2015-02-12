@@ -1,11 +1,19 @@
-﻿using SmartPakku.Common;
+﻿using Bing.Maps;
+using SmartPakku.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Windows.Data.Json;
+using Windows.Devices.Enumeration;
+using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -26,6 +34,12 @@ namespace SmartPakku
     public sealed partial class MainPage : Page
     {
 
+        ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
+        MongoLabCredentials user_credentials;
+
+        //Geoposition pos; private Geolocator locator = null; private CoreDispatcher _cd;
+        //Geoposition my_position; Geopoint my_point; //MapIcon my_icon; MapIcon BackpackHere;
+        
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
@@ -56,47 +70,24 @@ namespace SmartPakku
             this.navigationHelper.SaveState += navigationHelper_SaveState;
         }
 
-        /// <summary>
-        /// Populates the page with content passed during navigation. Any saved state is also
-        /// provided when recreating a page from a prior session.
-        /// </summary>
-        /// <param name="sender">
-        /// The source of the event; typically <see cref="Common.NavigationHelper"/>
-        /// </param>
-        /// <param name="e">Event data that provides both the navigation parameter passed to
-        /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
-        /// a dictionary of state preserved by this page during an earlier
-        /// session. The state will be null the first time a page is visited.</param>
+
         private void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
         }
 
-        /// <summary>
-        /// Preserves state associated with this page in case the application is suspended or the
-        /// page is discarded from the navigation cache.  Values must conform to the serialization
-        /// requirements of <see cref="Common.SuspensionManager.SessionState"/>.
-        /// </summary>
-        /// <param name="sender">The source of the event; typically <see cref="Common.NavigationHelper"/></param>
-        /// <param name="e">Event data that provides an empty dictionary to be populated with
-        /// serializable state.</param>
         private void navigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
         }
 
         #region NavigationHelper registration
 
-        /// The methods provided in this section are simply used to allow
-        /// NavigationHelper to respond to the page's navigation methods.
-        /// 
-        /// Page specific logic should be placed in event handlers for the  
-        /// <see cref="Common.NavigationHelper.LoadState"/>
-        /// and <see cref="Common.NavigationHelper.SaveState"/>.
-        /// The navigation parameter is available in the LoadState method 
-        /// in addition to page state preserved during an earlier session.
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            navigationHelper.OnNavigatedTo(e);
+            user_credentials = (MongoLabCredentials)e.Parameter;
+            JsonObject MyData = await MongoLabCommunication.refresh_data_json(user_credentials);
+            refresh_text(MyData);
+            refresh_map(MyData);
+            navigationHelper.OnNavigatedTo(e);            
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -105,5 +96,76 @@ namespace SmartPakku
         }
 
         #endregion
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            JsonObject MyData = await MongoLabCommunication.refresh_data_json(user_credentials);
+            refresh_text(MyData);
+            refresh_map(MyData);
+        }
+
+        
+
+        private void refresh_text(JsonObject MyData)
+        {
+            IJsonValue left_shoulder_data, left_waist_data, right_shoulder_data, right_waist_data;
+            IJsonValue left_shoulder_weight_data, left_waist_weight_data, right_waist_weight_data, right_shoulder_weight_data;
+            bool x;
+            x = MyData.TryGetValue("fsrPressed0", out left_shoulder_data);
+            x = MyData.TryGetValue("fsrForces0", out left_shoulder_weight_data);
+
+            x = MyData.TryGetValue("fsrPressed1", out left_waist_data);
+            x = MyData.TryGetValue("fsrForces1", out left_waist_weight_data);
+
+            x = MyData.TryGetValue("fsrPressed2", out right_shoulder_data);
+            x = MyData.TryGetValue("fsrForces2", out right_waist_weight_data);
+
+            x = MyData.TryGetValue("fsrPressed3", out right_waist_data);
+            x = MyData.TryGetValue("fsrForces3", out right_shoulder_weight_data);
+            bool left_shoulder_value = left_shoulder_data.GetBoolean();
+            double left_shoulder_weight_value = left_shoulder_weight_data.GetNumber();
+
+            bool left_waist_value = left_waist_data.GetBoolean();
+            double left_waist_weight_value = left_waist_weight_data.GetNumber();
+
+            bool right_shoulder_value = right_shoulder_data.GetBoolean();
+            double right_shoulder_weight_value = right_shoulder_weight_data.GetNumber();
+
+            bool right_waist_value = right_waist_data.GetBoolean();
+            double right_waist_weight_value = right_waist_weight_data.GetNumber();
+
+            left_shoulder.Text = "Left Shoulder: " + left_shoulder_value.ToString();
+            left_shoulder_weight.Text = "Weight: " + left_waist_weight_value.ToString();
+
+            left_waist.Text = "Left Waist: " + left_waist_value.ToString();
+            left_waist_weight.Text = "Weight: " + left_waist_weight_value.ToString();
+
+            right_shoulder.Text = "Right Waist: " + right_shoulder_value.ToString();
+            right_shoulder_weight.Text = "Weight: " + right_shoulder_weight_value.ToString();
+
+            right_waist.Text = "Right Waist: " + right_waist_value.ToString();
+            right_waist_weight.Text = "Weight: " + right_waist_weight_value.ToString();
+
+            time_text.Text = "Last Updated: " + DateTime.Now;
+        }
+
+        private void refresh_map(JsonObject MyData)
+        {
+            IJsonValue LocationX_data, LocationY_data;
+            bool x;
+            x = MyData.TryGetValue("locationX", out LocationX_data);
+            x = MyData.TryGetValue("locationY", out LocationY_data);
+            double LocationX = LocationX_data.GetNumber();
+            double LocationY = LocationY_data.GetNumber();
+
+            myMap.SetView(new Location(LocationY, LocationX));
+            //MapLayer.SetPosition(new Location(46.849947, -121.32168));
+        }
+
+        private async void pushpinTapped(object sender, TappedRoutedEventArgs e)
+        {
+            MessageDialog dialog = new MessageDialog("Hello from Seattle.");
+            await dialog.ShowAsync();
+        }
     }
 }

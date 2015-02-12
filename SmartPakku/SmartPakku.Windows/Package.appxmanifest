@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="31905WAKProductions.SmartPakku" Publisher="CN=AF8D2646-A3D4-4BDC-8F0D-6E6228A8D466" Version="1.1.0.0" />
+  <Identity Name="31905WAKProductions.SmartPakku" Publisher="CN=AF8D2646-A3D4-4BDC-8F0D-6E6228A8D466" Version="1.1.0.6" />
   <Properties>
     <DisplayName>SmartPakku</DisplayName>
     <PublisherDisplayName>ResoluteDreamer</PublisherDisplayName>

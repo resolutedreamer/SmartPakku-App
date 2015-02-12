@@ -16,6 +16,7 @@
     <ProjectTypeGuids>{76F1466A-8B6D-4E39-A767-685A06062A39};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
     <AppxBundle>Never</AppxBundle>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -101,6 +102,9 @@
     <Compile Include="Wizard1_PairDevice.xaml.cs">
       <DependentUpon>Wizard1_PairDevice.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Wizard1_StateID.xaml.cs">
+      <DependentUpon>Wizard1_StateID.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Wizard2_SelectDevice.xaml.cs">
       <DependentUpon>Wizard2_SelectDevice.xaml</DependentUpon>
     </Compile>
@@ -185,6 +189,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Wizard1_PairDevice.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Wizard1_StateID.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

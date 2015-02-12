@@ -16,10 +16,10 @@
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
     <PackageCertificateKeyFile>SmartPakku.Windows_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>7B350E6CF25858BED9AB0A4B0025CD2C26467FB6</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>0E4BD79830545CAF46C0BC352F75735ACEF8086A</PackageCertificateThumbprint>
     <AppxBundle>Always</AppxBundle>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-    <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -108,8 +108,17 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <SDKReference Include="Bing.Maps.Xaml, Version=1.313.0825.0">
+      <Name>Bing Maps for C#, C++, or Visual Basic</Name>
+    </SDKReference>
+    <SDKReference Include="Microsoft.VCLibs, version=12.0">
+      <Name>Microsoft Visual C++ 2013 Runtime Package for Windows</Name>
+    </SDKReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LogonPage.xaml.cs">
+      <DependentUpon>LogonPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -175,6 +184,10 @@
     <None Include="SmartPakku.Windows_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="LogonPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

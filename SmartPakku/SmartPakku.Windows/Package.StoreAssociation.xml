@@ -356,6 +356,8 @@
   <AccountPackageIdentityNames>
     <MainPackageIdentityName>31905WAKProductions.BakaReaderEXX</MainPackageIdentityName>
     <MainPackageIdentityName>31905WAKProductions.BakaReaderWP</MainPackageIdentityName>
+    <MainPackageIdentityName>31905WAKProductions.BluetoothLEUART</MainPackageIdentityName>
+    <MainPackageIdentityName>31905WAKProductions.BluetoothLEUART8001</MainPackageIdentityName>
     <MainPackageIdentityName>31905WAKProductions.ChemistryTools</MainPackageIdentityName>
     <MainPackageIdentityName>31905WAKProductions.DeepSadnessAttacks</MainPackageIdentityName>
     <MainPackageIdentityName>31905WAKProductions.DeepSadnessStrikesBack-ThisisW</MainPackageIdentityName>
@@ -365,5 +367,33 @@
     <MainPackageIdentityName>31905WAKProductions.TheDailyLifeofaNormalParticle</MainPackageIdentityName>
     <MainPackageIdentityName>31905WAKProductions.UCLADiningandSwipes</MainPackageIdentityName>
   </AccountPackageIdentityNames>
-  <PackageInfoList LandingUrl="https://appdev.microsoft.com:443/StorePortals/Developer/Catalog/ReleaseAnchor/2f28141d-81aa-4d6d-9777-de721bdc55df" />
+  <PackageInfoList LandingUrl="https://appdev.microsoft.com:443/StorePortals/Developer/Catalog/ReleaseAnchor/2f28141d-81aa-4d6d-9777-de721bdc55df">
+    <BundleInfo>
+      <PackageInfo>
+        <OsMinVersion>6.3.0.0</OsMinVersion>
+        <PackageArchitecture>X86</PackageArchitecture>
+        <PackageMaxArchitectureVersion>1.1.0.5</PackageMaxArchitectureVersion>
+      </PackageInfo>
+      <PackageInfo>
+        <OsMinVersion>6.3.0.0</OsMinVersion>
+        <PackageArchitecture>X64</PackageArchitecture>
+        <PackageMaxArchitectureVersion>1.1.0.5</PackageMaxArchitectureVersion>
+      </PackageInfo>
+      <PackageInfo>
+        <OsMinVersion>6.3.0.0</OsMinVersion>
+        <PackageArchitecture>Neutral</PackageArchitecture>
+        <PackageMaxArchitectureVersion>1.1.0.5</PackageMaxArchitectureVersion>
+      </PackageInfo>
+      <PackageInfo>
+        <OsMinVersion>6.3.0.0</OsMinVersion>
+        <PackageArchitecture>Neutral</PackageArchitecture>
+        <PackageMaxArchitectureVersion>1.1.0.5</PackageMaxArchitectureVersion>
+      </PackageInfo>
+      <PackageInfo>
+        <OsMinVersion>6.3.0.0</OsMinVersion>
+        <PackageArchitecture>ARM</PackageArchitecture>
+        <PackageMaxArchitectureVersion>1.1.0.5</PackageMaxArchitectureVersion>
+      </PackageInfo>
+    </BundleInfo>
+  </PackageInfoList>
 </StoreAssociation>

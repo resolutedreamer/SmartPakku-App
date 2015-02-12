@@ -87,18 +87,12 @@ namespace SmartPakku
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
             // We selected SmartPack x, so save the DeviceId of this SmartPack into settings
-            var x = (SmartPack)deviceListBox.SelectedItem;
-
-            var y = x.DeviceId;
-            var z = x.DeviceContainerId;
-
-
-            localSettings.Values["smartpack-device-id"] = y;
-            localSettings.Values["smartpack-device-containerid"] = z;
+            var SelectedSmartPack = (SmartPack)deviceListBox.SelectedItem;
+            localSettings.Values["smartpack-device-id"] = SelectedSmartPack.DeviceId;
 
             if (deviceListBox.SelectedItem != null)
             {
-                Frame.Navigate(typeof(DevicePage), x);
+                Frame.Navigate(typeof(DevicePage), SelectedSmartPack);
             }
         }
 

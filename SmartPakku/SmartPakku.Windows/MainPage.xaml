@@ -8,7 +8,16 @@
     xmlns:common="using:SmartPakku.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    
+    xmlns:bm="using:Bing.Maps"
+    >
+
+    <Page.Resources>
+        <!-- TODO: Delete this line if the key AppName is declared in App.xaml -->
+        <x:String x:Key="AppName">SmartPakku | Remote Access</x:String>
+    </Page.Resources>
+
 
     <!--
         This grid acts as a root panel for the page that defines two rows:
@@ -27,7 +36,7 @@
         </Grid.RowDefinitions>
 
         <!-- Back button and page title -->
-        <Grid>
+        <Grid Name="TitleGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120"/>
                 <ColumnDefinition Width="*"/>
@@ -41,60 +50,77 @@
             <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
                         IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
         </Grid>
-        <Grid Grid.Row="1" Margin="50, 0, 50 , 50">
-            <Grid.RowDefinitions>
-                
-            </Grid.RowDefinitions>
+        <Grid  Name="BodyGrid" Grid.Row="1" Margin="50, 0, 50 , 50">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="5*"/>
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" >
+            <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                                
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                                
-                <StackPanel Grid.Column="0" Grid.Row="0">    
-                    <TextBlock x:Name="left_shoulder" 
+                <Button Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Button_Click" >Refresh Content</Button>
+                <Grid Grid.Row="1" MinHeight="500" Name="DataGrid" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Grid.Row="0">
+                        <TextBlock x:Name="left_shoulder" 
                         Text="Left Shoulder:" Style="{StaticResource SubheaderTextBlockStyle}" Margin="0,0,0,2"/>
-                    <TextBlock x:Name="left_shoulder_weight"
+                        <TextBlock x:Name="left_shoulder_weight"
                                 Text="Weight: " FontSize="14" Margin="0,0,0,15"/>
-                </StackPanel>
-                                
-                <StackPanel Grid.Column="0" Grid.Row="1">
-                    <TextBlock x:Name="left_waist"
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="0" Grid.Row="1">
+                        <TextBlock x:Name="left_waist"
                                 Text="Left Waist: " Style="{StaticResource SubheaderTextBlockStyle}" Margin="0,0,0,2"/>
-                    <TextBlock x:Name="left_waist_weight"
-                                Text="Weight: "  FontSize="14" Margin="0,0,0,15"/>    
-                </StackPanel>
-                                
-                <StackPanel Grid.Column="1" Grid.Row="0">
-                    <TextBlock x:Name="right_shoulder"
+                        <TextBlock x:Name="left_waist_weight"
+                                Text="Weight: "  FontSize="14" Margin="0,0,0,15"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Grid.Row="0">
+                        <TextBlock x:Name="right_shoulder"
                                 Text="Right Shoulder:" Style="{StaticResource SubheaderTextBlockStyle}" Margin="0,0,0,2"/>
-                    <TextBlock x:Name="right_shoulder_weight"
-                                Text="Weight: " FontSize="14" Margin="0,0,0,15"/>             
-                </StackPanel>
-                                
-                <StackPanel Grid.Column="1" Grid.Row="1">
-                    <TextBlock x:Name="right_waist"
+                        <TextBlock x:Name="right_shoulder_weight"
+                                Text="Weight: " FontSize="14" Margin="0,0,0,15"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Grid.Row="1">
+                        <TextBlock x:Name="right_waist"
                                 Text="Right Waist: " Style="{StaticResource SubheaderTextBlockStyle}" Margin="0,0,0,2"/>
-                    <TextBlock x:Name="right_waist_weight"
-                                Text="Weight: "  FontSize="14" Margin="0,0,0,15"/>                                    
-                </StackPanel>
+                        <TextBlock x:Name="right_waist_weight"
+                                Text="Weight: "  FontSize="14" Margin="0,0,0,15"/>
+                    </StackPanel>
+                </Grid>
+                <TextBlock Grid.Row="2" Style="{StaticResource BaseTextBlockStyle}"
+                           Name="time_text" HorizontalAlignment="Stretch"  VerticalAlignment="Center">Last updated:</TextBlock>
+                </Grid>
+            <Grid x:Name="MapGrid" Grid.Column="1">
+                <bm:Map ZoomLevel="7.5" Credentials="Ai97yPRVnwc5toXIvnSa1FdaBexOOytiB65epCIYPOga_Brpvs7yhLLOvqqyoLJT" x:Name="myMap">
+                    <bm:Map.Center>
+                        <bm:Location Latitude="50" Longitude="-122.580489" />
+                    </bm:Map.Center>
+                    
+                    <bm:Map.Children>
+                        <bm:Pushpin Tapped="pushpinTapped">
+                            <bm:MapLayer.Position>
+                                <bm:Location Latitude="47.610039" Longitude="-122.342207" />
+                            </bm:MapLayer.Position>
+                        </bm:Pushpin>
+                    </bm:Map.Children>
+
+                </bm:Map>
+
             </Grid>
 
-            <Grid Grid.Column="1">
-                    
-            </Grid>
-            
-            
-            
         </Grid>
     </Grid>
 </Page>

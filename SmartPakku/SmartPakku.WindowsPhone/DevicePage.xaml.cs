@@ -27,6 +27,10 @@ namespace SmartPakku
 {
     public sealed partial class DevicePage : Page
     {
+
+        ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
+
+
         public DevicePage()
         {
             this.InitializeComponent();
@@ -39,17 +43,25 @@ namespace SmartPakku
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
-            SmartPack holdthis = (SmartPack)DataContext;
-
+            SmartPack SelectedSmartPack = (SmartPack)DataContext;
 
             //// WHAT DID I DO HERE?
-            string ehh = holdthis.DeviceId;
-            string x = (string)my_settings.Values[holdthis.AddressString];
+            string SelectedSmartPackDeviceID = SelectedSmartPack.DeviceId;
+            string x = (string)my_settings.Values[SelectedSmartPack.AddressString];
+            /// NO REALLY I DON'T KNOW
 
+            SelectedSmartPack.AlertOnPhone = (bool)alertOnPhoneCheckBox.IsChecked;
 
+            var ToggleSwitchValue = GPSSwitch.IsOn;
+            my_settings.Values["location-consent"] = ToggleSwitchValue;
             my_settings.Values["setup-wizard-complete"] = true;
             Frame.Navigate(typeof(MainPage), "no-refunds");
+        }
+
+        private void GPSSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            var ToggleSwitchValue = GPSSwitch.IsOn;
+            my_settings.Values["location-consent"] = ToggleSwitchValue;
         }
     }
 }

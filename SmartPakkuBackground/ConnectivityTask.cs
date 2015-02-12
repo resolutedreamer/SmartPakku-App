@@ -108,11 +108,6 @@ namespace SmartPakkuBackground
                         notifier.Show(toast);
                     }
                 }
-
-
-
-
-
             }
             finally
             {

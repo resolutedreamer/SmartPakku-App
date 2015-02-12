@@ -39,9 +39,7 @@ namespace SmartPakkuBackground
                 if (tmp_characteristic.Uuid == GattCharacteristicUuids.BatteryLevel)
                 {
                     // the battery level indeed was the notifier that triggered this background task
-                    // we can work on it immediately.
-                    
-
+                    // we can work on it immediately
                 }
             }
             finally

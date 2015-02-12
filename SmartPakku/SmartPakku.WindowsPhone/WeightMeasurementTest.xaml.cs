@@ -19,9 +19,6 @@ using Windows.Data.Json;
 
 namespace SmartPakku
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class WeightMeasurementTest : Page
     {
         public WeightMeasurementTest()
@@ -29,22 +26,21 @@ namespace SmartPakku
             this.InitializeComponent();
         }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            send_fake_data();
+        }
+        public async void send_fake_data()
         {
             WeightMeasurement another_measurement = new WeightMeasurement();
-            another_measurement.state_ID = "54b726e9e4b064b9f80549ab";
+            another_measurement.state_ID = state_id.Text;
 
-            // we got an 's' last time so this time we got status
+            // status
             another_measurement.status = (short)Convert.ToInt16(status.Text);
 
             var A = another_measurement.status & 1;
@@ -52,43 +48,29 @@ namespace SmartPakku
             var C = another_measurement.status & 4;
             var D = another_measurement.status & 8;
 
-            // FSR0 Pressed
-            // Left shoulder
-            if (A == 1)
-                another_measurement.fsrPressed0 = true;
-            else
-                another_measurement.fsrPressed0 = false;
-
-            // FSR1 Pressed
-            // Left Waist
-            if (B == 2)
-                another_measurement.fsrPressed1 = true;
-            else
-                another_measurement.fsrPressed1 = false;
-
-            // FSR2 Pressed
-            // Right Waist
-            if (C == 4)
-                another_measurement.fsrPressed2 = true;
-            else
-                another_measurement.fsrPressed2 = false;
-
-            // FSR2 Pressed
-            // Right shoulder
-            if (D == 8)
-                another_measurement.fsrPressed3 = true;
-            else
-                another_measurement.fsrPressed3 = false;
+            // FSR0, Left shoulder
+            another_measurement.fsrPressed0 = (A == 1) ? true : false;
             another_measurement.fsrForces0 = (ushort)Convert.ToUInt16(fsrForces0.Text);
+
+            // FSR1, Left Waist
+            another_measurement.fsrPressed1 = (B == 2) ? true : false;
             another_measurement.fsrForces1 = (ushort)Convert.ToUInt16(fsrForces1.Text);
+
+            // FSR2, Right Waist
+            another_measurement.fsrPressed2 = (C == 4) ? true : false;
             another_measurement.fsrForces2 = (ushort)Convert.ToUInt16(fsrForces2.Text);
+
+            // FSR2, Right shoulder
+            another_measurement.fsrPressed3 = (D == 8) ? true : false;
             another_measurement.fsrForces3 = (ushort)Convert.ToUInt16(fsrForces3.Text);
+
+            another_measurement.locationX = Convert.ToDouble(LocationX.Text);
+            another_measurement.locationY = Convert.ToDouble(LocationY.Text);
 
             string sendthis = another_measurement.ToString();
 
-            
-
-            var success = await MongoLabCommunication.SendMongo1(sendthis);
+            var success = await MongoLabCommunication.SendMongo1(sendthis, MongoLabCommunication.default_credentials);
         }
+
     }
 }

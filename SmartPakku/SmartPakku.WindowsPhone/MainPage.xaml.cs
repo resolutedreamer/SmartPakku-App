@@ -61,12 +61,12 @@ namespace SmartPakku
                 {
                     backpackStatus.Text = "Initializing...";
                     
+                    // connect to the backpack
                     string saved_device_id = my_settings.Values["smartpack-device-id"].ToString();
-
                     device_connector = await DeviceInformation.CreateFromIdAsync(saved_device_id, new string[] { "System.Devices.ContainerId" });
                     PrepDevice(device_connector);
 
-
+                    // get the current battery level and update the battery level display
                     await device.update_battery_level();
                     int bat_percent = device.BatteryLevel;
                     update_battery_page(bat_percent);

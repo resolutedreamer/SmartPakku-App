@@ -50,7 +50,6 @@ namespace SmartPakkuBackground
                 BluetoothLEDevice bleDevice = await BluetoothLEDevice.FromIdAsync(device_id);
                 SmartPack device = new SmartPack(bleDevice);
 
-
                 if (bleDevice.ConnectionStatus == BluetoothConnectionStatus.Connected)
                 {
                     if (device.AlertOnDevice && device.HasLinkLossService)

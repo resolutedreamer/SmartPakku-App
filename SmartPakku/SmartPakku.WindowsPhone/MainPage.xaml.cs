@@ -49,7 +49,7 @@ namespace SmartPakku
             }
 
             // connect to the backpack
-            connect_to_backpack(); 
+            connect_to_backpack();
 
             // get the current battery level and update the battery level display
             await device.update_battery_level();
@@ -98,6 +98,7 @@ namespace SmartPakku
             {
                 backpackStatus.Text = "Initializing...";
                 string saved_device_id = my_settings.Values["smartpack-device-id"].ToString();
+
                 device_connector = await DeviceInformation.CreateFromIdAsync(saved_device_id, new string[] { "System.Devices.ContainerId" });
                 PrepDevice(device_connector);
                 backpackStatus.Text = "Connected!";
@@ -242,7 +243,9 @@ namespace SmartPakku
             private async void Instance_ValueChangeCompleted(HeartRateMeasurement heartRateMeasurementValue)
             {
                 UInt16 ReceivedValue = heartRateMeasurementValue.HeartRateValue;
+                
                 do_stuff(ReceivedValue);
+
                 // Serialize UI update to the the main UI thread.
                 await this.Dispatcher.RunAsync
                 (

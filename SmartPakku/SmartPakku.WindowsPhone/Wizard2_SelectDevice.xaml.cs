@@ -97,7 +97,7 @@ namespace SmartPakku
 
         private void AppBarButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(Wizard3_GPSDevice));
+            Frame.Navigate(typeof(Wizard3_MongoKeys));
         }
     }
 }

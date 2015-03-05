@@ -281,7 +281,7 @@ namespace SmartPakku
         /// </summary>
         /// <param name="data">Raw data received from the heart rate monitor.</param>
         /// <returns>The heart rate measurement value.</returns>
-        private HeartRateMeasurement ProcessData(byte[] data)
+        public HeartRateMeasurement ProcessData(byte[] data)
         {
             // Heart Rate profile defined flag values
             const byte HEART_RATE_VALUE_FORMAT = 0x01;

@@ -27,7 +27,7 @@ namespace SmartPakku
         ApplicationDataContainer my_settings = ApplicationData.Current.LocalSettings;
         Geoposition pos; private Geolocator locator = null; private CoreDispatcher _cd;
         Geoposition my_position; Geopoint my_point; MapIcon my_icon; MapIcon BackpackHere;
-        DeviceInformation device_connector; BluetoothLEDevice bleDevice; SmartPack device;
+        BluetoothLEDevice bleDevice; SmartPack device; string saved_device_id;
         public static MainPage Current;
 
         int switch_on = 0;
@@ -42,21 +42,54 @@ namespace SmartPakku
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             bool first_run = e.ToString() == "no-refunds";
+            saved_device_id = my_settings.Values["smartpack-device-id"].ToString();
             
             if (first_run)
             {
                 Frame.BackStack.Clear();
             }
 
-            // connect to the backpack
-            connect_to_backpack();
+            try
+            {
+                await load_saved_smartpack();
+            }
+            catch
+            {
 
-            // get the current battery level and update the battery level display
-            await device.update_battery_level();
-            update_battery_page(device.BatteryLevel);
+            }
+           
+
 
             // add any old values to the datapoint box
-            Fill_HeartRate_Box_Prep();
+            try
+            {
+                Fill_HeartRate_Box_Prep();
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message;
+                main_pivot.Title = error;
+            }
+            // if we are on the Adafruit FLORA, update battery level and update the battery level display
+            try
+            {
+                if (my_settings.Values.ContainsKey("battery-enabled") && (bool)my_settings.Values["battery-enabled"] == true)
+                {                    
+                    await device.update_battery_level();
+                    update_battery_page(device.BatteryLevel);
+                }
+                else
+                {
+                    BatteryOff.Visibility = Visibility.Visible;
+                    BatteryContent.Visibility = Visibility.Collapsed;
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message;
+                main_pivot.Title = error;
+            }
 
             // get the current state and update the state display and adjustments page
             await device.update_status();
@@ -67,41 +100,14 @@ namespace SmartPakku
             setup_map(first_run);
         }
 
-        private async void setup_map(bool first_run)
-        {
-            // check if they've allowed location or not
-            bool location_allowed = (bool)my_settings.Values["location-consent"];
-
-            if (location_allowed == false)
-            {
-                // location is not allowed
-
-                // disable the locator and skip over
-                // loading up the mapping service.
-                LocatorContent.Visibility = Visibility.Collapsed;
-                LocatorOff.Visibility = Visibility.Visible;
-                return;
-            }
-            else
-            {
-                // location is allowed
-
-                // load up the mapping service.                
-                await map_init(first_run);
-            }
-            
-        }
-
-        private async void connect_to_backpack()
+        
+        private async Task load_saved_smartpack()
         {
             try
             {
-                backpackStatus.Text = "Initializing...";
-                string saved_device_id = my_settings.Values["smartpack-device-id"].ToString();
-
-                device_connector = await DeviceInformation.CreateFromIdAsync(saved_device_id, new string[] { "System.Devices.ContainerId" });
-                PrepDevice(device_connector);
-                backpackStatus.Text = "Connected!";
+                backpackStatus.Text = "Initializing...";    
+                bleDevice = await BluetoothLEDevice.FromIdAsync(saved_device_id);
+                device = new SmartPack(bleDevice);
             }
             catch
             {
@@ -343,17 +349,17 @@ namespace SmartPakku
             }
 
 
-            private async void PrepDevice(DeviceInformation device_connector)
+            private async Task connect_to_smartpack(DeviceInformation device_connector)
             {
                 //var device = DevicesListBox.SelectedItem as DeviceInformation;
                 DevicesListBox.Visibility = Visibility.Collapsed;
 
                 backpackStatus.Text = "Initializing device...";
-                HeartRateService.Instance.DeviceConnectionUpdated += OnDeviceConnectionUpdated;
-                await HeartRateService.Instance.InitializeServiceAsync(device_connector);
-                outputGrid.Visibility = Visibility.Visible;
                 try
                 {
+                    HeartRateService.Instance.DeviceConnectionUpdated += OnDeviceConnectionUpdated;
+                    await HeartRateService.Instance.InitializeServiceAsync(device_connector);
+                    outputGrid.Visibility = Visibility.Visible;
                     // Check if the device is initially connected, and display the appropriate message to the user
                     var x = PnpObjectType.DeviceContainer;
                     var y = device_connector.Properties["System.Devices.ContainerId"].ToString();
@@ -388,11 +394,11 @@ namespace SmartPakku
                 });
             }
 
-            private void DevicesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+            private async void DevicesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
             {
                 var device_connector = DevicesListBox.SelectedItem as DeviceInformation;
                 DevicesListBox.Visibility = Visibility.Collapsed;
-                PrepDevice(device_connector);
+                await connect_to_smartpack(device_connector);
             }
 #endregion
 
@@ -427,6 +433,33 @@ namespace SmartPakku
 
 #region Location
         // Location Pivot
+            private async void setup_map(bool first_run)
+            {
+                // check if they've allowed location or not
+                bool location_allowed = (bool)my_settings.Values["location-consent"];
+
+                if (location_allowed == false)
+                {
+                    // location is not allowed
+
+                    // disable the locator and skip over
+                    // loading up the mapping service.
+                    LocatorContent.Visibility = Visibility.Collapsed;
+                    LocatorOff.Visibility = Visibility.Visible;
+                    return;
+                }
+                else
+                {
+                    // location is allowed
+
+                    // load up the mapping service.                
+                    await map_init(first_run);
+                }
+
+            }
+
+
+
         private async void phoneButton_Click(object sender, RoutedEventArgs e)
         {
             // update the current point
@@ -701,7 +734,6 @@ namespace SmartPakku
         }
 #endregion
 
-
 #region AppBar
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
@@ -728,6 +760,20 @@ namespace SmartPakku
             }
         }
         #endregion
+
+        private async void ConnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                DeviceInformation device_connector = await DeviceInformation.CreateFromIdAsync(saved_device_id, new string[] { "System.Devices.ContainerId" });
+                await connect_to_smartpack(device_connector);                
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message;
+                main_pivot.Title = error;
+            }
+        }
 
        
     }

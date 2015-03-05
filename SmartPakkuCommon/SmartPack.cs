@@ -73,10 +73,7 @@ namespace SmartPakkuCommon
 
         public bool HasBatteryService { get { return batteryService != null; } }
 
-        public BackgroundTaskRegistration BatteryTaskRegistration { get; set; }
-
-
-
+        public BackgroundTaskRegistration SmartPackDataTaskRegistration { get; set; }
 
         // settable properties, persisted in LocalSettings
 
@@ -89,7 +86,6 @@ namespace SmartPakkuCommon
                 SaveSettings();
             }
         }
-
         public bool AlertOnDevice
         {
             get { return alertOnDevice; }
@@ -99,8 +95,6 @@ namespace SmartPakkuCommon
                 SaveSettings();
             }
         }
-
-
         public AlertLevel AlertLevel
         {
             get { return alertLevel; }
@@ -254,7 +248,7 @@ namespace SmartPakkuCommon
             // Can't forget about the battery!
 
             // If we need a battery_background task and one isn't already registered, create one
-            if (BatteryTaskRegistration == null && batteryService != null)
+            if (SmartPackDataTaskRegistration == null && batteryService != null)
             {
                 try
                 {
@@ -265,9 +259,9 @@ namespace SmartPakkuCommon
 
                     BackgroundTaskBuilder battery_builder = new BackgroundTaskBuilder();
                     battery_builder.Name = TaskName + "2";
-                    battery_builder.TaskEntryPoint = "SmartPakkuBackground.BatteryTask";
+                    battery_builder.TaskEntryPoint = "SmartPakkuBackground.SmartPackDataTask";
                     battery_builder.SetTrigger(bat_notify_trigger);
-                    BatteryTaskRegistration = battery_builder.Register();
+                    SmartPackDataTaskRegistration = battery_builder.Register();
                 }
                 catch
                 {
@@ -276,10 +270,10 @@ namespace SmartPakkuCommon
             }
 
             // If we don't need a background task but have one, unregister it
-            if (BatteryTaskRegistration != null)
+            if (SmartPackDataTaskRegistration != null)
             {
-                BatteryTaskRegistration.Unregister(false);
-                BatteryTaskRegistration = null;
+                SmartPackDataTaskRegistration.Unregister(false);
+                SmartPackDataTaskRegistration = null;
             }
 
         }
@@ -347,12 +341,18 @@ namespace SmartPakkuCommon
             }
         }
 
-
-
         // Provide a human-readable name for this object.
         public override string ToString()
         {
             return device.Name;
+        }
+    }
+
+    public static class SmartPackHelper
+    {
+        public static void store_data(int what_to_store, int where_to_store_it)
+        {
+
         }
     }
 }

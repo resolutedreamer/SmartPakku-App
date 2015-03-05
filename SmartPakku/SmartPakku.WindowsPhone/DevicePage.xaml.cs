@@ -53,9 +53,11 @@ namespace SmartPakku
             SelectedSmartPack.AlertOnPhone = (bool)alertOnPhoneCheckBox.IsChecked;
 
             var ToggleSwitchValue = GPSSwitch.IsOn;
+            my_settings.Values["battery-enabled"] = FloraOrNot.IsChecked;
+
             my_settings.Values["location-consent"] = ToggleSwitchValue;
-            my_settings.Values["setup-wizard-complete"] = true;
-            Frame.Navigate(typeof(MainPage), "no-refunds");
+            
+            Frame.Navigate(typeof(Wizard3_MongoKeys));
         }
 
         private void GPSSwitch_Toggled(object sender, RoutedEventArgs e)

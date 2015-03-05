@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="SmartPakku.Wizard3_GPSDevice"
+    x:Class="SmartPakku.Wizard3_MongoKeys"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SmartPakku"
@@ -37,23 +37,24 @@
             <Grid x:Name="RootGrid" Margin="12,20,12,12">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
-                    <TextBlock Text="Step 3: GPS Settings" Style="{StaticResource SubheaderTextBlockStyle}" />
+                    <TextBlock Text="Step 3: Custom Database" Style="{StaticResource SubheaderTextBlockStyle}" />
                     <TextBlock TextWrapping="Wrap" Style="{StaticResource BodyTextBlockStyle}" >
-                        You can chose whether you want to enable or disable GPS capability for this app. Enabling the GPS will
-                        allow you to use the backpack locator function that saves the location of the backpack whenever
-                        the backpack is put down. <LineBreak/> <LineBreak/>You can also change this option from the main menu
-                        later on as well.<LineBreak/>
+                        If you want to connect to your own MongoLab database please enter the API key here.<LineBreak/> <LineBreak/>Otherwise, SmartPakku will connect to its
+                        default database for storing data. Your data will not be secure.<LineBreak/>
                     </TextBlock>
                 </StackPanel>
-                <ToggleSwitch x:Name="GPSSwitch"
+                <TextBox x:Name="API_Key"
                               Grid.Row="1"
-                              Header="GPS Setting"
                               VerticalAlignment="Stretch"
-                              Toggled="GPSSwitch_Toggled"
+                              Text=""
                               />
+                <Button Grid.Row="2" Content="Test API Key" Click="Button_Click"/>
+                <TextBlock Name="TestResult" Grid.Row="3" Style="{StaticResource BaseTextBlockStyle}" Text="Ready to test!" />
             </Grid>
         </Grid>
     </Grid>

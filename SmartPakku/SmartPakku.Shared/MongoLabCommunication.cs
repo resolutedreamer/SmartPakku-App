@@ -75,6 +75,25 @@ namespace SmartPakku
             return response;
         }
 
+        public static async Task<bool> TestAPIKey(string API_KEY)
+        {
+            try
+            {
+                var client = new HttpClient();
+                string reqUri = string.Format("https://api.mongolab.com/api/1/databases?apiKey={0}", API_KEY);
+                var uri = new Uri(reqUri);
+
+                var jstring = await client.GetStringAsync(uri);
+                JsonValue jsonList = JsonValue.Parse(jstring);
+                JsonObject jsonObject = jsonList.GetArray().GetObjectAt(0);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            
+        }
 
         public static async Task<JsonObject> refresh_data_json(MongoLabCredentials user_credentials)
         {

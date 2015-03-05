@@ -31,7 +31,7 @@
             <m3:Task Type="deviceConnectionChange" />
           </BackgroundTasks>
         </Extension>
-        <Extension Category="windows.backgroundTasks" EntryPoint="SmartPakkuBackground.BatteryTask">
+        <Extension Category="windows.backgroundTasks" EntryPoint="SmartPakkuBackground.SmartPackDataTask">
           <BackgroundTasks>
             <m3:Task Type="gattCharacteristicNotification" />
           </BackgroundTasks>

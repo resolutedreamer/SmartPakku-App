@@ -29,6 +29,7 @@ namespace SmartPakku
         Geoposition my_position; Geopoint my_point; MapIcon my_icon; MapIcon BackpackHere;
         BluetoothLEDevice bleDevice; SmartPack device; string saved_device_id;
         public static MainPage Current;
+        bool first_run = true;
 
         int switch_on = 0;
         List<WeightMeasurement> lots_of_measurements = new List<WeightMeasurement>();
@@ -41,8 +42,7 @@ namespace SmartPakku
         }
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            bool first_run = e.ToString() == "no-refunds";
-            saved_device_id = my_settings.Values["smartpack-device-id"].ToString();
+            first_run = e.ToString() == "no-refunds";
             
             if (first_run)
             {
@@ -51,7 +51,11 @@ namespace SmartPakku
 
             try
             {
-                await load_saved_smartpack();
+                if (my_settings.Values.ContainsKey("smartpack-device-id")) {
+                    var aVar = my_settings.Values["smartpack-device-id"];
+                    saved_device_id = aVar.ToString();
+                    await load_saved_smartpack();
+                }
             }
             catch
             {
@@ -92,12 +96,22 @@ namespace SmartPakku
             }
 
             // get the current state and update the state display and adjustments page
-            await device.update_status();
+            if (my_settings.Values.ContainsKey("smartpack-device-id"))
+            {
+                try
+                {
+                    await device.update_status();
+                }
+                catch
+                {
+
+                }
+            }
             //int status = device.Status;
             //update_adjustments_page(status);
 
             // setup the map as needed
-            setup_map(first_run);
+            setup_map();
         }
 
         
@@ -433,30 +447,31 @@ namespace SmartPakku
 
 #region Location
         // Location Pivot
-            private async void setup_map(bool first_run)
+            private async void setup_map()
             {
                 // check if they've allowed location or not
-                bool location_allowed = (bool)my_settings.Values["location-consent"];
+                if (my_settings.Values.ContainsKey("location-consent")) {
+                    bool location_allowed = (bool)my_settings.Values["location-consent"];
 
-                if (location_allowed == false)
-                {
-                    // location is not allowed
+                    if (location_allowed == false)
+                    {
+                        // location is not allowed
 
-                    // disable the locator and skip over
-                    // loading up the mapping service.
-                    LocatorContent.Visibility = Visibility.Collapsed;
-                    LocatorOff.Visibility = Visibility.Visible;
-                    return;
+                        // disable the locator and skip over
+                        // loading up the mapping service.
+                        LocatorContent.Visibility = Visibility.Collapsed;
+                        LocatorOff.Visibility = Visibility.Visible;
+                        return;
+                    }
+                    else
+                    {
+                        // location is allowed
+
+                        // load up the mapping service.                
+                        await map_init();
+                    }
                 }
-                else
-                {
-                    // location is allowed
-
-                    // load up the mapping service.                
-                    await map_init(first_run);
-                }
-
-            }
+        }
 
 
 
@@ -506,8 +521,7 @@ namespace SmartPakku
             else
             {
                 await locatorMap.TrySetViewAsync(myPoint, 16D);
-                bool firstrun = false;
-                MapIcon BackpackHere = await get_backpack_icon(firstrun);
+                MapIcon BackpackHere = await get_backpack_icon();
                 if (BackpackHere == null)
                 {
                     statusTextBlock.Text = "Problem with backpack icon";
@@ -523,7 +537,7 @@ namespace SmartPakku
         }
         // Location Page
 
-        private async Task map_init(bool first_run)
+        private async Task map_init()
         {
             // Set up the locator
             if (locator == null)
@@ -554,7 +568,7 @@ namespace SmartPakku
                     locatorMap.MapElements.Add(my_icon);
                 }
 
-                BackpackHere = await get_backpack_icon(first_run);
+                BackpackHere = await get_backpack_icon();
                 if (BackpackHere != null)
                 {
                     locatorMap.MapElements.Add(BackpackHere);
@@ -578,7 +592,7 @@ namespace SmartPakku
             }
         }
 
-        public async Task<MapIcon> get_backpack_icon(bool firstrun)
+        public async Task<MapIcon> get_backpack_icon()
         {
             MapIcon tmp_backpack_icon = new MapIcon();
             if (my_settings.Values.ContainsKey("backpack-location-latitude") && my_settings.Values.ContainsKey("backpack-location-longitude"))
@@ -593,7 +607,7 @@ namespace SmartPakku
                 tmp_backpack_icon.Title = "Backpack Location";
                 return tmp_backpack_icon;
             }
-            else if (firstrun == true)
+            else if (first_run == true)
             {
                 await store_current_location();
 

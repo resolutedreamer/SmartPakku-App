@@ -108,6 +108,9 @@
     <Compile Include="Wizard2_SelectDevice.xaml.cs">
       <DependentUpon>Wizard2_SelectDevice.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Wizard4_GPSDevice.xaml.cs">
+      <DependentUpon>Wizard4_GPSDevice.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Wizard3_MongoKeys.xaml.cs">
       <DependentUpon>Wizard3_MongoKeys.xaml</DependentUpon>
     </Compile>
@@ -199,6 +202,10 @@
     <Page Include="Wizard2_SelectDevice.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Wizard4_GPSDevice.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Wizard3_MongoKeys.xaml">
       <SubType>Designer</SubType>

@@ -1,4 +1,4 @@
-MainPackage=F:\ZDrive\Act Now!\EE M202A - SmartPakku\SmartPakku-App\SmartPakku\SmartPakku.Windows\bin\ARM\Release\SmartPakku.Windows_1.1.0.6_Bundle\SmartPakku.Windows_1.1.0.6_ARM.appx
-SymbolPackage=F:\ZDrive\Act Now!\EE M202A - SmartPakku\SmartPakku-App\SmartPakku\SmartPakku.Windows\AppPackages\SmartPakku.Windows_1.1.0.6_Test\SmartPakku.Windows_1.1.0.6_ARM.appxsym
-ResourcePack=F:\ZDrive\Act Now!\EE M202A - SmartPakku\SmartPakku-App\SmartPakku\SmartPakku.Windows\bin\ARM\Release\SmartPakku.Windows_1.1.0.6_Bundle\SmartPakku.Windows_1.1.0.6_scale-140.appx
-ResourcePack=F:\ZDrive\Act Now!\EE M202A - SmartPakku\SmartPakku-App\SmartPakku\SmartPakku.Windows\bin\ARM\Release\SmartPakku.Windows_1.1.0.6_Bundle\SmartPakku.Windows_1.1.0.6_scale-180.appx
+MainPackage=T:\Git\SmartPakku-App\SmartPakku\SmartPakku.Windows\bin\ARM\Release\SmartPakku.Windows_1.1.0.9_ARM.appx
+SymbolPackage=T:\Git\SmartPakku-App\SmartPakku\SmartPakku.Windows\AppPackages\SmartPakku.Windows_1.1.0.9_Test\SmartPakku.Windows_1.1.0.9_ARM.appxsym
+ResourcePack=T:\Git\SmartPakku-App\SmartPakku\SmartPakku.Windows\bin\ARM\Release\SmartPakku.Windows_1.1.0.9_scale-140.appx
+ResourcePack=T:\Git\SmartPakku-App\SmartPakku\SmartPakku.Windows\bin\ARM\Release\SmartPakku.Windows_1.1.0.9_scale-180.appx

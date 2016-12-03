@@ -1,2 +1,2 @@
-MainPackage=F:\ZDrive\Act Now!\EE M202A - SmartPakku\SmartPakku-App\SmartPakku\SmartPakku.Windows\bin\x86\Release\SmartPakku.Windows_1.1.0.6_Bundle\SmartPakku.Windows_1.1.0.6_x86.appx
-SymbolPackage=F:\ZDrive\Act Now!\EE M202A - SmartPakku\SmartPakku-App\SmartPakku\SmartPakku.Windows\AppPackages\SmartPakku.Windows_1.1.0.6_Test\SmartPakku.Windows_1.1.0.6_x86.appxsym
+MainPackage=T:\Git\SmartPakku-App\SmartPakku\SmartPakku.Windows\bin\x86\Release\SmartPakku.Windows_1.1.0.9_x86.appx
+SymbolPackage=T:\Git\SmartPakku-App\SmartPakku\SmartPakku.Windows\AppPackages\SmartPakku.Windows_1.1.0.9_Test\SmartPakku.Windows_1.1.0.9_x86.appxsym

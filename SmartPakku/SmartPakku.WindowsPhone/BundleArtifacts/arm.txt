@@ -1,0 +1,4 @@
+MainPackage=T:\Git\SmartPakku-App\SmartPakku\SmartPakku.WindowsPhone\bin\ARM\Release\SmartPakku.WindowsPhone_1.2.0.1_ARM.appx
+SymbolPackage=T:\Git\SmartPakku-App\SmartPakku\SmartPakku.WindowsPhone\AppPackages\SmartPakku.WindowsPhone_1.2.0.1_Test\SmartPakku.WindowsPhone_1.2.0.1_ARM.appxsym
+ResourcePack=T:\Git\SmartPakku-App\SmartPakku\SmartPakku.WindowsPhone\bin\ARM\Release\SmartPakku.WindowsPhone_1.2.0.1_scale-100.appx
+ResourcePack=T:\Git\SmartPakku-App\SmartPakku\SmartPakku.WindowsPhone\bin\ARM\Release\SmartPakku.WindowsPhone_1.2.0.1_scale-140.appx
